@@ -6,7 +6,7 @@ import { authMiddleware } from "@/lib/middleware/auth";
 
 export async function POST(req) {
     // Apply the authentication middleware
-    const response =  authMiddleware(req);
+    const response =  await authMiddleware(req);
     // If the middleware returns a response (i.e., unauthenticated), stop execution here
     if (response) {
         return response; 

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db/connectDB";
 import User from "@/lib/models/userSchema";
 
+
 //get all users
 export async function GET(req) {
     await connectDB();

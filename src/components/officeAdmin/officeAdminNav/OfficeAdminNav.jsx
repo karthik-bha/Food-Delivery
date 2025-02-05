@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
 import axios from "axios"
-const Navbar = () => {
+const OfficeAdminNav = () => {
     const handleLogout = async () => {
         try {
             await axios.post("/api/logout");
@@ -12,11 +12,11 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="text-heading flex justify-between items-center shadow-md mx-auto p-4">
+        <nav className=" flex justify-between items-center shadow-md mx-auto p-4">
             <div>
-                <Link href="/dashboard/superAdmin" className="">
-                    <h2 className=" text-nav-heading font-heading ">Food Delivery</h2>
-                    <p>Super Admin</p>
+                <Link href="/dashboard/officeAdmin" className="text-heading" >
+                    <h2 className="text-nav-heading font-heading ">Food Delivery</h2>
+                    <p>Office Admin</p>
                 </Link>
             </div>
             <button onClick={handleLogout}
@@ -26,4 +26,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar
+export default OfficeAdminNav

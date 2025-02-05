@@ -1,7 +1,8 @@
 const superAdmin = () => {  
   return (
-    <div >
-      Welcome super admin
+    <div  >
+      <p className="text-nav-heading my-6">Welcome super admin</p>
+      <p>Click on the arrow to view your actions</p>
     </div>
   )
 }
