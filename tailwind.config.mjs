@@ -7,10 +7,11 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
+     
+      fontSize:{
+        "heading":"2rem",
+        "content":"1rem"
+      }
     },
   },
   plugins: [],
