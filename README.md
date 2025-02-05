@@ -1,3 +1,10 @@
+
+## Pre made credentials for use if preferred (You can create new ones too if you'd like)
+  - Super admin : superadmin@gmail.com, pass: test123
+  - Office admin : officeadmin@gmail.com, pass: test123
+  - admin : admin@gmail.com, pass: test123
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
