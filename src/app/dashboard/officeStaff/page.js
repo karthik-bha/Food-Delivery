@@ -2,7 +2,10 @@
 
 const officeStaff = () => {
   return (
-    <div>staff Page</div>
+    <div  >
+      <p className="text-nav-heading my-6">Welcome office staff</p>
+      <p>Click on the arrow to view your actions</p>
+    </div>
   )
 }
 

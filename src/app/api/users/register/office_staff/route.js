@@ -8,7 +8,7 @@ import { authMiddleware } from "@/lib/middleware/auth";
 // Creates a new office staff
 export async function POST(req) {
     // Apply the authentication middleware
-    const response = authMiddleware(req);
+    const response =await authMiddleware(req);
     // If the middleware returns a response (i.e., unauthenticated), stop execution here
     if (response) {
         return response;
@@ -38,10 +38,10 @@ export async function POST(req) {
         if (!officeAdmin.office_id) {
             return NextResponse.json({ success: false, message: "Create office before staff" }, { status: 403 });
         }
-
+        console.log(office_id);
         // Find the office by ID from decoded token (office_id from the token)
         const office = await Office.findById(office_id);
-        if (!office) {
+        if (!office && !officeAdmin.office_id) {
             return NextResponse.json({ success: false, message: "Office not found" }, { status: 404 });
         }
 
@@ -59,7 +59,7 @@ export async function POST(req) {
             email,
             password: hashedPassword,
             role: "office_staff",
-            office_id: office_id || officeAdmin.office_id // Ensure the staff is assigned to the correct office
+            office_id: officeAdmin.office_id || office_id// Ensure the staff is assigned to the correct office
         });
 
         // Add staff to the office's `staff` array

@@ -10,7 +10,7 @@ import { authMiddleware } from "@/lib/middleware/auth";
 export async function POST(req) {
 
     // Apply the authentication middleware
-    const response = authMiddleware(req);
+    const response = await authMiddleware(req);
     
     // If the middleware returns a response (i.e., unauthenticated), stop execution here
     if (response) {
@@ -18,7 +18,8 @@ export async function POST(req) {
     }
 
     // Assign _id after decoding
-    const { _id: officeAdminId, role } = decoded;
+    console.log(req.user);
+    const { _id: officeAdminId, role } = req.user;
 
     // Check if the user has the right role (office_admin)
     if (role !== "office_admin") {

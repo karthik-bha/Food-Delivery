@@ -47,10 +47,10 @@ export async function middleware(req) {
 // Apply middleware only to protected routes
 export const config = {
     matcher: [
-        "/random"
-        // "/dashboard/superAdmin/:path*",
-        // "/dashboard/admin/:path*",
-        // "/dashboard/officeAdmin/:path*",
-        // "/dashboard/officeStaff/:path*",
+        // "/random"
+        "/dashboard/superAdmin/:path*",
+        "/dashboard/admin/:path*",
+        "/dashboard/officeAdmin/:path*",
+        "/dashboard/officeStaff/:path*",
     ],
 };

@@ -5,11 +5,6 @@ const officeSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    location_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Location",
-        required: true
-    },
     orders: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Order"
