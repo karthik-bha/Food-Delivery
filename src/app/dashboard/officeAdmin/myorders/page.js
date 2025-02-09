@@ -42,7 +42,9 @@ const Page = () => {
         <div>
             <h2 className="text-heading text-section-heading my-6">My Orders</h2>
             <select
-                className="border border-black rounded-md p-2 my-2"
+                className="bg-black  text-white hover:bg-primary-hover 
+             hover:cursor-pointer
+            rounded-md border border-white px-2 py-1 my-2"
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
             >

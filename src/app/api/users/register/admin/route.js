@@ -7,14 +7,17 @@ import { authMiddleware } from "@/lib/middleware/auth";
 export async function POST(req) {
     
      // Apply the authentication middleware
-     const response =  authMiddleware(req);
-     
+     const response =  await authMiddleware(req);  
      // If the middleware returns a response (i.e., unauthenticated), stop execution here
      if (response) {
-         return response; 
+         return response;
      }
- 
+     console.log(req.user);
     // req.user should be set by the middleware if authentication is successful
+    if (!req.user) {
+        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    
     // Access the user data attached by the middleware
     const { _id: superAdminId, role } = req.user;
 
@@ -24,13 +27,10 @@ export async function POST(req) {
     }
 
     // Extract email and password from request body
-    const { email, password, location_city } = await req.json();
-    if (!email || !password) {
-        return NextResponse.json({ success: false, message: "Email and Password are required" }, { status: 400 });
-    }
-    if(!location_city){
-        return NextResponse.json({ success: false, message: "Location is required" }, { status: 400 });
-    }
+    const { email, password, name, phone } = await req.json();
+    if (!email || !password || !name || !phone) {
+        return NextResponse.json({ success: false, message: "Email, Name, Phone and Password are required" }, { status: 400 });
+    }   
 
     try {
         await connectDB();
@@ -49,10 +49,14 @@ export async function POST(req) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const adminUser = new User({
-            email,
+           
+            name,
+            phone,
+            email,          
             password: hashedPassword,
             role: "admin",
-            location_city, // Admin needs location
+            office_type:1,
+            createdBy: superAdminId,
         });
 
         await adminUser.save();
@@ -63,6 +67,8 @@ export async function POST(req) {
         }, { status: 201 });
 
     } catch (error) {
-        return NextResponse.json({ error: "Server error" }, { status: 500 });
+        console.error("Server error:", error);
+        return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
     }
+    
 }

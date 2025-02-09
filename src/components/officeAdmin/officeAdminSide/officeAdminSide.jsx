@@ -7,6 +7,9 @@ const OfficeAdminSide = () => {
     return (
         <nav className={` text-nav-content bg-primary flex flex-col min-h-[100vh] ${expandBar ? "w-[40vw] md:w-[12vw] animate-sidebar p-4 " : "w-10 p-2 "}`}>
             {expandBar && <ul className="  mt-6 mx-2 flex flex-col gap-2 ">
+                <Link href="/dashboard/officeAdmin" className="hover:text-white">
+                    <li>DASHBOARD</li>
+                </Link>
                 <Link href="/dashboard/officeAdmin/restaurant" className="hover:text-white">
                     <li>RESTAURANT</li>
                 </Link>

@@ -26,5 +26,5 @@ export async function authMiddleware(req) {
 
     // Attaching user info to request for later use
     req.user = decoded;  // We can use req.user in our routes to access the user data
-
+    return undefined;
 }

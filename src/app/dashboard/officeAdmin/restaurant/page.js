@@ -145,9 +145,9 @@ const Page = () => {
                         <p>Non-Veg Staff: {totalNonVegStaff}</p>
                         <div className="my-2 flex gap-2">
                             <button className="font-button-text 
-                        bg-primary hover:bg-button-hover-bg text-white px-4 py-1 rounded-md">Order regular</button>
+                        bg-primary hover:bg-primary-hover text-white px-4 py-1 rounded-md">Order regular</button>
                             <button className="font-button-text bg-primary 
-                        hover:bg-button-hover-bg text-white px-4 py-1 rounded-md">Edit regular order</button>
+                        hover:bg-primary-hover text-white px-4 py-1 rounded-md">Edit regular order</button>
 
                         </div>
                     </div>

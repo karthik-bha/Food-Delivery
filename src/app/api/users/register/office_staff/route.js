@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db/connectDB";
 import User from "@/lib/models/userSchema";
-import Office from "@/lib/models/officeSchema";
+import SmallOffice from "@/lib/models/SmallOffice";
 import bcrypt from "bcrypt";
 import { authMiddleware } from "@/lib/middleware/auth";
 
@@ -14,17 +14,17 @@ export async function POST(req) {
         return response;
     }
     // Get user data from decoded token 
-    const { _id: officeAdminId, role, office_id } = req.user;
+    const { _id: officeAdminId, role } = req.user;
 
     // Check if the user has the right role (office_admin)
     if (role !== "office_admin") {
         return NextResponse.json({ success: false, message: "Only office admins can add staff" }, { status: 403 });
     }
 
-    const { email, password, mealPreference } = await req.json();
+    const { name, phone, email, password, isVeg } = await req.json();
 
-    if (!email || !password) {
-        return NextResponse.json({ success: false, message: "Email and Password are required" }, { status: 400 });
+    if (!email || !password || !name || !phone) {
+        return NextResponse.json({ success: false, message: "Email, Name, Phone and Password are required" }, { status: 400 });
     }
 
     try {
@@ -38,10 +38,10 @@ export async function POST(req) {
         if (!officeAdmin.office_id) {
             return NextResponse.json({ success: false, message: "Create office before staff" }, { status: 403 });
         }
-        console.log(office_id);
+        console.log(officeAdmin.office_id);
         // Find the office by ID from decoded token (office_id from the token)
-        const office = await Office.findById(office_id);
-        if (!office && !officeAdmin.office_id) {
+        const office = await SmallOffice.findById(officeAdmin.office_id);
+        if (!office || !officeAdmin.office_id) {
             return NextResponse.json({ success: false, message: "Office not found" }, { status: 404 });
         }
 
@@ -56,26 +56,16 @@ export async function POST(req) {
 
         // Create the new staff user
         const newStaff = await User.create({
+            name,
+            phone,
             email,
+            isVeg,
             password: hashedPassword,
+            office_type:3,
             role: "office_staff",
-            office_id: officeAdmin.office_id || office_id// Ensure the staff is assigned to the correct office
-        });
-
-        // Add staff to the office's `staff` array
-        await Office.updateOne(
-            { _id: office_id },
-            {
-                // This appends the new staff to staff array
-                $push: {
-                    staff: {
-                        user_id: newStaff._id,
-                        status: "present", // Default status
-                        Meal: mealPreference || "Veg" // Default to Veg if no preference
-                    }
-                }
-            }
-        );
+            office_id: officeAdmin.office_id, // Ensures the staff is assigned to the correct office
+            createdBy:officeAdminId
+        });       
 
         return NextResponse.json({ success: true, message: "Staff created and assigned successfully", data: newStaff }, { status: 201 });
     } catch (error) {

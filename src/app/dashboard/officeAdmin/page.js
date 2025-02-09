@@ -64,8 +64,8 @@ const officeAdmin = () => {
           </p>
           <div className="flex items-center  gap-2">
             <p className="font-semibold">Set status: </p>
-            <select className="bg-black  text-white hover:bg-white hover:text-black 
-            hover:border hover:border-black hover:cursor-pointer
+            <select className="bg-black  text-white hover:bg-primary-hover 
+             hover:cursor-pointer
             rounded-md border border-white px-2 py-1 my-2">
               <option value="open">Open</option>
               <option value="close">Close</option>
@@ -96,8 +96,8 @@ const officeAdmin = () => {
             <p> <span className="text-red-600">Non-Veg:</span> Chicken Biryani, lassi.</p>
           </div>
           <div className="flex">
-            <button className="bg-black border border-white hover:bg-white
-             hover:text-black hover:border hover:border-black text-white px-4 py-2 rounded-lg">Quick order</button>
+            <button className="bg-black border hover:bg-primary-hover
+              text-white px-4 py-2 rounded-lg">Quick order</button>
           </div>
           </div>
         </div>

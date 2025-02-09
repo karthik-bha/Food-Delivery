@@ -43,7 +43,7 @@ const Page = () => {
             </div> : <>
                 <div className="md:max-w-[20vw] shadow-[0px_0px_15px_10px_rgba(0,0,0,0.1)]  mx-auto">
                     <div className="bg-primary text-secondary rounded-t-md ">
-                        <h2 className="my-6 p-2 text-heading text-section-heading">Office Details</h2>
+                        <h2 className="my-6 p-2 text-[1.2rem]">Office Details</h2>
                     </div>
                     <div className="mx-4">
                         <p>
@@ -55,7 +55,9 @@ const Page = () => {
                         <p>
                             <span className="font-bold">  Status:</span> {mockOfficeData.office_open ? "Open" : "Closed"}
                         </p>
-                        <select className="border border-black px-2 py-1 my-2">
+                        <select className="bg-black  text-white hover:bg-primary-hover 
+             hover:cursor-pointer
+            rounded-md border border-white px-2 py-1 my-2">
                             <option value="open">Open</option>
                             <option value="close">Close</option>
                         </select>

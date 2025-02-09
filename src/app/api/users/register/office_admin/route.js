@@ -1,30 +1,28 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db/connectDB";
 import User from "@/lib/models/userSchema";
+import AdminOffice from "@/lib/models/AdminOffice";
+import SmallOffice from "@/lib/models/SmallOffice";
 import bcrypt from "bcrypt";
 import { authMiddleware } from "@/lib/middleware/auth";
 
 export async function POST(req) {
     // Apply the authentication middleware
-    const response =  await authMiddleware(req);
-    // If the middleware returns a response (i.e., unauthenticated), stop execution here
+    const response = await authMiddleware(req);
     if (response) {
-        return response; 
+        return response;  
     }
 
-    // req.user should be set by the middleware if authentication is successful
-    // Access the user data attached by the middleware
     const { _id: adminId, role } = req.user;
 
-    // Check if the user has the right role (admin)
     if (role !== "admin") {
         return NextResponse.json({ success: false, message: "Only admins can add office_admin" }, { status: 403 });
     }
 
-    const { email, password, office_id } = await req.json();
+    const { name, phone, email, password } = await req.json();
 
-    if (!email || !password) {
-        return NextResponse.json({ success: false, message: "Email and Password are required" }, { status: 400 });
+    if (!email || !password || !name || !phone) {
+        return NextResponse.json({ success: false, message: "Email, Name, Phone, and Password are required" }, { status: 400 });
     }
 
     try {
@@ -36,10 +34,21 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Invalid admin" }, { status: 403 });
         }
 
-        // Check if the email already exists
+        // Check if email already exists in User collection
         const userExists = await User.findOne({ email });
         if (userExists) {
-            return NextResponse.json({ success: false, message: "Email Already Exists" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Email Already Exists in Users" }, { status: 400 });
+        }
+
+        // Check if email exists in AdminOffice, RestaurantOffice, or SmallOffice
+        const officeExists = await Promise.any([
+            AdminOffice.findOne({ email }),
+            // RestaurantOffice.findOne({ email }),
+            SmallOffice.findOne({ email }),
+        ]).catch(() => null); // If all are null, `Promise.any` will reject, so catch it.
+
+        if (officeExists) {
+            return NextResponse.json({ success: false, message: "Email Already Exists in Other Offices" }, { status: 400 });
         }
 
         // Hash the password before saving
@@ -47,15 +56,17 @@ export async function POST(req) {
 
         // Create the new office_admin user
         const officeAdminUser = new User({
+            name,       
             email,
             password: hashedPassword,
+            phone,
             role: "office_admin",
-            office_id,
+            office_type: 3,
+            createdBy: adminId,
         });
 
         await officeAdminUser.save();
 
-        // Respond with the newly created user details
         return NextResponse.json({
             message: "Office Admin Registered Successfully, Please Register Your Office and Staff",
             newUser: officeAdminUser,

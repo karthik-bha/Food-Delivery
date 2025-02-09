@@ -3,8 +3,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // We will embed stuff like _id in the payload
 export const signToken = async (user) => {
-    const { _id, email, role, office_id } = user;
-    const payload = { _id, email, role, office_id };
+    const { _id, email, role } = user;
+    const payload = { _id, email,role};
 
     // Create and sign the JWT with 'jose'
     const token = await new SignJWT(payload)
@@ -13,7 +13,7 @@ export const signToken = async (user) => {
         .sign(new TextEncoder().encode(JWT_SECRET));  // Sign with the secret
 
     return token;
-}
+} 
 
 // Verifying the token
 export const verifyToken = async (token) => {

@@ -10,7 +10,7 @@ export default {
       colors:{
         "primary":"black",
         "secondary":"white",
-        "primary-hover":"#292727",
+        "primary-hover":"#48484a",
         "nav-content":"#787777",
       },
       fontSize:{
