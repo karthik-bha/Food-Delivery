@@ -8,21 +8,22 @@ export default {
   theme: {
     extend: {
       colors:{
-        "button-bg":"#202842",
-        "button-hover-bg":"#2d385d",
-        "home-bg":"#f1f3f9",
-        // "heading":"#2d385d",
-        "heading":"#202842",
+        "primary":"black",
+        "secondary":"white",
+        "primary-hover":"#292727",
+        "nav-content":"#787777",
       },
       fontSize:{
         "login-heading":"2.2rem",        
         "nav-heading":"1.4rem",
         "section-heading":"2rem",
-        "content":"1rem",
+        "sub-heading":"1.5rem",
+        "content":"0.9rem",
         "form-error":"0.8rem"
       },fontWeight:{
         "heading":"bold",
-        "button-text":"bold"
+        "button-text":"semibold",
+        "sub-heading":"semibold"
       },
       keyframes: {
         "side-ani": {
@@ -36,7 +37,7 @@ export default {
             transform: "translateX(0%)",
           },
         },
-      },
+      }, 
       animation: {
         "sidebar": "side-ani 0.4s ease-in-out",
       },

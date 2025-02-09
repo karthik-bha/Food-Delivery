@@ -35,7 +35,7 @@ export async function POST(req) {
             path: "/",
             maxAge: 60 * 60 * 24, // 1 day
         });
-
+        console.log(user.role);
         // Determine Redirect URL Based on Role
         let redirectURL = "/dashboard";
         if (user.role === "super_admin") redirectURL = "/dashboard/superAdmin";

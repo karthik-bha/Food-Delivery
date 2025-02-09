@@ -6,42 +6,56 @@ const Page = () => {
     const mockData = {
         name: "KFC",
 
-        address: {
-            street: "Gulmohar",
-            city: "Patna",
-            pincode: "800001"
-        },
+        state:"Bihar",
+        district:"patna",
+        street_address: "2, street5",
         closed: false,
         max_capacity: 50,
 
         menu: {
-            Monday: [
-                { _id: 1, item: "roti", price: 20 },
-                { _id: 2, item: "tea", price: 10 }
-            ],
-            Tuesday: [
-                { _id: 3, item: "Pizza", price: 200 }
-            ],
-            Wednesday: [
-                { _id: 5, item: "Veg Meals", price: 100 },
-                { _id: 6, item: "Non-Veg Meals", price: 150 }
-            ]
+            Monday: {
+                Veg:{name:"Veg meals",description:"2 Roti, Paneer butter masala"},
+                NonVeg:{name:"NonVeg meals",description:"2 Roti, Chicken curry"}
+            },
+                         
+            Tuesday:{
+                Veg:{name:"Veg meals",description:"2 Roti, Paneer butter masala"},
+                NonVeg:{name:"NonVeg meals",description:"2 Roti, Chicken curry"}
+            },
+            Wednesday: {
+                Veg:{name:"Veg meals",description:"2 Roti, Paneer butter masala"},
+                NonVeg:{name:"NonVeg meals",description:"2 Roti, Chicken curry"}
+            },
+            Thursday: {
+                Veg:{name:"Veg meals",description:"2 Roti, Paneer butter masala"},
+                NonVeg:{name:"NonVeg meals",description:"2 Roti, Chicken curry"}
+            },
+            Friday: {
+                Veg:{name:"Veg meals",description:"2 Roti, Paneer butter masala"},
+                NonVeg:{name:"NonVeg meals",description:"2 Roti, Chicken curry"}
+            },
+            Saturday: {
+                Veg:{name:"Veg meals",description:"2 Roti, Paneer butter masala"},
+                NonVeg:{name:"NonVeg meals",description:"2 Roti, Chicken curry"}
+            },
+            Sunday: {
+                Veg:{name:"Veg meals",description:"2 Roti, Paneer butter masala"},
+                NonVeg:{name:"NonVeg meals",description:"2 Roti, Chicken curry"}
+            },
         },
-        special_menu:[
-            { _id: 1, item: "Burger", price: 100 },
-            { _id: 2, item: "Fries", price: 50 }
+        special_menu: [
+            { _id: 1, item: "Burger", price: 100, tag:"Veg" },
+            { _id: 2, item: "Fries", price: 50, tag:"Non-Veg" }
         ]
     }
 
     // This is office data
     const mockOfficeData = {
         name: "Office1",
-        office_open:true,
-        address: {
-            street: "gilaro",
-            city: "Patna",
-            pincode: "800001"
-        },
+        office_open: true,
+        state:"Bihar",
+        district:"patna",
+        street_address: "2, patna",
         staff: [
             {
                 _id: 1, name: "John", email: "IY5oM@example.com",
@@ -64,6 +78,11 @@ const Page = () => {
                 preference: "non-veg",
 
             },
+        ],
+        guests: [
+            {
+                _id: 1, name: "John2"
+            }
         ]
 
     }
@@ -80,40 +99,79 @@ const Page = () => {
     const totalNonVegStaff = mockOfficeData.staff.filter((staff) => staff.preference === "non-veg").length;
     return (
         <div>
-            <h2 className="my-6 text-section-heading text-heading font-heading">Restaurant</h2>
-
-            <h3 className="text-heading text-section-heading">{mockData.name}</h3>
-            <div className="mx-4 my-6">
-                <div className="flex gap-2  ">
-                    <p><b>Address:</b></p>
-                    <p>{mockData.address.street}, {mockData.address.city}, {mockData.address.pincode}</p>
-                </div>
-                <p><b>Open</b>: {mockData.closed ? "No" : "Yes"}</p>
-            </div>
-
-            <h3 className="text-heading text-section-heading">Menu for {dayOfWeek}</h3>
-            <div className="mx-4 my-6">
-                {todayMenu.length > 0 ? (
-                    todayMenu.map((item) => (
-                        <div key={item._id} className="flex gap-2 my-2">
-                            <p><b>Item:</b> {item.item}</p>
-                            <p><b>Price:</b> ₹{item.price}</p>
+            <h2 className="my-6 text-section-heading text-center">Restaurant Details</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 max-w-[70vw] md:max-w-[50vw] gap-6 mx-auto">
+                {/* first card  */}
+                <div className="shadow-[0px_0px_15px_5px_rgba(0,0,0,0.1)]">
+                <div className="text-secondary bg-primary rounded-t-lg p-4"> 
+                    <h3 className="text-[1.6rem] ">{mockData.name}</h3>
+                    </div>
+                    <div className="mx-4 my-6">
+                        <div className="flex gap-2  ">
+                            <p><b>Address:</b></p>
+                            <p>{mockData.street_address}, {mockData.district}, {mockData.state}</p>
                         </div>
-                    ))
-                ) : (
-                    <p>No menu available for today.</p>
-                )}
-            </div>
-
-            <div>
-                <p className="text-[1.6rem]">Regular Order</p>
-                <div className="mx-4">
-                <p>Total Staff: {totalStaff}</p>
-                <p>Veg Staff: {totalVegStaff}</p>
-                <p>Non-Veg Staff: {totalNonVegStaff}</p>
-                <div className="my-2">
-                <button className="font-button-text bg-button-bg hover:bg-button-hover-bg text-white px-4 py-2 rounded-md">Order Regular</button>
+                        <p><b>Open</b>: {mockData.closed ? "No" : "Yes"}</p>
+                    </div>
                 </div>
+                {/* Second card  */}
+                <div className=" shadow-[0px_0px_15px_5px_rgba(0,0,0,0.1)]">
+                <div className="text-secondary bg-primary rounded-t-lg p-4">   <h3 className="text-[1.6rem]">Menu for {dayOfWeek}</h3>
+                </div>
+                    <div className="mx-4 my-6">
+                    {todayMenu && todayMenu.Veg && todayMenu.NonVeg ? (
+                            <div>
+                                <p><b>Veg Meals:</b></p>                                
+                                <p>{todayMenu.Veg.description}</p>
+                                <p><b>Non-Veg Meals:</b></p>                                
+                                <p>{todayMenu.NonVeg.description}</p>
+                            </div>
+                        ) : (
+                            <p>No menu available for today.</p>
+                        )}
+                    </div>
+                    <div>
+                    </div>
+                </div>
+                
+                {/* Third card  */}
+                <div className="shadow-[0px_0px_15px_5px_rgba(0,0,0,0.1)]">
+                <div className="text-secondary bg-primary rounded-t-lg p-4"> 
+                    <p className="text-[1.6rem]">Regular Order</p>
+                    </div>
+                    <div className="mx-4 my-6">
+                        <p>Total Staff: {totalStaff}</p>
+                        <p>Veg Staff: {totalVegStaff}</p>
+                        <p>Non-Veg Staff: {totalNonVegStaff}</p>
+                        <div className="my-2 flex gap-2">
+                            <button className="font-button-text 
+                        bg-primary hover:bg-button-hover-bg text-white px-4 py-1 rounded-md">Order regular</button>
+                            <button className="font-button-text bg-primary 
+                        hover:bg-button-hover-bg text-white px-4 py-1 rounded-md">Edit regular order</button>
+
+                        </div>
+                    </div>
+                </div>
+
+                {/* Fourth Card  */}
+                <div className=" shadow-[0px_0px_15px_5px_rgba(0,0,0,0.1)]">
+                <div className="text-secondary bg-primary rounded-t-lg p-4"> 
+                    <p className="text-[1.6rem] ">Special Menu</p>
+                    </div>
+                    <div className="mx-4 my-6">
+                    <div className="grid grid-cols-3">
+                        <p><b>Item</b></p>
+                        <p><b>Price</b></p>
+                        <p><b>Tag</b></p>
+                        </div>
+                        {mockData.special_menu.map((menu) => (
+                            <div key={menu._id} className="grid grid-cols-3">
+                                <p>{menu.item}</p>
+                                <p>{menu.price}</p>
+                                <p>{menu.tag}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
 

@@ -3,15 +3,26 @@ import OfficeAdminSide from "@/components/officeAdmin/officeAdminSide/officeAdmi
 
 export default function Layout({ children }) {
     return (
-        <div className="text-content bg-home-bg">
+        <div className="text-content ">
 
-            <OfficeAdminNav/>
-            <div className="flex gap-2">
-                <OfficeAdminSide/>
-                <div className="ml-4">
-                    {children}
+           <OfficeAdminNav/>
+            <div className="flex">
+               <OfficeAdminSide/>
+                <div className="mx-auto">
+                    {children} 
                 </div>
             </div>
         </div>
     );
 }
+{/* <div>           
+<div className="flex text-content ">
+    <OfficeAdminSide/>
+    <div className="w-[100vw]">
+    <OfficeAdminNav/> 
+    <div className="mx-2">
+        {children}
+        </div>      
+    </div>
+</div> 
+</div> */}

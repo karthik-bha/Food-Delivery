@@ -8,7 +8,7 @@ export default function Layout({ children }) {
             <div className="flex gap-2">
                <OfficeStaffSide/>
                 <div className="ml-4">
-                    {children}
+                    {children} 
                 </div>
             </div>
         </div>

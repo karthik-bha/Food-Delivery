@@ -27,10 +27,10 @@ const Login = () => {
     };
 
     return (
-        <div className="h-screen w-screen flex flex-col justify-center items-center gap-4 font-content">
-            <div className="text-center bg-white py-6 rounded-md shadow-lg">
+        <div className="h-screen w-screen flex flex-col justify-center items-center gap-4">
+      <div className="text-center bg-white py-6 rounded-md shadow-[0_0_15px_10px_rgba(0,0,0,0.1)]">
             <h2 className="text-login-heading text-heading font-bold">Login</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="mx-4  flex flex-col gap-4 p-4 rounded-lg">
+            <form onSubmit={handleSubmit(onSubmit)} className="mx-4 flex flex-col gap-4 p-4 rounded-lg">
                 <div className="flex flex-col">
                     <input id="email"
                         type="email"
@@ -65,8 +65,9 @@ const Login = () => {
                     </div>
                     {errors.password && <span className="text-red-500 text-form-error ">{errors.password.message}</span>}
                 </div>
-                <button type="submit" className="font-button-text bg-button-bg text-white
-                rounded-md hover:bg-button-hover-bg hover:text-white py-2">Login</button>
+                <button type="submit" className="font-button-text bg-primary text-white
+                rounded-md hover:bg-primary-hover   py-2
+                ">Login</button>
             </form>
             </div>
         </div>
