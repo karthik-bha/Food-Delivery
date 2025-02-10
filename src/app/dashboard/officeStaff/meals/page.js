@@ -37,7 +37,7 @@ const Page = () => {
         name: "John Doe",
         email: "john@example.com",
         phone: "1234567890",
-        preference: "Veg"
+        preference: "Non Veg"
     }
 
     const [splMenu, setSplMenu] = useState(false);
@@ -51,7 +51,7 @@ const Page = () => {
     console.log(todayMenu);
 
     return (
-        <div>
+        <div className="mx-2">
             <h2 className="my-6 text-section-heading text-heading font-heading">Choose your meal</h2>
 
             <h3 className="text-heading text-section-heading my-4" >{mockData.name}</h3>

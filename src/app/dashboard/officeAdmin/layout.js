@@ -15,14 +15,3 @@ export default function Layout({ children }) {
         </div>
     );
 }
-{/* <div>           
-<div className="flex text-content ">
-    <OfficeAdminSide/>
-    <div className="w-[100vw]">
-    <OfficeAdminNav/> 
-    <div className="mx-2">
-        {children}
-        </div>      
-    </div>
-</div> 
-</div> */}

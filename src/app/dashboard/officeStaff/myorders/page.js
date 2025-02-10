@@ -40,7 +40,7 @@ const Page = () => {
 
     return (
         <div>
-            <h2 className="text-heading text-section-heading my-6">Orders</h2>
+            <h2 className="text-heading text-section-heading my-6">Office Orders</h2>
             <select
                 className="border border-black rounded-md p-2 my-2"
                 value={filter}

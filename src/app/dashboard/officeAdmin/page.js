@@ -64,13 +64,15 @@ const officeAdmin = () => {
           </p>
           <div className="flex items-center  gap-2">
             <p className="font-semibold">Set status: </p>
-            <select className="bg-black  text-white hover:bg-primary-hover 
+            <select className="border border-black 
              hover:cursor-pointer
-            rounded-md border border-white px-2 py-1 my-2">
+            rounded-md px-2 py-1 my-2">
               <option value="open">Open</option>
               <option value="close">Close</option>
             </select>
+            <button className="px-4 py-1 rounded-md bg-primary hover:bg-primary-hover text-white">Confirm</button>
           </div>
+          
           </div>
         </div>
 
@@ -80,13 +82,13 @@ const officeAdmin = () => {
           <div className="text-secondary bg-primary rounded-t-lg p-4"> <h2 className="text-section-heading font-sub-heading">Staff Details</h2></div>
           <div className="p-4 flex flex-col gap-2">
           <p>
-            <span className="font-bold"> Total staff:</span>  10
+            <span className="font-bold">Total staff:</span>  10
           </p>
           <p>
-            <span className="font-bold ">   Veg Staff:</span> 5
+            <span className="font-bold ">Veg Staff:</span> 5
           </p>
           <p>
-            <span className="font-bold">   Non Veg Staff:</span> 5
+            <span className="font-bold">Non Veg Staff:</span> 5
           </p>
           <p>
             <span className="font-bold">Today&apos;s Menu </span>

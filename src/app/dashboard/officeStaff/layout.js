@@ -5,9 +5,9 @@ export default function Layout({ children }) {
         <div className="text-content bg-home-bg">
 
            <OfficeStaffNav/>
-            <div className="flex gap-2">
+            <div className="flex ">
                <OfficeStaffSide/>
-                <div className="ml-4">
+               <div className="mx-auto">
                     {children} 
                 </div>
             </div>

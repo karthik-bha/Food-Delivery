@@ -1,7 +1,7 @@
 const Page = () => {
     const mockOfficeData = {
         name: "Office1",
-        office_open: true,
+        isActive:true,
         address: {
             street: "gilaro",
             city: "Patna",
@@ -33,24 +33,32 @@ const Page = () => {
 
     }
     return (
-        <div className="md:max-w-[20vw] shadow-[0px_0px_15px_10px_rgba(0,0,0,0.1)]  mx-auto">
-            <div className="bg-primary text-secondary rounded-t-md ">
-                <h2 className="my-6 p-2 text-heading text-section-heading">Office Details</h2>
+        <div>
+            <div className="my-12  shadow-[0px_0px_15px_10px_rgba(0,0,0,0.1)]  mx-auto">
+                <div className="bg-primary text-secondary rounded-t-md ">
+                    <h2 className=" p-4 text-heading text-sub-heading">Office Details</h2>
+                </div>
+                <div className=" p-4">
+                    <p>
+                        <span className="font-bold"> Name:</span>  {mockOfficeData.name}
+                    </p>
+                    <p>
+                        <span className="font-bold">   Address:</span> {mockOfficeData.address.street}, {mockOfficeData.address.city}, {mockOfficeData.address.pincode}
+                    </p>
+                    <p>
+                        <span className="font-bold">  Status:</span> {mockOfficeData.isActive ? "Open" : "Closed"}
+                    </p>
+
+                </div>
+
             </div>
-            <div className="mx-4">
-                <p>
-                    <span className="font-bold"> Name:</span>  {mockOfficeData.name}
-                </p>
-                <p>
-                    <span className="font-bold">   Address:</span> {mockOfficeData.address.street}, {mockOfficeData.address.city}, {mockOfficeData.address.pincode}
-                </p>
-                <p>
-                    <span className="font-bold">  Status:</span> {mockOfficeData.office_open ? "Open" : "Closed"}
-                </p>
-                <select className="border border-black px-2 py-1 my-2">
-                    <option value="open">Open</option>
-                    <option value="close">Close</option>
+            <div className="my-4 flex flex-col">
+                <p className="text-sub-heading">Change Office Status </p>
+                <select defaultValue={true} className="border rounded-md border-primary px-2 py-1 my-2">
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
                 </select>
+                <button className="bg-primary hover:bg-primary-hover text-secondary rounded-md px-2 py-1">Confirm</button>
             </div>
         </div>
     )

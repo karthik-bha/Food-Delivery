@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 const OfficeAdminForm = ({ setOpenForm }) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const onSubmit = async (data) => {
+        // console.log(data);
         try {
             const response = await axios.post("/api/users/register/office_staff", data);
             console.log(response);
@@ -34,7 +35,26 @@ const OfficeAdminForm = ({ setOpenForm }) => {
                 className="bg-white p-6 max-w-[80vw] rounded-lg shadow-lg flex flex-col gap-4 w-80"
             >
                 <h2 className="text-nav-heading  font-semibold text-center">Register a new office staff</h2>
-
+                {/* Name input  */}
+                <div>
+                    <input
+                        type="text"
+                        {...register("name", { required: "Name is required" })}
+                        className="w-full p-2 border rounded mt-1"
+                        placeholder="name"
+                    />
+                    {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+                </div>
+                {/* Phone input  */}
+                <div>
+                    <input
+                        type="text"
+                        {...register("phone", { required: "Phone number is required" })}
+                        className="w-full p-2 border rounded mt-1"
+                        placeholder="phone"
+                    />
+                    {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
+                </div>
                 {/* Email Input */}
                 <div>
                     <input
@@ -61,12 +81,12 @@ const OfficeAdminForm = ({ setOpenForm }) => {
                 <div>
                     <label className="block text-sm font-medium">Meal Preference</label>
                     <select
-                        {...register("meal", { required: "Please select a meal preference" })}
+                        {...register("isVeg", { required: "Please select a meal preference" })}
                         className="w-full p-2 border rounded mt-1"
-                        defaultValue="veg"
+                        defaultValue={true}
                     >
-                        <option value="veg">Veg</option>
-                        <option value="non-veg">Non-Veg</option>
+                        <option value={true}>Veg</option>
+                        <option value={false}>Non-Veg</option>
                     </select>
                     {errors.meal && <p className="text-red-500 text-sm">{errors.meal.message}</p>}
                 </div>
