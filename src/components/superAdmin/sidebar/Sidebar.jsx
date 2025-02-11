@@ -8,7 +8,7 @@ const Sidebar = () => {
         <nav className={` text-nav-content bg-primary flex flex-col min-h-[100vh] ${expandBar ? "w-[40vw] md:w-[12vw] animate-sidebar p-4 " : "w-10 p-2 "}`}>
             {expandBar && 
             
-            <ul className="  flex flex-col gap-4 ">
+            <ul className="  mt-6 mx-2 flex flex-col gap-2 ">
                 <Link href="/dashboard/superAdmin/admins" className="hover:text-white">
                     <li>ADMINS</li>
                 </Link>
@@ -27,10 +27,10 @@ const Sidebar = () => {
             </ul>
             }
 
-            <div className=" text-white hover:scale-110 ">
+            <div className="  hover:scale-110 ">
                 {expandBar ?
-                    <button onClick={() => setExpandBar(false)} className="text-4xl mx-4" >&larr;</button> :
-                    <button onClick={() => setExpandBar(true)} className="text-2xl" >&rarr;</button>
+                    <button onClick={() => setExpandBar(false)} className="hover:text-white text-4xl mx-4" >&larr;</button> :
+                    <button onClick={() => setExpandBar(true)} className="hover:text-white text-2xl" >&rarr;</button>
                 }
             </div>
 

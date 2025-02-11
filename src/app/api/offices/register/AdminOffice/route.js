@@ -5,7 +5,7 @@ import User from "@/lib/models/userSchema";
 import { authMiddleware } from "@/lib/middleware/auth";
 
 // This api creates a  new office and assigns the office_id to office_admin
-// It also assigns the office_id to the office_admin using the JWT token for authentication
+// It also assigns the office_id to the admin using the JWT token for authentication
 
 export async function POST(req) {
 
@@ -19,7 +19,7 @@ export async function POST(req) {
 
     // Assign _id after decoding
     console.log(req.user);
-    const { _id: officeAdminId, role } = req.user;
+    const { _id: AdminId, role } = req.user;
 
     // Check if the user has the right role (office_admin)
     if (role !== "admin") {
@@ -37,7 +37,7 @@ export async function POST(req) {
     try {
         await connectDB();
         // Check if the office admin already has an office assigned
-        const officeExists = await User.findOne({ _id: officeAdminId, office_id: { $ne: null } }); //$ne is not equal to
+        const officeExists = await User.findOne({ _id: AdminId, office_id: { $ne: null } }); //$ne is not equal to
         
         if (officeExists) {
             return NextResponse.json({ success: false, message: "Cannot add more than 1 office" }, { status: 400 });
@@ -57,22 +57,22 @@ export async function POST(req) {
             street_address,
             phone, 
             email,
-            createdBy: officeAdminId,
+            createdBy: AdminId,
         });
 
         // Check if office admin exists (edge case)
-        const officeAdmin = await User.findById(officeAdminId);
-        if (!officeAdmin) {
-            return NextResponse.json({ success: false, message: "Office admin not found" }, { status: 404 });
+        const Admin = await User.findById(AdminId);
+        if (!Admin) {
+            return NextResponse.json({ success: false, message: "Admin not found" }, { status: 404 });
         }
 
         // Assign the new office ID to the office admin
         await User.updateOne(
-            { _id: officeAdminId }, // Finds the office admin by their user ID
+            { _id: AdminId }, // Finds the office admin by their user ID
             { office_id: newOffice._id } // Updates their office_id field
         );
 
-        return NextResponse.json({ success: true, message: "Small Office created successfully", data: newOffice }, { status: 201 });
+        return NextResponse.json({ success: true, message: "Admin office created successfully", data: newOffice }, { status: 201 });
 
     } catch (err) {
         console.log(err);
