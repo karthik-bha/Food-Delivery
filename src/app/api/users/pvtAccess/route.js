@@ -2,6 +2,8 @@ import { connectDB } from "@/lib/db/connectDB";
 import { authMiddleware } from "@/lib/middleware/auth";
 import User from "@/lib/models/userSchema";
 import { NextResponse } from "next/server";
+
+// This fetches the exclusive data of each user irrespective of role (used for landing page usually)
 export async function GET(req) {
     try {
         const response = await authMiddleware(req);

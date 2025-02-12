@@ -2,12 +2,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import EditOfficeForm from "@/components/officeAdmin/editOfficeForm/EditOfficeForm";
 
 const OfficeAdmin = () => {
   const [officeData, setOfficeData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [officeStatus, setOfficeStatus] = useState(null);
+  const [officeForm, setOfficeForm]=useState(false);
 
   useEffect(() => {
     const fetchOfficeData = async () => {
@@ -53,7 +55,14 @@ const OfficeAdmin = () => {
   }
 
   return (
+    
     <div className="py-12">
+      {officeForm? 
+      <>       
+        <EditOfficeForm setOfficeForm={setOfficeForm} officeData={officeData} setOfficeData={setOfficeData}/>
+      </>
+      :
+      <>
       <h2 className="text-center text-section-heading my-6">Overview</h2>
       <div className="flex flex-col gap-4 md:grid md:grid-cols-2 mx-2 md:w-[50vw]">
         {/* Office Details */}
@@ -88,6 +97,10 @@ const OfficeAdmin = () => {
                 {updating ? "Updating..." : "Confirm"}
               </button>
             </div>
+            <button className="px-4 py-1 bg-primary text-white hover:bg-primary-hover rounded-md"
+            onClick={()=>setOfficeForm(true)}>
+              Edit other office details
+            </button>
           </div>
         </div>
 
@@ -112,6 +125,9 @@ const OfficeAdmin = () => {
           </div>
         </div>
       </div>
+      </>
+      }
+      
     </div>
   );
 };

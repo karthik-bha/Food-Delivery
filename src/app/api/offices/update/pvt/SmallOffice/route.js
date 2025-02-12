@@ -31,7 +31,7 @@ export async function PUT(req) {
         if (role === "office_staff") {
             const updatedOffice = await SmallOffice.findByIdAndUpdate(
                 office_id,
-                { isActive },
+                { isActive,updatedBy:userId },
                 { new: true }
             );
             return NextResponse.json(
@@ -43,7 +43,9 @@ export async function PUT(req) {
         if (role === "office_admin") {
             const updatedOffice = await SmallOffice.findByIdAndUpdate(
                 office_id,
-                { isActive, name, email, phone, street_address, district, state },
+                { isActive, name, email, phone, street_address, district, state,
+                    updatedBy:userId
+                },
                 { new: true }
             );
             return NextResponse.json(

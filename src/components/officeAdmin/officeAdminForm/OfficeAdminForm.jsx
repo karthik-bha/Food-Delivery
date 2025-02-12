@@ -2,15 +2,24 @@
 import { useForm } from "react-hook-form"
 import axios from "axios";
 import { toast } from "react-toastify";
-const OfficeAdminForm = ({ setOpenForm }) => {
+import { useState } from "react";
+const OfficeAdminForm = ({ setOpenForm, setStaffData, staffData }) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const [loading, setLoading] = useState(false);
     const onSubmit = async (data) => {
         // console.log(data);
         try {
+            setLoading(true);
             const response = await axios.post("/api/users/register/office_staff", data);
-            console.log(response);
-            toast.success(response.data.message);
-            setOpenForm(false);
+
+            const fetchedData = response.data;
+            console.log(fetchedData);
+            if (response.data.success) {
+                toast.success(response.data.message);
+                setOpenForm(false);
+                setStaffData([...staffData, fetchedData.newStaff]);
+            }
+
         } catch (err) {
             console.error("Error:", err);
             if (err.response) {
@@ -20,11 +29,20 @@ const OfficeAdminForm = ({ setOpenForm }) => {
                 } else {
                     toast.error(`Error: ${err.response.data.message || "Something went wrong!"}`);
                 }
-            } 
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
 
+    if (loading) {
+        return (
+            <div className="flex w-screen justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="relative shadow-[0px_0px_15px_10px_rgba(0,0,0,0.1)] my-12">

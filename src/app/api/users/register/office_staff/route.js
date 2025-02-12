@@ -8,7 +8,7 @@ import { authMiddleware } from "@/lib/middleware/auth";
 // Creates a new office staff
 export async function POST(req) {
     // Apply the authentication middleware
-    const response =await authMiddleware(req);
+    const response = await authMiddleware(req);
     // If the middleware returns a response (i.e., unauthenticated), stop execution here
     if (response) {
         return response;
@@ -61,13 +61,13 @@ export async function POST(req) {
             email,
             isVeg,
             password: hashedPassword,
-            office_type:3,
+            office_type: 3,
             role: "office_staff",
             office_id: officeAdmin.office_id, // Ensures the staff is assigned to the correct office
-            createdBy:officeAdminId
-        });       
+            createdBy: officeAdminId
+        });
 
-        return NextResponse.json({ success: true, message: "Staff created and assigned successfully", data: newStaff }, { status: 201 });
+        return NextResponse.json({ success: true, message: "Staff created and assigned successfully", newStaff }, { status: 201 });
     } catch (error) {
         console.log(error);
         return NextResponse.json({ error: "Server error", details: error.message }, { status: 500 });

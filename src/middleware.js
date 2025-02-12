@@ -33,7 +33,7 @@ export async function middleware(req) {
             return NextResponse.redirect(new URL("/unauthorized", req.url));
         }
 
-        if (path.startsWith("/dashboard/officeStaff") && !["super_admin", "admin", "office_admin", "office_staff"].includes(decoded.role)) {
+        if (path.startsWith("/dashboard/officeStaff") && !["office_staff"].includes(decoded.role)) {
             return NextResponse.redirect(new URL("/unauthorized", req.url));
         }
 
