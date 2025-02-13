@@ -4,6 +4,8 @@ import User from "@/lib/models/userSchema";
 import SmallOffice from "@/lib/models/SmallOffice";
 import bcrypt from "bcrypt";
 import { authMiddleware } from "@/lib/middleware/auth";
+import AdminOffice from "@/lib/models/AdminOffice";
+import RestaurantOffice from "@/lib/models/RestaurantOffice";
 
 // Creates a new office staff
 export async function POST(req) {
@@ -39,18 +41,36 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Create office before staff" }, { status: 403 });
         }
         console.log(officeAdmin.office_id);
+
         // Find the office by ID from decoded token (office_id from the token)
         const office = await SmallOffice.findById(officeAdmin.office_id);
         if (!office || !officeAdmin.office_id) {
             return NextResponse.json({ success: false, message: "Office not found" }, { status: 404 });
         }
 
-        // Check if the staff user already exists
-        const existingStaff = await User.findOne({ email });
-        if (existingStaff) {
-            return NextResponse.json({ success: false, message: "Staff with this email already exists" }, { status: 400 });
-        }
+        // Check if user exists in any collection using Promise.all
+        try {
+            const [user, adminOffice, restOffice, smallOffice] = await Promise.all([
 
+                User.findOne({ email }),
+                AdminOffice.findOne({ email }),
+                RestaurantOffice.findOne({email}),
+                SmallOffice.findOne({ email })
+            ]);
+
+            if (user || adminOffice ||  restOffice || smallOffice) {
+                return NextResponse.json(
+                    { success: false, message: "Email already exists" },
+                    { status: 409 }
+                );
+            }
+        } catch (error) {
+            console.error("Error checking existing users:", error);
+            return NextResponse.json(
+                { success: false, message: "Error checking user existence" },
+                { status: 500 }
+            );
+        }
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 

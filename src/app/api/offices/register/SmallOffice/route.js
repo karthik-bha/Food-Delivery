@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import SmallOffice from "@/lib/models/SmallOffice";
 import User from "@/lib/models/userSchema";
 import { authMiddleware } from "@/lib/middleware/auth";
+import AdminOffice from "@/lib/models/AdminOffice";
+import RestaurantOffice from "@/lib/models/RestaurantOffice";
 
 // This api creates a  new office and assigns the office_id to office_admin
 // It also assigns the office_id to the office_admin using the JWT token for authentication
@@ -11,7 +13,7 @@ export async function POST(req) {
 
     // Apply the authentication middleware
     const response = await authMiddleware(req);
-    
+
     // If the middleware returns a response (i.e., unauthenticated), stop execution here
     if (response) {
         return response;
@@ -28,18 +30,41 @@ export async function POST(req) {
 
     // Extract details from request body
     const { name, email, phone, state, district, street_address } = await req.json();
-    
+
     // Check for missing fields
     if (!name || !email || !phone || !state || !district || !street_address) {
         return NextResponse.json({ success: false, message: "Name, Email, Phone, State, District and Street address are required" }, { status: 400 });
     }
-    
+
     try {
         await connectDB();
         // Check if the office admin already has an office assigned
         const officeExists = await User.findOne({ _id: officeAdminId, office_id: { $ne: null } }); //$ne is not equal to
         if (officeExists) {
             return NextResponse.json({ success: false, message: "Cannot add more than 1 office" }, { status: 400 });
+        }
+        
+        try {
+            const [user, adminOffice, restOffice, smallOffice] = await Promise.all([
+
+                User.findOne({ email }),
+                AdminOffice.findOne({ email }),
+                RestaurantOffice.findOne({ email }),
+                SmallOffice.findOne({ email })
+            ]);
+
+            if (user || adminOffice ||  restOffice || smallOffice) {
+                return NextResponse.json(
+                    { success: false, message: "Email already exists" },
+                    { status: 409 }
+                );
+            }
+        } catch (error) {
+            console.error("Error checking existing users:", error);
+            return NextResponse.json(
+                { success: false, message: "Error checking user existence" },
+                { status: 500 }
+            );
         }
 
         // Create a new office with the new location and return object
@@ -48,7 +73,7 @@ export async function POST(req) {
             state,
             district,
             street_address,
-            phone, 
+            phone,
             email,
             createdBy: officeAdminId,
         });
@@ -73,7 +98,7 @@ export async function POST(req) {
     }
 }
 export async function GET(req) {
-   
+
     try {
         await connectDB();
         const offices = await SmallOffice.find({});

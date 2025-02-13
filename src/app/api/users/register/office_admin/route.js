@@ -5,58 +5,61 @@ import AdminOffice from "@/lib/models/AdminOffice";
 import SmallOffice from "@/lib/models/SmallOffice";
 import bcrypt from "bcrypt";
 import { authMiddleware } from "@/lib/middleware/auth";
+import RestaurantOffice from "@/lib/models/RestaurantOffice";
 
 export async function POST(req) {
-    // Apply the authentication middleware
-    const response = await authMiddleware(req);
-    if (response) {
-        return response;  
-    }
-
-    const { _id: adminId, role } = req.user;
-
-    if (role !== "admin") {
-        return NextResponse.json({ success: false, message: "Only admins can add office_admin" }, { status: 403 });
-    }
-
-    const { name, phone, email, password } = await req.json();
-
-    if (!email || !password || !name || !phone) {
-        return NextResponse.json({ success: false, message: "Email, Name, Phone, and Password are required" }, { status: 400 });
-    }
-
     try {
+        const response = await authMiddleware(req);
+        if (response) {
+            return response;
+        }
+
+        const { _id: adminId, role } = req.user;
+        
+        if (role !== "admin") {
+            return NextResponse.json(
+                { success: false, message: "Only admins can add office_admin" }, 
+                { status: 403 }
+            );
+        }
+
         await connectDB();
 
-        // Check if the admin exists
         const admin = await User.findById(adminId);
         if (!admin || admin.role !== "admin") {
-            return NextResponse.json({ success: false, message: "Invalid admin" }, { status: 403 });
+            return NextResponse.json(
+                { success: false, message: "Invalid admin" }, 
+                { status: 403 }
+            );
         }
 
-        // Check if email already exists in User collection
-        const userExists = await User.findOne({ email });
-        if (userExists) {
-            return NextResponse.json({ success: false, message: "Email Already Exists in Users" }, { status: 400 });
+        const { name, phone, email, password } = await req.json();
+
+        if (!email || !password || !name || !phone) {
+            return NextResponse.json(
+                { success: false, message: "Email, Name, Phone, and Password are required" }, 
+                { status: 400 }
+            );
         }
 
-        // Check if email exists in AdminOffice, RestaurantOffice, or SmallOffice
-        const officeExists = await Promise.any([
+        const [user, adminOffice, restOffice, smallOffice] = await Promise.all([
+            User.findOne({ email }),
             AdminOffice.findOne({ email }),
-            // RestaurantOffice.findOne({ email }),
-            SmallOffice.findOne({ email }),
-        ]).catch(() => null); // If all are null, `Promise.any` will reject, so catch it.
+            RestaurantOffice.findOne({email}),
+            SmallOffice.findOne({ email })
+        ]);
 
-        if (officeExists) {
-            return NextResponse.json({ success: false, message: "Email Already Exists in Other Offices" }, { status: 400 });
+        if (user || adminOffice ||  restOffice || smallOffice) {
+            return NextResponse.json(
+                { success: false, message: "Email already exists" },
+                { status: 409 }
+            );
         }
 
-        // Hash the password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Create the new office_admin user
+        
         const officeAdminUser = new User({
-            name,       
+            name,
             email,
             password: hashedPassword,
             phone,
@@ -69,10 +72,14 @@ export async function POST(req) {
 
         return NextResponse.json({
             message: "Office Admin Registered Successfully, Please Register Your Office and Staff",
-            newUser: officeAdminUser,
+            newUser: officeAdminUser
         }, { status: 201 });
+
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ error: "Server error" }, { status: 500 });
+        return NextResponse.json(
+            { success: false, message: "Server error" }, 
+            { status: 500 }
+        );
     }
 }

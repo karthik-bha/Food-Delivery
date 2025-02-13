@@ -40,6 +40,7 @@ export async function POST(req) {
         let redirectURL = "/dashboard";
         if (user.role === "super_admin") redirectURL = "/dashboard/superAdmin";
         if (user.role === "admin") redirectURL = "/dashboard/admin";
+        if (user.role === "restaurant_owner") redirectURL = "/dashboard/restaurantOwner";
         if (user.role === "office_admin") redirectURL = "/dashboard/officeAdmin";
         if (user.role === "office_staff") redirectURL = "/dashboard/officeStaff";
 

@@ -54,7 +54,7 @@ const Page = () => {
         <div className="mx-2">
             <h2 className="my-6 text-section-heading text-heading font-heading">Choose your meal</h2>
 
-            <h3 className="text-heading text-section-heading my-4" >{mockData.name}</h3>
+            {/* <h3 className="text-heading text-section-heading my-4" >{mockData.name}</h3>
         
                 <p  > Your current preference is <b>{employeeData.preference}</b> </p>
                 <div className="flex md:flex-row flex-col gap-2 md:items-center">
@@ -67,9 +67,9 @@ const Page = () => {
                         <option value="non-veg">Non-Veg</option>
                     </select>
                     </div>
-                </div>
+                </div> */}
     
-            <button className="bg-primary hover:bg-primary-hover text-white px-4 py-1 rounded-md">Confirm</button>
+            {/* <button className="bg-primary hover:bg-primary-hover text-white px-4 py-1 rounded-md">Confirm</button> */}
             <p className="text-2xl my-4">Want to eat something different? </p>
             <div className="flex">
                 <p className=" my-1 hover:cursor-pointer hover:border-b hover:border-black"
