@@ -6,6 +6,7 @@ import EditOfficeForm from "@/components/officeAdmin/editOfficeForm/EditOfficeFo
 
 const OfficeAdmin = () => {
   const [officeData, setOfficeData] = useState(null);
+  const[staffData, setStaffData]=useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [officeStatus, setOfficeStatus] = useState(null);
@@ -18,6 +19,7 @@ const OfficeAdmin = () => {
         console.log(response);
         if (response.data.success) {
           setOfficeData(response.data.officeData);
+          setStaffData(response.data.staffStats);
           setOfficeStatus(response.data.officeData.isActive);
         } else {
           toast.error(response.data.message);
@@ -68,7 +70,7 @@ const OfficeAdmin = () => {
         {/* Office Details */}
         <div className="shadow-md flex flex-col gap-2 mx-auto w-full">
           <div className="text-secondary bg-primary rounded-t-lg p-4">
-            <h2 className="text-section-heading font-sub-heading">Office Details</h2>
+            <h2 className="text-section-heading font-sub-heading">Office details</h2>
           </div>
           <div className="p-4 flex flex-col gap-2">
             <p><span className="font-semibold">Name:</span> {officeData.name}</p>
@@ -107,12 +109,13 @@ const OfficeAdmin = () => {
         {/* Staff Details */}
         <div className="shadow-md flex flex-col gap-2 mx-auto w-full">
           <div className="text-secondary bg-primary rounded-t-lg p-4">
-            <h2 className="text-section-heading font-sub-heading">Staff Details</h2>
+            <h2 className="text-section-heading font-sub-heading">Staff overview</h2>
           </div>
           <div className="p-4 flex flex-col gap-2">
-            <p><span className="font-bold">Total staff:</span> 10</p>
-            <p><span className="font-bold">Veg Staff:</span> 5</p>
-            <p><span className="font-bold">Non-Veg Staff:</span> 5</p>
+            <p><span className="font-bold">Total staff: </span>{staffData.totalStaff}</p>
+            <p><span className="font-bold">Total active staff: </span>{staffData.activeCount}</p>
+            <p><span className="font-bold">Veg Staff: </span> {staffData.vegCount}</p>
+            <p><span className="font-bold">Non-Veg Staff: </span> {staffData.nonVegCount}</p>
             <p><span className="font-bold">Today's Menu:</span></p>
             <div className="mx-2">
               <p><span className="text-green-600">Veg:</span> Roti, Tea, Rajma, Lassi.</p>

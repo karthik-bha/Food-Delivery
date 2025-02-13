@@ -7,6 +7,7 @@ import { useState } from "react";
 
 const Login = () => {
     const[showPass, setShowPass]=useState(false);
+    const [loading, setLoading] = useState(false);
     // Initialize the useForm hook
     const { register, handleSubmit, formState: { errors } } = useForm();
     const router=useRouter();
@@ -14,6 +15,7 @@ const Login = () => {
     const onSubmit = async (data) => {
         console.log(data);
         try {
+            setLoading(true);
             const response = await axios.post("/api/login", data);
             console.log(response);
             // localStorage.setItem("token", response.data.token);
@@ -23,8 +25,13 @@ const Login = () => {
             window.location.href = response.data.redirect;
         } catch (error) {
             toast.error(error.response.data.message);            
+        }finally{
+            setLoading(false);
         }
     };
+    if (loading) {
+        return <div className="flex w-screen justify-center items-center h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div></div>;
+      }
 
     return (
         <div className="h-screen w-screen flex flex-col justify-center items-center gap-4">

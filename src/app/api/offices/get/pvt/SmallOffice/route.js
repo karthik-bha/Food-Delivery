@@ -6,26 +6,87 @@ import { authMiddleware } from "@/lib/middleware/auth";
 
 export async function GET(req) {
     try {
-        // Apply the authentication middleware
+        // Apply authentication middleware
         const response = await authMiddleware(req);
+        if (response) return response;
 
-        // If the middleware returns a response (i.e., unauthenticated), stop execution here
-        if (response) {
-            return response;
-        }
-        // Assign _id after decoding
         console.log(req.user);
         const { _id: userId } = req.user;
         if (!userId) {
-            return NextResponse.json({ success: false, message: "User not available" }, {status:400});
+            return NextResponse.json({ success: false, message: "User not available" }, { status: 400 });
         }
-        const { office_id } = await User.findById(userId);
-        // Get office details
-        const officeData=await SmallOffice.findById(office_id);
-        return NextResponse.json({success:true, message:"Fetch Success", officeData}, {status:200});
-    } catch (err) {
-        console.log(err);
-        return NextResponse.json({ success: false, message: "Error during fetch"}, {status:500} );
-    }
 
+        // Get the office_id of the logged-in user
+        const user = await User.findById(userId);
+        if (!user || !user.office_id) {
+            return NextResponse.json({ success: false, message: "Office not found" }, { status: 404 });
+        }
+        
+        const { office_id } = user;
+
+        // Fetch office details
+        const officeData = await SmallOffice.findById(office_id);
+        if (!officeData) {
+            return NextResponse.json({ success: false, message: "Office data not found" }, { status: 404 });
+        }
+
+        // Fetch all staff members related to the office
+        const staffDetails = await User.find({ office_id, role: "office_staff" });
+
+        // Calculate staff statistics
+        const totalStaff = staffDetails.length;
+        const vegCount = staffDetails.filter(staff => staff.isVeg).length;
+        const nonVegCount = totalStaff - vegCount;
+        const activeCount = staffDetails.filter(staff => staff.isActive).length;
+
+        return NextResponse.json({
+            success: true,
+            message: "Fetch Success",
+            officeData,
+            staffStats: {
+                totalStaff,
+                vegCount,
+                nonVegCount,
+                activeCount
+            }
+        }, { status: 200 });
+
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json({ success: false, message: "Error during fetch" }, { status: 500 });
+    }
 }
+
+
+
+// import { connectDB } from "@/lib/db/connectDB";
+// import { NextResponse } from "next/server";
+// import SmallOffice from "@/lib/models/SmallOffice";
+// import User from "@/lib/models/userSchema";
+// import { authMiddleware } from "@/lib/middleware/auth";
+
+// export async function GET(req) {
+//     try {
+//         // Apply the authentication middleware
+//         const response = await authMiddleware(req);
+
+//         // If the middleware returns a response (i.e., unauthenticated), stop execution here
+//         if (response) {
+//             return response;
+//         }
+//         // Assign _id after decoding
+//         console.log(req.user);
+//         const { _id: userId } = req.user;
+//         if (!userId) {
+//             return NextResponse.json({ success: false, message: "User not available" }, {status:400});
+//         }
+//         const { office_id } = await User.findById(userId);
+//         // Get office details
+//         const officeData=await SmallOffice.findById(office_id);
+//         return NextResponse.json({success:true, message:"Fetch Success", officeData}, {status:200});
+//     } catch (err) {
+//         console.log(err);
+//         return NextResponse.json({ success: false, message: "Error during fetch"}, {status:500} );
+//     }
+
+// }

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useState } from "react";
-const OfficeAdminForm = ({ setOpenForm, setStaffData, staffData }) => {
+const AddStaffForm = ({ setOpenForm, setStaffData, staffData }) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [loading, setLoading] = useState(false);
     const onSubmit = async (data) => {
@@ -122,4 +122,4 @@ const OfficeAdminForm = ({ setOpenForm, setStaffData, staffData }) => {
     );
 };
 
-export default OfficeAdminForm;
+export default AddStaffForm;

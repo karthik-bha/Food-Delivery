@@ -1,6 +1,7 @@
 "use client";
-import OfficeAdminForm from "@/components/officeAdmin/officeAdminForm/OfficeAdminForm";
+import AddStaffForm from "@/components/officeAdmin/addStaffForm/AddStaffForm";
 import EditStaffForm from "@/components/officeAdmin/editStaffForm/EditStaffForm";
+import ViewStaff from "@/components/officeAdmin/viewStaff/ViewStaff";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -11,6 +12,7 @@ const Page = () => {
     const [openStaffEdit, setOpenStaffEdit] = useState(false);
     const [selectedStaff, setSelectedStaff] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [openViewForm, setOpenViewForm] = useState(false);
 
     useEffect(() => {
         fetchOfficeStaffData();
@@ -57,7 +59,7 @@ const Page = () => {
         <div>
             {openForm ? (
                 <div className="my-6">
-                    <OfficeAdminForm setOpenForm={setOpenForm} setStaffData={setStaffData} staffData={staffData} />
+                    <AddStaffForm setOpenForm={setOpenForm} setStaffData={setStaffData} staffData={staffData} />
                 </div>
             ) : openStaffEdit ? (
                 <div className="my-6">
@@ -67,7 +69,11 @@ const Page = () => {
                         setStaffData={setStaffData}
                     />
                 </div>
-            ) : (
+            ) : openViewForm?(
+                <div className="my-6">
+                    <ViewStaff selectedStaff={selectedStaff} setOpenViewForm={setOpenViewForm} />
+                </div>
+            ):(
                 <>
                     <h2 className="my-12 text-section-heading text-center">Staff Details</h2>
                     <div className="flex gap-2">
@@ -77,7 +83,7 @@ const Page = () => {
                         >
                             Add New Staff
                         </button>
-                        
+
                     </div>
 
                     <p className="my-6 text-section-heading">Staff</p>
@@ -113,7 +119,12 @@ const Page = () => {
                                 >
                                     Delete
                                 </p>
-                                <p className="hover:cursor-pointer bg-green-400 hover:bg-green-300 px-2 rounded-md">View</p>
+                                <p className="hover:cursor-pointer bg-green-400 hover:bg-green-300 px-2 rounded-md"
+                                onClick={() => {
+                                    setOpenViewForm(true)
+                                    setSelectedStaff(staff);
+
+                                }}>View</p>
                             </div>
                         </div>
                     ))}
