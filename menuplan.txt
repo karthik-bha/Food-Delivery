@@ -1,0 +1,23 @@
+// collection 1
+menu={
+    id : gen by mongodb,
+    office_id: obtained from restOwner (collection, "User"),
+    regularItem:{
+        "Monday":{
+            "Veg":"2 x Roti, Paneer butter masala, lassi.",
+            "NonVeg:" 2 x Roti, Chicken curry, lassi. ",
+        }
+    }
+    additionalMenu:OBJECT[AdditionalMenu]
+}
+
+
+// collection 2
+AdditionalMenu:{
+    id: gen by mongodb,
+    name:string,
+    image_url:string,
+    price:int, 
+    description
+
+}

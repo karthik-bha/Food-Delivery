@@ -10,7 +10,7 @@ const OfficeAdminReg = ({formOpen, setFormOpen}) => {
     <div>
       <h2 className="text-sub-heading text-center my-4">Register a new Office Admin</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="relative p-4 shadow-[0px_0px_15px_10px_rgba(0,0,0,0.1)] flex flex-col gap-4 ">
-        <p className="absolute top-0 right-0 cursor-pointer" onClick={()=>setFormOpen(false)}>X</p>
+        <p className="absolute top-3 right-4 text-xl font-semibold cursor-pointer" onClick={()=>setFormOpen(false)}>x</p>
         <input
           type="text"
           placeholder="Name"

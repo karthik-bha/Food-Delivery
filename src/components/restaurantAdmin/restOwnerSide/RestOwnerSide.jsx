@@ -10,8 +10,8 @@ const RestOwnerSide = () => {
                 <Link href="/dashboard/restaurantOwner" className="hover:text-white">
                     <li>DASHBOARD</li>
                 </Link>
-                <Link href="/dashboard/restaurantOwner/restaurant" className="hover:text-white">
-                    <li>MY RESTAURANT</li>
+                <Link href="/dashboard/restaurantOwner/menus" className="hover:text-white">
+                    <li>MENUS</li>
                 </Link>
                  <Link href="/dashboard/restaurantOwner/offices" className="hover:text-white">
                     <li>CLIENT OFFICES</li>

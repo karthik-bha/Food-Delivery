@@ -31,7 +31,7 @@ const restaurantOfficeSchema=new mongoose.Schema({
         required:true,
     },
     timeLimit:{
-        type:Date,
+        type:String,
         default:null,        
     },
     createdBy:{

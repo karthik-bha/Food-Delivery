@@ -1,5 +1,7 @@
-import RestOwnerNav from "@/components/restaurantAdmin/restOwnerNav/restOwnerNav";
-import RestOwnerSide from "@/components/restaurantAdmin/restOwnerSide/restOwnerSide";
+
+import RestOwnerNav from "@/components/restaurantAdmin/restOwnerNav/RestOwnerNav";
+import RestOwnerSide from "@/components/restaurantAdmin/restOwnerSide/RestOwnerSide";
+
 
 export default function Layout({ children }) {
     return (

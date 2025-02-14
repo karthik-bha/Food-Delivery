@@ -46,8 +46,8 @@ const AddStaffForm = ({ setOpenForm, setStaffData, staffData }) => {
 
     return (
         <div className="relative shadow-[0px_0px_15px_10px_rgba(0,0,0,0.1)] my-12">
-            <button className="absolute top-2 right-2 text-[0.9rem] text-button-bg hover:text-button-hover-bg"
-                onClick={() => setOpenForm(false)}>X</button>
+            <button className="absolute top-3 right-4 text-xl font-semibold cursor-pointer"
+                onClick={() => setOpenForm(false)}>x</button>
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="bg-white p-6 max-w-[80vw] rounded-lg shadow-lg flex flex-col gap-4 w-80"
