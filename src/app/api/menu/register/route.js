@@ -31,11 +31,13 @@ export async function POST(req) {
         // Fetch existing menu if it exists
         let existingMenu = await Menu.findOne({ office_id });
 
-        // Ensure regularItem is converted to a plain object
-        const regularItemPlain = Object.fromEntries(
-            Object.entries(regularItem).map(([day, items]) => [day, { ...items }])
-        );
-
+        // Ensure regularItem is converted to a plain object, skip if empty
+        const regularItemPlain = regularItem
+        ? Object.fromEntries(
+              Object.entries(regularItem).map(([day, items]) => [day, { ...items }])
+          )
+        : {}; 
+    
         // Handle additional menu items (create & get IDs)
         const additionalMenuItems = await AdditionalMenu.insertMany(
             additionalMenu.map(item => ({
@@ -44,14 +46,15 @@ export async function POST(req) {
                 updatedBy: restOwnerId,
             }))
         );
+        
         const additionalMenuIds = additionalMenuItems.map(item => item._id);
 
         if (existingMenu) {
-            // Merge regularItem updates without overwriting other days
-            existingMenu.regularItem = { 
-                ...existingMenu.regularItem.toObject(),  // Convert existing map to object
-                ...regularItemPlain  // Merge new data
-            };
+            // Convert Map to Object, Merge, Convert back to Map
+            const existingRegularItem = Object.fromEntries(existingMenu.regularItem.entries()); // Convert Map to Object
+            const mergedRegularItem = { ...existingRegularItem, ...regularItemPlain }; // Merge objects
+            
+            existingMenu.regularItem = new Map(Object.entries(mergedRegularItem)); // Convert back to Map
 
             // Append new additional menu items
             existingMenu.additionalMenu.push(...additionalMenuIds);
@@ -64,14 +67,14 @@ export async function POST(req) {
         // If no existing menu, create a new one
         const newMenu = new Menu({
             office_id,
-            regularItem: regularItemPlain,  // Store it as a plain object
+            regularItem: new Map(Object.entries(regularItemPlain)), // Store as a Map
             additionalMenu: additionalMenuIds,
             createdBy: restOwnerId,
             updatedBy: restOwnerId,
         });
 
         await newMenu.save();
-        return NextResponse.json({ success: true, message: "Menu created successfully", menu: newMenu }, { status: 201 });
+        return NextResponse.json({ success: true, message: "Menu created successfully, please refresh", menu: newMenu }, { status: 201 });
 
     } catch (err) {
         console.error("Error during menu registration:", err);

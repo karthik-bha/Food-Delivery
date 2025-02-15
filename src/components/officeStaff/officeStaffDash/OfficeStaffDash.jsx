@@ -9,6 +9,7 @@ const OfficeStaffDash = () => {
     const [isVeg, setIsVeg] = useState(false);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
+    const [menu, setMenuData]=useState(null);
 
     const restaurantData = {
         menus: {
@@ -19,28 +20,29 @@ const OfficeStaffDash = () => {
         },
     };
 
-    // Gets data first time we land on page 
+    
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await axios.get("/api/users/pvtAccess");
-                if (response.data.success) {
-                    const user = response.data.userData;
-                    setUserData(user);
-                    setIsActive(user.isActive);
-                    setIsVeg(user.isVeg);
-                } else {
-                    toast.error(response.data.message);
-                }
-            } catch (err) {
-                toast.error("Failed to fetch user data.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchUserData();
     }, []);
+    
+    // Gets data first time we land on page 
+    const fetchUserData = async () => {
+        try {
+            const response = await axios.get("/api/users/pvtAccess");
+            if (response.data.success) {
+                const user = response.data.userData;
+                setUserData(user);
+                setIsActive(user.isActive);
+                setIsVeg(user.isVeg);
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (err) {
+            toast.error("Failed to fetch user data.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleConfirm = async () => {
         setUpdating(true);

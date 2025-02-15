@@ -11,13 +11,13 @@ export async function GET(req) {
 
         if (response) return response;
 
-        const { _id: restOwnerId, role } = req.user;
+        const { _id: userId, role } = req.user;
 
-        if (role !== "restaurant_owner") {
+        if (role !== "restaurant_owner" && role!=="office_staff" && role!=="office_admin") {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
         }
 
-        const { office_id } = await User.findById(restOwnerId);
+        const { office_id } = await User.findById(userId);
 
         if (!office_id) {
             return NextResponse.json({ success: false, message: "Create an office first!" }, { status: 403 });
