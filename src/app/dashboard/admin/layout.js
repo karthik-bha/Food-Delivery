@@ -1,16 +1,17 @@
 import AdminNav from "@/components/admin/adminNav/AdminNav";
-import AdminSideNav from "@/components/admin/adminSideNav/adminSideNav";
+import AdminSideNav from "@/components/admin/adminSideNav/AdminSideNav";
+
 
 
 export default function Layout({ children }) {
     return (
         <div className="text-content ">
 
-           <AdminNav/>
+            <AdminNav />
             <div className="flex">
-               <AdminSideNav/>
+                <AdminSideNav />
                 <div className="mx-auto">
-                    {children} 
+                    {children}
                 </div>
             </div>
         </div>

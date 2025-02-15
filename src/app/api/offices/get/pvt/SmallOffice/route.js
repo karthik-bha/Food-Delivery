@@ -4,6 +4,7 @@ import SmallOffice from "@/lib/models/SmallOffice";
 import User from "@/lib/models/userSchema";
 import { authMiddleware } from "@/lib/middleware/auth";
 
+// Fetches exclusive office related to office admin
 export async function GET(req) {
     try {
         // Apply authentication middleware

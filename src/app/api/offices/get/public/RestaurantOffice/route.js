@@ -1,11 +1,11 @@
 import { connectDB } from "@/lib/db/connectDB";
-import SmallOffice from "@/lib/models/SmallOffice";
 import { NextResponse } from "next/server";
 import { authMiddleware } from "@/lib/middleware/auth";
 import User from "@/lib/models/userSchema";
 import AdminOffice from "@/lib/models/AdminOffice";
+import RestaurantOffice from "@/lib/models/RestaurantOffice";
 
-// This route gets all offices or offices filtered by state and district
+// This route gets all Restaurant offices or  Restaurant offices filtered by state and district
 export async function GET(req) {
 
     try {
@@ -28,15 +28,15 @@ export async function GET(req) {
         // Return all smalloffices for super admin
         if (role === "super_admin") {
 
-            const offices = await SmallOffice.find({});
+            const offices = await RestaurantOffice.find({});
             return NextResponse.json({ success: true, message: "Fetch Success", data: offices }, { status: 200 });
         }
 
         // Return filtered smalloffices
         const { office_id } = await User.findById(userId);
         const { state, district } = await AdminOffice.findById(office_id);
-        const offices = await SmallOffice.find({ state:state, district:district });
-        return NextResponse.json({ success: true, message: "Fetch Success",  offices }, { status: 200 });
+        const restOffices = await RestaurantOffice.find({ state:state, district:district });
+        return NextResponse.json({ success: true, message: "Fetch Success",  restOffices }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });

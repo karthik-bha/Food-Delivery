@@ -27,7 +27,7 @@ const Page = () => {
     const [formOpen, setFormOpen] = useState(false);
     return (
         <div className="mx-4 my-8">
-            {formOpen ? <OfficeAdminReg formOpen={formOpen} setFormOpen={setFormOpen}/> :
+            {formOpen ? <OfficeAdminReg setFormOpen={setFormOpen}/> :
                 <>
                     <h2 className="text-section-heading my-12 text-center">
                         Small Office Admins
@@ -36,7 +36,7 @@ const Page = () => {
                     <div className="flex my-4 ">
                         <button className="bg-primary hover:bg-primary-hover text-white 
                         px-4 py-2 rounded-md"
-                        onClick={setFormOpen(true)}>
+                        onClick={()=>setFormOpen(true)}>
                             Add a New Office Admin
                         </button>
                     </div>

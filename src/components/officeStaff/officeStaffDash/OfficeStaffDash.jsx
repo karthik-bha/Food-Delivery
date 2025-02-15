@@ -44,6 +44,7 @@ const OfficeStaffDash = () => {
         }
     };
 
+    // Updates state of staff
     const handleConfirm = async () => {
         setUpdating(true);
         try {
@@ -67,7 +68,7 @@ const OfficeStaffDash = () => {
 
     if (loading) {
         return (
-            <div className="flex w-screen justify-center items-center h-screen">
+            <div className="flex w-screen justify-center items-center h-[60vh]">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
             </div>
         );
