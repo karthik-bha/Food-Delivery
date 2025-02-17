@@ -4,34 +4,25 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const OfficeStaffDash = () => {
-    const [userData, setUserData] = useState(null);
+    // const [userData, setUserData] = useState(null);
     const [isActive, setIsActive] = useState(false);
     const [isVeg, setIsVeg] = useState(false);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
-    const [menu, setMenuData]=useState(null);
+    const [menuData, setMenuData] = useState(null);
 
-    const restaurantData = {
-        menus: {
-            Monday: {
-                Veg: "2x Roti, Paneer Butter Masala",
-                NonVeg: "2x Roti, Chicken Curry",
-            },
-        },
-    };
-
-    
     useEffect(() => {
         fetchUserData();
+        fetchMenu();
     }, []);
-    
+
     // Gets data first time we land on page 
     const fetchUserData = async () => {
         try {
             const response = await axios.get("/api/users/pvtAccess");
             if (response.data.success) {
                 const user = response.data.userData;
-                setUserData(user);
+                // setUserData(user);
                 setIsActive(user.isActive);
                 setIsVeg(user.isVeg);
             } else {
@@ -65,7 +56,25 @@ const OfficeStaffDash = () => {
         }
     };
 
+    // Get menu data on first load
+    async function fetchMenu() {
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        let currDate = new Date().getDay();
+        let currDay = daysOfWeek[currDate];
+        try {
+            const response = await axios.get("/api/menu/get");
+            const fetchedMenuData = response.data.menu;
+            console.log(fetchedMenuData.regularItem[currDay]);
+            if (response.data.success) {
 
+                toast.success(response.data.message);
+                setMenuData(fetchedMenuData.regularItem[currDay]);
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error("Error fetching menu");
+        }
+    }
     if (loading) {
         return (
             <div className="flex w-screen justify-center items-center h-[60vh]">
@@ -98,7 +107,7 @@ const OfficeStaffDash = () => {
                         </h2>
                     </div>
                     <div className="flex justify-center items-center p-4">
-                        <p>{isVeg ? restaurantData.menus.Monday.Veg : restaurantData.menus.Monday.NonVeg}</p>
+                        <p>{menuData ? (isVeg ? menuData.Veg : menuData.NonVeg) : "Loading menu..."}</p>
                     </div>
                 </div>
 

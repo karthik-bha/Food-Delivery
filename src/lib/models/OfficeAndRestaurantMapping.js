@@ -3,12 +3,12 @@ import mongoose from "mongoose";
 const officeAndRestaurantMappingSchema = new mongoose.Schema({
     office_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Office",
+        ref: "SmallOffice",
         required: true
     },
     restaurant_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Restaurant",
+        ref: "RestaurantOffice",
         required: true
     },
     createdBy: {
