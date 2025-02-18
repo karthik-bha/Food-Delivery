@@ -16,6 +16,9 @@ const OfficeAdminSide = () => {
                  <Link href="/dashboard/officeAdmin/myoffice" className="hover:text-white">
                     <li>MY OFFICE</li>
                 </Link>
+                <Link href="/dashboard/officeAdmin/placeorder" className="hover:text-white">
+                    <li>PLACE ORDER</li>
+                </Link>
                 <Link href="/dashboard/officeAdmin/myorders" className="hover:text-white">
                     <li>MY ORDERS</li>
                 </Link>

@@ -16,6 +16,8 @@ export async function GET(req) {
         if (!userId) {
             return NextResponse.json({ success: false, message: "User not available" }, { status: 400 });
         }
+        
+        await connectDB();
 
         // Get the office_id of the logged-in user
         const user = await User.findById(userId);
@@ -24,7 +26,7 @@ export async function GET(req) {
         }
         
         const { office_id } = user;
-
+        
         // Fetch office details
         const officeData = await SmallOffice.findById(office_id);
         if (!officeData) {
@@ -36,9 +38,9 @@ export async function GET(req) {
 
         // Calculate staff statistics
         const totalStaff = staffDetails.length;
-        const vegCount = staffDetails.filter(staff => staff.isVeg).length;
-        const nonVegCount = totalStaff - vegCount;
+        const vegCount = staffDetails.filter(staff => staff.isVeg && staff.isActive).length;       
         const activeCount = staffDetails.filter(staff => staff.isActive).length;
+        const nonVegCount = activeCount - vegCount;
 
         return NextResponse.json({
             success: true,

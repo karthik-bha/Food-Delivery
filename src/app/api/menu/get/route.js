@@ -1,3 +1,4 @@
+import { connectDB } from "@/lib/db/connectDB";
 import { authMiddleware } from "@/lib/middleware/auth";
 import AdditionalMenu from "@/lib/models/AdditionalMenu";
 import Menu from "@/lib/models/Menu";
@@ -25,6 +26,8 @@ export async function GET(req) {
             return NextResponse.json({ success: false, message: "Create an office first!" }, { status: 403 });
         }
 
+        await connectDB();
+        
         let menuData = null;
 
         // If user is a restaurant owner, fetch menu with additionalMenu directly

@@ -77,6 +77,25 @@ const OfficeAdmin = () => {
     }
   };
 
+
+  // Quick order function
+  const quickOrder = async (vegCount, nonVegCount, orderStyle) => {
+    try {
+      const response = await axios.post("/api/order/placeOrder", {
+        NumberOfVeg: vegCount,
+        NumberOfNonVeg: nonVegCount,
+        orderStyle
+      });
+      if (response.data.success) {
+        toast.success("Order placed successfully");
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to place order");
+    }
+  }
+
   if (loading) {
     return <div className="flex w-screen justify-center items-center h-[60vh]"><div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div></div>;
   }
@@ -139,8 +158,8 @@ const OfficeAdmin = () => {
               <div className="p-4 flex flex-col gap-2">
                 <p><span className="font-bold">Total staff: </span>{staffData.totalStaff}</p>
                 <p><span className="font-bold">Total active staff: </span>{staffData.activeCount}</p>
-                <p><span className="font-bold">Veg Staff: </span> {staffData.vegCount}</p>
-                <p><span className="font-bold">Non-Veg Staff: </span> {staffData.nonVegCount}</p>
+                <p><span className="font-bold">Active Veg Staff: </span> {staffData.vegCount}</p>
+                <p><span className="font-bold">Active Non-Veg Staff: </span> {staffData.nonVegCount}</p>
                 <p><span className="font-bold">Today's Menu:</span></p>
                 <div className="mx-2">
                   {menuData ?
@@ -152,10 +171,15 @@ const OfficeAdmin = () => {
                     <>Loading...</>}
 
                 </div>
-                <div className="flex">
-                  <button className="bg-black border hover:bg-primary-hover 
-              text-white px-4 py-2 rounded-lg">Quick order</button>
-                </div>
+             
+                  <div className="flex">
+                    <button className="bg-black border hover:bg-primary-hover 
+              text-white px-4 py-2 rounded-lg"
+                      onClick={() => quickOrder(staffData.vegCount, staffData.nonVegCount, "quick")}
+                    >Quick order</button>                   
+                  </div>
+                  <p>Does <b>not</b> include additional/guest items.</p>
+               
               </div>
             </div>
           </div>
