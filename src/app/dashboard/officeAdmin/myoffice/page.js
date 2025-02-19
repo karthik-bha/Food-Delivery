@@ -1,4 +1,5 @@
 "use client";
+import Loader from "@/components/Loader";
 import AddStaffForm from "@/components/officeAdmin/addStaffForm/AddStaffForm";
 import EditStaffForm from "@/components/officeAdmin/editStaffForm/EditStaffForm";
 import ViewStaff from "@/components/officeAdmin/viewStaff/ViewStaff";
@@ -48,11 +49,7 @@ const Page = () => {
     }
 
     if (loading) {
-        return (
-            <div className="flex w-screen justify-center items-center h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
-            </div>
-        );
+        return <Loader />;
     }
 
     return (

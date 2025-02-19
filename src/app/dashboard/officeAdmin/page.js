@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import EditOfficeForm from "@/components/officeAdmin/editOfficeForm/EditOfficeForm";
+import Loader from "@/components/Loader";
 
 const OfficeAdmin = () => {
   const [officeData, setOfficeData] = useState(null);
@@ -97,7 +98,7 @@ const OfficeAdmin = () => {
   }
 
   if (loading) {
-    return <div className="flex w-screen justify-center items-center h-[60vh]"><div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div></div>;
+    return <Loader/>;
   }
 
   return (

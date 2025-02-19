@@ -1,5 +1,6 @@
 "use client";
 
+import Loader from "@/components/Loader";
 import AddMenu from "@/components/restaurantAdmin/addMenu/AddMenu";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -50,7 +51,7 @@ const Menus = () => {
     }
 
     if (loading) {
-        return <div className="flex h-[60vh] md:w-[20vw] w-screen justify-center items-center "><div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div></div>;
+        return <Loader/>;
     }
 
     return (

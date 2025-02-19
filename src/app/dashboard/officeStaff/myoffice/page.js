@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "@/components/Loader";
 
 const Page = () => {
     const [officeData, setOfficeData] = useState(null);
@@ -48,11 +49,7 @@ const Page = () => {
         fetchOfficeData();
     }, []);
 
-    if (loading) return (
-        <div className="flex w-screen justify-center items-center h-screen">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
-        </div>
-    );
+    if (loading) return <Loader/>;
     if (error) return <p className="text-red-500">Error: {error}</p>;
 
     return (

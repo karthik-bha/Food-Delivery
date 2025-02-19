@@ -13,7 +13,7 @@ const Page = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-            fetchOrders();        
+        fetchOrders();
     }, [])
 
     // Fetch orders on load
@@ -27,7 +27,7 @@ const Page = () => {
         } catch (err) {
             console.log(err);
             toast.error("Failed to fetch orders");
-        }finally{
+        } finally {
             setLoading(false);
         }
     }
@@ -43,10 +43,9 @@ const Page = () => {
                 <p>Non Veg Meals</p>
                 <p>Additional Meals Count</p>
             </div>
-            {loading && <Loader/> }
-            <div className="border-r border-l border-black">
-              
-                {orders && orders.length === 0 && <p>No orders found</p>}
+            {loading && <Loader />}
+            {orders && orders.length === 0 && <p>No orders found</p>}
+            <div className="border-r border-l border-black">               
                 {orders && orders.length > 0 && <>
                     {
                         orders.map((order) => {

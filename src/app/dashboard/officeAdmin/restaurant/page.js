@@ -1,4 +1,5 @@
 "use client"
+import Loader from "@/components/Loader";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -54,7 +55,7 @@ const Page = () => {
 
     const todayMenu = regularMenuData || {}; // Fallback to empty object if no menu available
     if (loading) {
-        return <div className="flex w-screen justify-center items-center h-[60vh]"><div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div></div>;
+        return <Loader/>;
     }
 
     return (
