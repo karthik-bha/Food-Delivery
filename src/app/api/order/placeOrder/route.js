@@ -6,6 +6,7 @@ import User from "@/lib/models/userSchema";
 import AdditionalMenu from "@/lib/models/AdditionalMenu"; // Import AdditionalMenu model
 import { NextResponse } from "next/server";
 import SmallOffice from "@/lib/models/SmallOffice";
+import RestaurantOffice from "@/lib/models/RestaurantOffice";
 
 export async function POST(req) {
     try {
@@ -41,13 +42,40 @@ export async function POST(req) {
         let order = null;
 
         if (orderStyle === "quick") {
+            
+            // Retrieve close time from restaurant office
+            const { restaurant_id } = mapping;
+
+            // Get restaurant's time limit and check
+            const { timeLimit } = await RestaurantOffice.findById(restaurant_id);
+
+            // Covert timeLimit to Date and check if current time is before close time
+            const currTime = new Date();
+            const [hours, minutes] = timeLimit.split(':');
+            const closingTime = new Date(currTime.getFullYear(),
+                currTime.getMonth(), currTime.getDate(), hours, minutes);
+
+
+            // Check if current time is within closing time
+            if (currTime > closingTime) {
+                return NextResponse.json(
+                    {
+                        success: false,
+                        message: "Cannot order regular at this time!"
+                    },
+                    { status: 400 }
+                );
+            }
+
             order = new Order({
                 OfficeAndRestaurantMappingId: mapping._id,
                 NumberOfVeg,
                 NumberOfNonVeg,
                 TotalAmount: (NumberOfVeg * 100) + (NumberOfNonVeg * 150),
             });
+
         } else if (orderStyle === "regular") {
+
             // Fetch Additional Order Details with Prices
             const additionalOrderData = await Promise.all(
                 AdditionalOrder.map(async (item) => {
@@ -75,9 +103,14 @@ export async function POST(req) {
             );
 
             // Calculate Total Amount
-            const totalAdditionalCost = additionalOrderData.reduce((acc, item) => acc + item.totalPrice, 0);
-            const totalGuestCost = guestOrderData.reduce((acc, item) => acc + item.totalPrice, 0);
-            const totalAmount = (NumberOfVeg * 100) + (NumberOfNonVeg * 150) + totalAdditionalCost + totalGuestCost;
+            const totalAdditionalCost = additionalOrderData.reduce((acc, item) =>
+                acc + item.totalPrice, 0);
+            
+            const totalGuestCost = guestOrderData.reduce((acc, item) =>
+                acc + item.totalPrice, 0);
+
+            const totalAmount = (NumberOfVeg * 100) + (NumberOfNonVeg * 150) +
+                totalAdditionalCost + totalGuestCost;
 
             // Create Order Object
             order = new Order({
@@ -88,7 +121,7 @@ export async function POST(req) {
                 GuestOrder: guestOrderData,
                 TotalAmount: totalAmount,
             });
-            
+
         }
 
         if (!order) {

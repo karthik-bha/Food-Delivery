@@ -2,7 +2,10 @@
 
 const Page = () => {
   return (
-    <div>page</div>
+    <div>
+      <h2 className="text-section-heading my-12">Orders</h2>
+      <p>Under construction</p>
+    </div>
   )
 }
 

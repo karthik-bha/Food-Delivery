@@ -23,7 +23,7 @@ const Page = () => {
     // Fetches restaurant data on load
     async function fetchRestaurantData() {
         try {
-            const response = await axios.get("/api/offices/get/pvt/RestaurantOffice");
+            const response = await axios.get("/api/offices/get/RestaurantOffice");
             if (response.data.success) {
                 toast.success(response.data.message);
                 setRestaurantData(response.data.officeDetails);

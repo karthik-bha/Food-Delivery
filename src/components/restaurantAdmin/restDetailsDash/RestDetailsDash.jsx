@@ -16,7 +16,7 @@ const EditForm = ({ data, onClose, onUpdate }) => {
             toast.success("Updated successfully, Refresh page");
             onClose();
         } catch {
-            toast.error("Update failed");
+            toast.error("Update failed");            
         }
     };
 
@@ -45,7 +45,7 @@ const EditForm = ({ data, onClose, onUpdate }) => {
             <input {...register("state", { required: "State is required" })} placeholder="State" className="border p-2 rounded w-full mb-2" />
             {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>}
 
-            <input {...register("timeLimit")} placeholder="Close Time" className="border p-2 rounded w-full mb-2" />
+            <input {...register("timeLimit")} placeholder="Close Time, Format (HH:MM), 24 hour format" className="border p-2 rounded w-full mb-2" />
 
             {/* Status Dropdown */}
             <select {...register("isActive", { required: "Status is required" })} className="border p-2 rounded w-full mb-4">
@@ -69,7 +69,7 @@ const RestDetailsDash = () => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const { data } = await axios.get("/api/offices/get/pvt/RestaurantOffice");
+                const { data } = await axios.get("/api/offices/get/RestaurantOffice");
                 setRestaurantData(data.officeDetails);
                 toast.success(data.message);
             } catch {
@@ -113,79 +113,3 @@ const RestDetailsDash = () => {
 };
 
 export default RestDetailsDash;
-
-// "use client"
-// import axios from "axios"
-// import { useEffect, useState } from "react"
-// import { toast } from "react-toastify";
-
-// const RestDetailsDash = () => {
-//     const [restauarantData, setRestauarantData] = useState(null);
-//     const [loading, setLoading] = useState(true);
-//     const [openEditForm, setOpenEditForm] = useState(false);
-//     const [formDetails, setFormDetails]=useState();
-
-//     useEffect(() => {
-//         getRestaurantData();
-//     }, [])
-//     async function getRestaurantData() {
-//         try {
-//             const response = await axios.get("/api/offices/get/pvt/RestaurantOffice");
-//             const fetchedData = response.data;
-//             setRestauarantData(fetchedData.officeDetails);
-//             console.log(fetchedData);
-//             toast.success(fetchedData.message);
-//         } catch (err) {
-//             console.log(err);
-//             toast.error(fetchData.message);
-//         } finally {
-//             setLoading(false);
-//         }
-//     }
-//     if (loading) {
-//         return (
-//             <div className="flex w-screen justify-center items-center h-[60vh]"><div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div></div>
-//         )
-//     }
-//     return (
-//         <>
-//             {openEditForm ? <>
-//                 <form>
-
-//                 </form>
-
-//             </> :
-//                 //  Display card
-//                 < div className="shadow-[0px_0px_15px_10px_rgba(0,0,0,0.1)] md:w-[20vw]">
-//                     <div className="bg-primary text-secondary rounded-t-md px-4 py-2 ">
-//                         <h2 className="text-sub-heading">Restaurant details</h2>
-//                     </div>
-//                     <div className="p-2 flex flex-col gap-2">
-//                         <p><b>Name: </b><span>{restauarantData?.name}</span></p>
-//                         <p><b>Phone:</b> <span>{restauarantData?.phone}</span></p>
-//                         <p><b>Email:</b> <span>{restauarantData?.email}</span></p>
-
-//                         <p><b>Address:</b>  </p>
-//                         <div className="px-4">
-//                             <p>{restauarantData?.street_address}</p>
-//                             <p>{restauarantData?.district}</p>
-//                             <p>{restauarantData?.state}</p>
-//                         </div>
-//                         <p><b>Status: </b><span className={restauarantData?.isActive ? "text-green-600 font-semibold" : "text-red-600 font-semibold"}>{restauarantData?.isActive ? "Active" : "Inactive"}</span></p>
-//                         <p><b>Close time: </b><span>{restauarantData?.timeLimit}</span></p>
-//                         <div className="flex mx-auto">
-//                             <button className="bg-primary hover:bg-primary-hover rounded-lg text-white px-4 py-2"
-//                                 onClick={() =>{ setOpenEditForm(true)
-//                                     setFormDetails(fetchedData.officeDetails);
-//                                 }}>Edit details</button>
-//                         </div>
-//                     </div>
-//                 </div>
-
-
-//             }
-//         </>
-//     )
-// }
-
-// export default RestDetailsDash

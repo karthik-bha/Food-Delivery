@@ -72,7 +72,8 @@ export async function POST(req) {
 
         return NextResponse.json({
             message: "Office Admin Registered Successfully, Please Register Your Office and Staff",
-            newUser: officeAdminUser
+            newUser: officeAdminUser,
+            success:true,
         }, { status: 201 });
 
     } catch (error) {

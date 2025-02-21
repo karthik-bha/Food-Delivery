@@ -1,5 +1,6 @@
 "use client"
 
+import Loader from "@/components/Loader";
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify";
@@ -8,7 +9,7 @@ const Page = () => {
     const [officeData, setOfficeData] = useState([]);
     const [restOfficeData, setRestOfficeData] = useState([]);
     const [selectedRestaurants, setSelectedRestaurants] = useState({});
-
+    const [loading, setLoading] = useState(true);
     // We will get all restaurants and offices of same district and state
     useEffect(() => {
         fetchSmallOffices();
@@ -18,7 +19,7 @@ const Page = () => {
     // Fetch small office data
     const fetchSmallOffices = async () => {
         try {
-            const response = await axios.get("/api/offices/get/public/SmallOffice");
+            const response = await axios.get("/api/offices/get/SmallOffice");
             console.log(response.data);
             if (response.data.success) {
                 const data = response.data.offices;
@@ -28,22 +29,26 @@ const Page = () => {
             }
         } catch (err) {
             console.error("Error fetching data:", err);
+        } finally {
+            setLoading(false);
         }
     };
 
     // Fetch restaurant office data
     const fetchRestaurantOffices = async () => {
         try {
-            const response = await axios.get("/api/offices/get/public/RestaurantOffice");
+            const response = await axios.get("/api/offices/get/RestaurantOffice");
             console.log(response.data);
             if (response.data.success) {
-                const data = response.data.restOffices;
+                const data = response.data.officeDetails;
                 setRestOfficeData(data); // Correct state update
             } else {
                 throw new Error(response.data.message || "Failed to fetch data");
             }
         } catch (err) {
             console.error("Error fetching data:", err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -80,12 +85,15 @@ const Page = () => {
 
     };
 
+    if (loading) {
+        return <Loader />
+    }
 
     return (
         <div className="mx-2">
             <h2 className="my-12 text-section-heading">Map small offices to restaurants</h2>
 
-            <div className="grid grid-cols-3 md:text-sub-heading gap-4 text-center bg-primary text-secondary px-2 rounded-t-md">
+            <div className="md:grid grid-cols-3 gap-4 text-center font-semibold bg-primary text-secondary p-2 rounded-t-md">
                 <p>Small office name</p>
                 <p>Restaurant assigned</p>
                 <p>Action</p>
@@ -95,8 +103,8 @@ const Page = () => {
 
             {/* First we'll list all smallOffices  */}
             {officeData.map((office) => (
-                <div key={office._id} className="grid grid-cols-3 p-2 gap-4 items-center">
-                    <p className="text-center p-2">{office.name}</p>
+                <div key={office._id} className="md:grid grid-cols-3 p-2 flex flex-col gap-4  border-r border-l  border-black border-b items-center">
+                    <p className="text-center p-2 ">{office.name}</p>
 
                     {/* Then we will embedd all the restaurants of same district and state of small office */}
                     <div className="flex items-center mx-auto">
@@ -119,7 +127,7 @@ const Page = () => {
                     {/* Confirm the mapping  */}
                     <div className="flex items-center mx-auto">
                         <button className="bg-primary hover:bg-primary-hover text-white 
-                    rounded-md px-4 py-2"
+                    rounded-md px-4 py-1"
                             onClick={() => { handleMapping(office._id) }}>Confirm Mapping</button>
                     </div>
                 </div>

@@ -22,7 +22,7 @@ const Page = () => {
     // Fetch staff data
     async function fetchOfficeStaffData() {
         try {
-            const response = await axios.get("/api/offices/get/pvt/SmallOffice/staff");
+            const response = await axios.get("/api/offices/get/SmallOffice/staff");
             setStaffData(response.data.staffDetails);
         } catch (err) {
             console.log(err);

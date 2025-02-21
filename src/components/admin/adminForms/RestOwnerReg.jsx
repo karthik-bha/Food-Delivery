@@ -4,17 +4,17 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-const OfficeAdminReg = ({ setFormOpen, setSmallOfficeAdmins, officeAdmins }) => {
+const RestOwnerReg = ({ setFormOpen, setRestaurantOwners,restaurantOwners }) => {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
     // console.log(data);
     try {
-      const response = await axios.post("/api/users/register/office_admin", data);
+      const response = await axios.post("/api/users/register/restaurant_owner", data);
       console.log(response.data);
       if (response.data.success) {
         toast.success(response.data.message);
-        setSmallOfficeAdmins(prevAdmins => [...(prevAdmins || []), response.data.newUser]);
+        setRestaurantOwners(prevAdmins => [...(prevAdmins || []), response.data. newRestaurantOwner]);
         setFormOpen(false);
       }
     } catch (err) {
@@ -30,7 +30,7 @@ const OfficeAdminReg = ({ setFormOpen, setSmallOfficeAdmins, officeAdmins }) => 
 
         <p className="absolute top-2 right-4 text-xl font-semibold cursor-pointer"
           onClick={() => setFormOpen(false)}>x</p>
-        <h2 className="text-sub-heading text-center my-4">Register a new Office Admin</h2>
+        <h2 className="text-sub-heading text-center my-4">Register a new Restaurant Owner</h2>
 
 
         <input
@@ -71,4 +71,4 @@ const OfficeAdminReg = ({ setFormOpen, setSmallOfficeAdmins, officeAdmins }) => 
   );
 };
 
-export default OfficeAdminReg;
+export default RestOwnerReg;

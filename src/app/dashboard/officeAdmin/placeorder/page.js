@@ -15,7 +15,7 @@ const Page = () => {
 
     async function fetchOfficeData() {
         try {
-            const response = await axios.get("/api/offices/get/pvt/SmallOffice");
+            const response = await axios.get("/api/offices/get/SmallOffice");
             console.log(response.data.officeData);
             setOfficeData(response.data.officeData);
             setStaffData(response.data.staffStats);

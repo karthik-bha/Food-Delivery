@@ -9,9 +9,9 @@ import RestaurantOffice from "@/lib/models/RestaurantOffice";
 export async function POST(request) {
     try {
         await connectDB(); // Connect to DB first before any operations
-        
+
         const { name, phone, email, password } = await request.json();
-        
+
         // Validate input fields
         if (!email || !password || !name || !phone) {
             return NextResponse.json(
@@ -23,14 +23,14 @@ export async function POST(request) {
         // Check if user exists in any collection using Promise.all
         try {
             const [user, adminOffice, restOffice, smallOffice] = await Promise.all([
-                
+
                 User.findOne({ email }),
                 AdminOffice.findOne({ email }),
-                RestaurantOffice.findOne({email}),
+                RestaurantOffice.findOne({ email }),
                 SmallOffice.findOne({ email })
             ]);
 
-            if (user || adminOffice ||  restOffice || smallOffice) {
+            if (user || adminOffice || restOffice || smallOffice) {
                 return NextResponse.json(
                     { success: false, message: "Email already exists" },
                     { status: 409 }
@@ -63,8 +63,9 @@ export async function POST(request) {
 
         return NextResponse.json({
             success: true,
-            message: "User registered successfully"
-        });
+            message: "User registered successfully",
+            newRestaurantOwner
+        }, { status: 201 });
 
     } catch (err) {
         console.error("Registration error:", err);

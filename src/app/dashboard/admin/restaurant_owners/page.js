@@ -1,6 +1,6 @@
 
 "use client"
-import OfficeAdminReg from "@/components/admin/adminForms/OfficeAdminReg";
+import RestOwnerReg from "@/components/admin/adminForms/RestOwnerReg";
 import Loader from "@/components/Loader";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -9,18 +9,18 @@ import { toast } from "react-toastify";
 const Page = () => {
 
     const [formOpen, setFormOpen] = useState(false);
-    const [officeAdmins, setSmallOfficeAdmins] = useState(null);
+    const [restaurantOwners, setRestaurantOwners] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchSmallOfficeAdmins();
+      fetchRestOwners();
     }, [])
 
-    async function fetchSmallOfficeAdmins() {
+    async function fetchRestOwners() {
         try {
-            const response = await axios.get("/api/admin/smallOfficeAdmins");
-            console.log(response.data.smallOfficeAdmins);
-            setSmallOfficeAdmins(response.data.smallOfficeAdmins || []);
+            const response = await axios.get("/api/admin/restOwners");
+            console.log(response.data.restOwners);
+            setRestaurantOwners(response.data.restOwners || []);
         } catch (err) {
             console.log(err);
             toast.error("Error during fetch");
@@ -28,19 +28,19 @@ const Page = () => {
             setLoading(false);
         }
     }
-    if (loading || !officeAdmins) {
+    if (loading || !restaurantOwners) {
         return <Loader />
     }
 
-    async function handleDelete(officeAdminId) {
+    async function handleDelete(restOwnerId) {
         try {
-            const response = await axios.delete(`/api/users/delete/officeAdmin/${officeAdminId}`);
+            const response = await axios.delete(`/api/users/delete/restOwner/${restOwnerId}`);
             console.log(response.data.deletedUser);
             if (response.data.success) {
                 const deletedUser = response.data.deletedUser;
-                setSmallOfficeAdmins((prev) => prev.filter(admin => admin._id !== officeAdminId));
+                setRestaurantOwners((prev) => prev.filter(owner => owner._id !== restOwnerId)); 
                 toast.success(response.data.message);
-            } else {
+            }else{
                 toast.error(response.data.message);
             }
         } catch (err) {
@@ -50,17 +50,17 @@ const Page = () => {
     }
     return (
         <div className="mx-4 my-8">
-            {formOpen ? <OfficeAdminReg setFormOpen={setFormOpen} officeAdmins={officeAdmins} setSmallOfficeAdmins={setSmallOfficeAdmins} /> :
+            {formOpen ? <RestOwnerReg setFormOpen={setFormOpen} restaurantOwners={restaurantOwners} setRestaurantOwners={setRestaurantOwners} /> :
                 <>
                     <h2 className="text-section-heading my-12 text-center">
-                        Small Office Admins
+                        Restaurant Owners
                     </h2>
 
                     <div className="flex my-4 ">
                         <button className="bg-primary hover:bg-primary-hover text-white 
                         px-4 py-2 rounded-md"
                             onClick={() => setFormOpen(true)}>
-                            Add a New Office Admin
+                            Add a New Restaurant Owner
                         </button>
                     </div>
 
@@ -76,18 +76,18 @@ const Page = () => {
 
                         {/* Data Rows */}
                         <div className="">
-                            {officeAdmins.map((admin) => {
+                            {restaurantOwners.map((owner) => {
                                 return (
-                                    <div key={admin._id} className="text-center md:grid gap-4 grid-cols-5 border-b border-r border-l border-black p-2">
-                                        <p>{admin.name}</p>
-                                        <p>{admin.email}</p>
+                                    <div key={owner._id} className="text-center md:grid gap-4 grid-cols-5 border-b border-r border-l border-black p-2">
+                                        <p>{owner.name}</p>
+                                        <p>{owner.email}</p>
 
-                                        <p>{admin.office_id ? admin.office_id.name : "No office resgistered."}</p>
-                                        <p>{admin.office_id ? admin.office_id.street_address + ", " + admin.office_id.district + ", " +
-                                            admin.office_id.state : " No office registered."} </p>
+                                        <p>{owner.office_id ? owner.office_id.name : "No office resgistered."}</p>
+                                        <p>{owner.office_id ? owner.office_id.street_address + ", " + owner.office_id.district + ", " +
+                                            owner.office_id.state : " No office registered."} </p>
                                         <div>
                                             <button className="text-white px-2 py-1 bg-red-500 hover:bg-red-400 rounded-md"
-                                                onClick={() => handleDelete(admin._id)}>delete</button>
+                                                onClick={() => handleDelete(owner._id)}>delete</button>
                                         </div>
                                     </div>
                                 )

@@ -23,7 +23,7 @@ const OfficeAdmin = () => {
   // Fetch Office data on initial load
   const fetchOfficeData = async () => {
     try {
-      const response = await axios.get("/api/offices/get/pvt/SmallOffice");
+      const response = await axios.get("/api/offices/get/SmallOffice");
       console.log(response);
       if (response.data.success) {
         setOfficeData(response.data.officeData);
@@ -93,12 +93,12 @@ const OfficeAdmin = () => {
         toast.error(response.data.message);
       }
     } catch (error) {
-      toast.error("Failed to place order");
+      toast.error("Failed to place quick order at this time.");
     }
   }
 
   if (loading) {
-    return <Loader/>;
+    return <Loader />;
   }
 
   return (
@@ -172,15 +172,15 @@ const OfficeAdmin = () => {
                     <>Loading...</>}
 
                 </div>
-             
-                  <div className="flex">
-                    <button className="bg-black border hover:bg-primary-hover 
+
+                <div className="flex">
+                  <button className="bg-black border hover:bg-primary-hover 
               text-white px-4 py-2 rounded-lg"
-                      onClick={() => quickOrder(staffData.vegCount, staffData.nonVegCount, "quick")}
-                    >Quick order</button>                   
-                  </div>
-                  <p>Does <b>not</b> include additional/guest items.</p>
-               
+                    onClick={() => quickOrder(staffData.vegCount, staffData.nonVegCount, "quick")}
+                  >Quick order</button>
+                </div>
+                <p>Does <b>not</b> include additional/guest items.</p>
+
               </div>
             </div>
           </div>
