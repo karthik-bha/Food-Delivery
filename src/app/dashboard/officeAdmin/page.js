@@ -144,7 +144,7 @@ const OfficeAdmin = () => {
                     {updating ? "Updating..." : "Confirm"}
                   </button>
                 </div>
-                <button className="px-4 py-1 bg-primary text-white hover:bg-primary-hover rounded-md"
+                <button className="btn-primary"
                   onClick={() => setOfficeForm(true)}>
                   Edit other office details
                 </button>
@@ -169,17 +169,20 @@ const OfficeAdmin = () => {
                       <p><span className="text-red-600">Non-Veg:</span> {menuData.NonVeg}</p>
                     </>
                     :
-                    <>Loading...</>}
+                    <>No Menu for Today.</>}
 
                 </div>
-
-                <div className="flex">
-                  <button className="bg-black border hover:bg-primary-hover 
-              text-white px-4 py-2 rounded-lg"
-                    onClick={() => quickOrder(staffData.vegCount, staffData.nonVegCount, "quick")}
-                  >Quick order</button>
-                </div>
-                <p>Does <b>not</b> include additional/guest items.</p>
+                {menuData &&
+                  <>
+                    <div className="flex">
+                      <button className="btn-primary
+                  "
+                        onClick={() => quickOrder(staffData.vegCount, staffData.nonVegCount, "quick")}
+                      >Quick order</button>
+                    </div>
+                    <p>Does <b>not</b> include additional/guest items.</p>
+                  </>
+                }
 
               </div>
             </div>

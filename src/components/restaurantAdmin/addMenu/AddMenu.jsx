@@ -106,7 +106,7 @@ const AddMenu = ({ setFormOpen, setMenuData }) => {
                 </div>
 
                 {/* Submit Button */}
-                <button type="submit" className="bg-primary hover:bg-primary-hover text-white py-2 px-4 rounded w-full" disabled={loading}>
+                <button type="submit" className="btn-primary w-full" disabled={loading}>
                     {loading ? "Adding..." : "Add Menu"}
                 </button>
             </form>

@@ -62,7 +62,7 @@ const Menus = () => {
             </> :
 
                 <>
-                    <button className="bg-primary hover:bg-primary-hover text-secondary px-4 py-2 rounded-md"
+                    <button className="btn-primary"
                     onClick={() => setOpenMenuAdd(true)}>
                         Add/Edit a menu
                     </button>
@@ -76,9 +76,9 @@ const Menus = () => {
                                 <p><strong>Veg:</strong> {items.Veg}</p>
                                 <p><strong>Non-Veg:</strong> {items.NonVeg}</p>
                                 <div className="flex gap-1 text-white my-2">
-                                    <button className="bg-yellow-500 hover:bg-yellow-400 px-2 rounded-md"
+                                    <button className="btn-edit"
                                      onClick={() => setOpenMenuAdd(true)}>Edit</button>
-                                    <button className="bg-red-500 hover:bg-red-400 px-2 rounded-md"
+                                    <button className="btn-delete"
                                         onClick={() => handleDelete(items._id)}>Delete</button>
                                 </div>
                             </div>
@@ -94,7 +94,7 @@ const Menus = () => {
                                 <h4 className="font-bold">{item.name}</h4>
                                 {item.price && <p>Price: ₹{item.price}</p>}
                                 <div className="flex gap-1 text-white my-2">
-                                    <button className="bg-red-500 hover:bg-red-400 px-2 rounded-md"
+                                    <button className="btn-delete"
                                         onClick={() => handleDelete(item._id)}>Delete</button>
                                 </div>
                             </div>

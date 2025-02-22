@@ -60,7 +60,7 @@ const OfficeStaffDash = () => {
     async function fetchMenu() {
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         let currDate = new Date().getDay();
-        let currDay = daysOfWeek[currDate];
+        let currDay = daysOfWeek["currDate"];
         try {
             const response = await axios.get("/api/menu/get");
             const fetchedMenuData = response.data.menu;
@@ -107,7 +107,7 @@ const OfficeStaffDash = () => {
                         </h2>
                     </div>
                     <div className="flex justify-center items-center p-4">
-                        <p>{menuData ? (isVeg ? menuData.Veg : menuData.NonVeg) : "Loading menu..."}</p>
+                        <p>{menuData ? (isVeg ? menuData.Veg : menuData.NonVeg) : "No Menu for Today."}</p>
                     </div>
                 </div>
 

@@ -71,7 +71,7 @@ const Page = () => {
                     <p>No additional items available.</p>
                 )}
             </div>
-            <button className="bg-primary hover:bg-primary-hover text-white px-4 py-1 rounded-md"
+            <button className="btn-primary"
             onClick={()=>placeOrder(staffData.vegCount,staffData.nonVegCount, additionalItems, "regular" )}>Place Order</button>
         </div>
     );

@@ -126,8 +126,7 @@ const Page = () => {
 
                     {/* Confirm the mapping  */}
                     <div className="flex items-center mx-auto">
-                        <button className="bg-primary hover:bg-primary-hover text-white 
-                    rounded-md px-4 py-1"
+                        <button className="btn-primary"
                             onClick={() => { handleMapping(office._id) }}>Confirm Mapping</button>
                     </div>
                 </div>

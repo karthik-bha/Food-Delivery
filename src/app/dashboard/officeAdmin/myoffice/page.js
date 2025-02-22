@@ -75,7 +75,7 @@ const Page = () => {
                     <h2 className="my-12 text-section-heading text-center">Staff Details</h2>
                     <div className="flex gap-2">
                         <button
-                            className="px-4 py-1 bg-primary text-white hover:bg-primary-hover rounded-md"
+                            className="btn-primary"
                             onClick={() => setOpenForm(true)}
                         >
                             Add New Staff

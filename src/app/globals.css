@@ -8,3 +8,18 @@ body {
 
 }
 
+.btn-primary {
+  @apply bg-primary hover:bg-primary-hover text-white font-semibold py-2 px-4 rounded-lg;
+}
+
+.btn-delete {
+  @apply text-white px-2 py-1 bg-red-500 hover:bg-red-400 rounded-md;
+}
+
+.btn-add {
+  @apply bg-green-400 hover:bg-green-300 px-2 py-1 rounded-md;
+}
+
+.btn-edit{
+  @apply bg-yellow-500 hover:bg-yellow-400 px-2 py-1 rounded-md;
+}

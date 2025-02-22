@@ -99,15 +99,13 @@ const Page = () => {
                                 <p><b>{item.name}</b></p>
                                 <p>Rs.{item.price}</p>
                                 <div className="flex mx-auto">
-                                    <button className="bg-green-400 hover:bg-green-300 
-                                    px-2 rounded-md"
+                                    <button className="btn-add"
                                         onClick={() => addToCart(item._id, item.price)}>
                                         Add
                                     </button>
                                 </div>
                                 <div className="flex mx-auto">
-                                    <button className="bg-red-400 hover:bg-red-300 px-2 
-                                    rounded-md"
+                                    <button className="btn-delete"
                                         onClick={() => removeFromCart(item._id)}>
                                         Remove
                                     </button>

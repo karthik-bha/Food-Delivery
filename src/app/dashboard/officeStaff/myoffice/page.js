@@ -81,7 +81,7 @@ const Page = () => {
                 </select>
                 <button
                     onClick={updateStatus}
-                    className="bg-primary hover:bg-primary-hover text-secondary rounded-md px-2 py-1"
+                    className="btn-primary"
                 >
                     Confirm
                 </button>

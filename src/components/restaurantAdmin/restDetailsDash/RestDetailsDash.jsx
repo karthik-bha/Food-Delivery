@@ -54,7 +54,7 @@ const EditForm = ({ data, onClose, onUpdate }) => {
             </select>
 
             {/* Submit Button */}
-            <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white py-2 rounded">Save</button>
+            <button type="submit" className="w-full btn-primary">Save</button>
         </form>
     );
 };

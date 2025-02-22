@@ -72,8 +72,7 @@ const Login = () => {
                     </div>
                     {errors.password && <span className="text-red-500 text-form-error ">{errors.password.message}</span>}
                 </div>
-                <button type="submit" className="font-button-text bg-primary text-white
-                rounded-md hover:bg-primary-hover   py-2
+                <button type="submit" className="font-button-text btn-primary
                 ">Login</button>
             </form>
             </div>

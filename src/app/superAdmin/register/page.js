@@ -45,7 +45,7 @@ const SuperAdminRegistration = () => {
                     ></input>
                     {errors.password && <span className="text-red-500 ">{errors.password.message}</span>}
                 </div>
-                <button type="submit" className="border border-black hover:bg-black hover:text-white">Register</button>
+                <button type="submit" className="btn-primary">Register</button>
             </form>
         </div>
     )

@@ -65,7 +65,7 @@ const RestOwnerReg = ({ setFormOpen, setRestaurantOwners,restaurantOwners }) => 
         />
         <span className="text-red-500">{errors.password?.message}</span>
 
-        <button className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-md">Register</button>
+        <button className="btn-primary">Register</button>
       </form>
     </div>
   );

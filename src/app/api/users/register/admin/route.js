@@ -51,10 +51,10 @@ export async function POST(req) {
                 User.findOne({ email }),
                 AdminOffice.findOne({ email }),
                 SmallOffice.findOne({ email }),
-                RestaurantOffice.findOne({email}),
+                RestaurantOffice.findOne({ email }),
             ]);
 
-            if (user || adminOffice ||  restOffice || smallOffice) {
+            if (user || adminOffice || restOffice || smallOffice) {
                 return NextResponse.json(
                     { success: false, message: "Email already exists" },
                     { status: 409 }
@@ -67,7 +67,7 @@ export async function POST(req) {
                 { status: 500 }
             );
         }
-        
+
         // Ensure that an admin is assigned to a location
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -85,6 +85,7 @@ export async function POST(req) {
         await adminUser.save();
 
         return NextResponse.json({
+            success: true,
             message: "Admin Registered Successfully",
             newUser: adminUser,
         }, { status: 201 });

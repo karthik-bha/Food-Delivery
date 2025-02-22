@@ -57,8 +57,7 @@ const Page = () => {
                     </h2>
 
                     <div className="flex my-4 ">
-                        <button className="bg-primary hover:bg-primary-hover text-white 
-                        px-4 py-2 rounded-md"
+                        <button className="btn-primary                        "
                             onClick={() => setFormOpen(true)}>
                             Add a New Office Admin
                         </button>
@@ -86,7 +85,7 @@ const Page = () => {
                                         <p>{admin.office_id ? admin.office_id.street_address + ", " + admin.office_id.district + ", " +
                                             admin.office_id.state : " No office registered."} </p>
                                         <div>
-                                            <button className="text-white px-2 py-1 bg-red-500 hover:bg-red-400 rounded-md"
+                                            <button className="btn-delete"
                                                 onClick={() => handleDelete(admin._id)}>delete</button>
                                         </div>
                                     </div>
