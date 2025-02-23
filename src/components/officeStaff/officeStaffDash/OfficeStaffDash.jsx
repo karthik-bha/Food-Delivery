@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "@/components/Loader";
 
 const OfficeStaffDash = () => {
     // const [userData, setUserData] = useState(null);
@@ -10,6 +11,9 @@ const OfficeStaffDash = () => {
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
     const [menuData, setMenuData] = useState(null);
+    const [excludeMeal, setExcludeMeal] = useState(false);
+    const [userData, setUserData] = useState(null);
+    const [currDayState, setCurrDayState] = useState(null);
 
     useEffect(() => {
         fetchUserData();
@@ -25,6 +29,8 @@ const OfficeStaffDash = () => {
                 // setUserData(user);
                 setIsActive(user.isActive);
                 setIsVeg(user.isVeg);
+                setExcludeMeal(user.excludeMeal);
+                setUserData(user);
             } else {
                 toast.error(response.data.message);
             }
@@ -39,11 +45,12 @@ const OfficeStaffDash = () => {
     const handleConfirm = async () => {
         setUpdating(true);
         try {
-            const response = await axios.put(`/api/users/update/officeStaff`, { isActive, isVeg });
+            const response = await axios.put(`/api/users/update/officeStaff`, { isActive, isVeg, excludeMeal });
 
             if (response.data.success) {
                 setIsActive(response.data.updatedOfficeStaff.isActive);
                 setIsVeg(response.data.updatedOfficeStaff.isVeg);
+                setExcludeMeal(response.data.updatedOfficeStaff.excludeMeal);
                 toast.success(response.data.message);
             } else {
                 toast.error(response.data.message);
@@ -60,7 +67,9 @@ const OfficeStaffDash = () => {
     async function fetchMenu() {
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         let currDate = new Date().getDay();
-        let currDay = daysOfWeek["currDate"];
+        let currDay = daysOfWeek[1];
+        setCurrDayState(daysOfWeek[1]);
+        console.log(currDay);
         try {
             const response = await axios.get("/api/menu/get");
             const fetchedMenuData = response.data.menu;
@@ -77,14 +86,17 @@ const OfficeStaffDash = () => {
     }
     if (loading) {
         return (
-            <div className="flex w-screen justify-center items-center h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
-            </div>
+            <Loader />
         );
     }
 
     return (
         <div className="m-4">
+
+            <div className="text-1xl md:text-2xl my-12">
+                Hi {userData.name}, today is {menuData && currDayState ? menuData.Theme+" - "+currDayState : "Loading..."}. Your regular meal is {menuData ? (isVeg ? menuData.Veg : menuData.NonVeg) : "No Menu for Today."}.
+            </div>
+
             {/* Status & Menu Cards */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
                 {/* Status Card */}
@@ -99,18 +111,6 @@ const OfficeStaffDash = () => {
                     </div>
                 </div>
 
-                {/* Menu Card */}
-                <div className="col-span-2 shadow-md rounded-md">
-                    <div className="p-2 bg-primary text-secondary rounded-t-md">
-                        <h2 className="text-center text-sub-heading">
-                            Today's menu for {isVeg ? "Veg" : "Non-Veg"} meals
-                        </h2>
-                    </div>
-                    <div className="flex justify-center items-center p-4">
-                        <p>{menuData ? (isVeg ? menuData.Veg : menuData.NonVeg) : "No Menu for Today."}</p>
-                    </div>
-                </div>
-
                 {/* Meal Preference Card */}
                 <div className="col-span-2 shadow-md rounded-md">
                     <div className="p-2 bg-primary text-secondary rounded-t-md">
@@ -122,39 +122,70 @@ const OfficeStaffDash = () => {
                         </p>
                     </div>
                 </div>
+
+                {/* Shows if user has opted out of Regular meals */}
+                <div className="col-span-2 shadow-md rounded-md">
+                    <div className="p-2 bg-primary text-secondary rounded-t-md">
+                        <h2 className="text-center text-sub-heading">Opt out of Regular Meals?</h2>
+                    </div>
+                    <div className="flex justify-center items-center p-4">
+                        <p className={`text-sub-heading ${excludeMeal ? "text-green-500" : "text-red-500"}`}>
+                            {excludeMeal ? "Yes" : "No"}
+                        </p>
+                    </div>
+                </div>
+
             </div>
 
-            {/* Change Status */}
-            <div className="mt-4">
-                <p className="text-sub-heading mb-2">Change Your Attendance Status</p>
-                <select
-                    value={isActive.toString()}
-                    onChange={(e) => setIsActive(e.target.value === "true")}
-                    className="px-2 py-1 border border-black rounded-md"
-                >
-                    <option value="true">Active</option>
-                    <option value="false">Inactive</option>
-                </select>
-            </div>
+            {/* Status update options  */}
 
-            {/* Change Meal Preference */}
-            <div className="mt-4">
-                <p className="text-sub-heading mb-2">Change Your Meal Preference</p>
-                <select
-                    value={isVeg.toString()}
-                    onChange={(e) => setIsVeg(e.target.value === "true")}
-                    className="px-2 py-1 border border-black rounded-md"
-                >
-                    <option value="true">Veg</option>
-                    <option value="false">Non-Veg</option>
-                </select>
+            <div className="grid md:grid-cols-2">
+                {/* Change Status */}
+                <div className="mt-4">
+                    <p className="text-[1.2rem] mb-2">Change Your Attendance Status</p>
+                    <select
+                        value={isActive.toString()}
+                        onChange={(e) => setIsActive(e.target.value === "true")}
+                        className="px-2 py-1 border border-black rounded-md"
+                    >
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+
+                {/* Change Meal Preference */}
+                <div className="mt-4">
+                    <p className="text-[1.2rem] mb-2">Change Your Meal Preference</p>
+                    <select
+                        value={isVeg.toString()}
+                        onChange={(e) => setIsVeg(e.target.value === "true")}
+                        className="px-2 py-1 border border-black rounded-md"
+                    >
+                        <option value="true">Veg</option>
+                        <option value="false">Non-Veg</option>
+                    </select>
+                </div>
+
+                {/* Opt out of Regular meal if you do not need */}
+                <div className="mt-4">
+                    <p className="text-[1.2rem] mb-2">Do you want to exclude regular meals?</p>
+                    <select
+                        value={excludeMeal.toString()}
+                        onChange={(e) => setExcludeMeal(e.target.value === "true")}
+                        className="px-2 py-1 border border-black rounded-md"
+                    >
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+
             </div>
 
             {/* Confirm Button */}
             <div className="mt-4">
                 <button
                     onClick={handleConfirm}
-                    className="bg-primary hover:bg-primary-hover text-secondary px-4 py-2 rounded-lg flex items-center justify-center"
+                    className="btn-primary"
                     disabled={updating}
                 >
                     {updating ? (
@@ -169,3 +200,15 @@ const OfficeStaffDash = () => {
 };
 
 export default OfficeStaffDash;
+
+{/* Menu Card */ }
+{/* <div className="col-span-2 shadow-md rounded-md">
+                    <div className="p-2 bg-primary text-secondary rounded-t-md">
+                        <h2 className="text-center text-sub-heading">
+                            Today's menu for {isVeg ? "Veg" : "Non-Veg"} meals
+                        </h2>
+                    </div>
+                    <div className="flex justify-center items-center p-4">
+                        <p>{menuData ? (isVeg ? menuData.Veg : menuData.NonVeg) : "No Menu for Today."}</p>
+                    </div>
+                </div> */}

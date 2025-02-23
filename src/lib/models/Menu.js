@@ -9,21 +9,22 @@ const menuSchema = new mongoose.Schema({
     regularItem: {
         // Ensures key-value pairs like, {Monday:{Veg:desc, NonVeg:desc}}
         type: Map,
-        of: new mongoose.Schema({ 
+        of: new mongoose.Schema({
+            Theme: { type: String, required: true },
             Veg: { type: String, required: true },
             NonVeg: { type: String, required: true }
         })
     },
     // Reference to AdditionalMenu items (stores ids of items)
     additionalMenu: [{ type: mongoose.Schema.Types.ObjectId, ref: "AdditionalMenu" }],
-    
+
     // Track which user created the menu
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
     },
-    
+
     // Track which user last updated the menu
     updatedBy: {
         type: mongoose.Schema.Types.ObjectId,

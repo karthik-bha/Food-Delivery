@@ -18,12 +18,12 @@ export async function PUT(req) {
         if (!staffExists) return NextResponse.json({ success: false, message: "Staff doesnt exist" }, { status: 404 });
 
         // Get data from req
-        const { isVeg, isActive } = await req.json();
+        const { isVeg, isActive, excludeMeal } = await req.json();
 
         // Update the user
         const updatedOfficeStaff = await User.findByIdAndUpdate(
             staffId,
-            { isVeg, isActive, updatedBy: staffId },
+            { isVeg, isActive, excludeMeal, updatedBy: staffId },
             { new: true }
         );
 

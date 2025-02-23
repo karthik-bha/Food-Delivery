@@ -9,13 +9,7 @@ const OfficeStaffSide = () => {
             {expandBar && <ul className="  mt-6 mx-2 flex flex-col gap-2 ">
                 <Link href="/dashboard/officeStaff" className="hover:text-white">
                     <li>DASHBOARD</li>
-                </Link>
-                <Link href="/dashboard/officeStaff/meals" className="hover:text-white">
-                    <li>MEALS</li>
-                </Link>
-                <Link href="/dashboard/officeStaff/myoffice" className="hover:text-white">
-                    <li>MY OFFICE</li>
-                </Link>
+                </Link>                  
                 <Link href="/dashboard/officeStaff/myorders" className="hover:text-white">
                     <li>ORDERS</li>
                 </Link>

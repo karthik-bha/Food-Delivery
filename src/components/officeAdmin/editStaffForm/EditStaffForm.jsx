@@ -112,7 +112,7 @@ const EditStaffForm = ({ setOpenForm, setStaffData, staff }) => {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    className="bg-primary text-secondary p-2 rounded hover:bg-primary-hover transition"
+                    className="btn-primary"
                 >
                     Update
                 </button>

@@ -5,7 +5,7 @@ import User from "@/lib/models/userSchema";
 import { authMiddleware } from "@/lib/middleware/auth";
 import AdminOffice from "@/lib/models/AdminOffice";
 
-// Fetches exclusive office related to office admin
+// Fetches exclusive office related to office admin, Also fetches SmallOffice data for admin and superadmin
 export async function GET(req) {
     try {
         // Apply authentication middleware
@@ -19,6 +19,13 @@ export async function GET(req) {
         }
 
         await connectDB();
+        
+
+        // Return all smalloffices for superadmin
+        if (role === "super_admin") {
+            const offices = await SmallOffice.find({});
+            return NextResponse.json({ success: true, message: "Fetch Success", offices }, { status: 200 });
+        }
 
         // Migrated code from a previous route
         if (role === "admin") {

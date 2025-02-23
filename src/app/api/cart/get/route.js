@@ -4,29 +4,33 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db/connectDB";
 import User from "@/lib/models/userSchema";
 
-
 export async function GET(req) {
-
-    try{
+    try {
         const response = await authMiddleware(req);
-        if(response){
-            return response;
-        }
+        if (response) return response;
+
         const { _id: userId } = req.user;
         await connectDB();
-        const {office_id} = await User.findById(userId);
-        const office = await SmallOffice.findById(office_id);
-        if(!office){
-            return NextResponse.json({ success: false, message: "No office found" }, { status: 404 });
+
+        // Find user's office_id
+        const user = await User.findById(userId);
+        if (!user || !user.office_id) {
+            return NextResponse.json({ success: false, message: "User or office not found" }, { status: 404 });
         }
 
-        const additionalItems= office.additional_items;
+        // Fetch office details
+        const office = await SmallOffice.findById(user.office_id);
+        if (!office) {
+            return NextResponse.json({ success: false, message: "Office not found" }, { status: 404 });
+        }
+
+        // Extract additional items for the specific user
+        const additionalItems = office.additional_items[userId] || {};
 
         return NextResponse.json({ success: true, message: "Fetch success", additionalItems }, { status: 200 });
 
-    }catch(err){
+    } catch (err) {
         console.log(err);
         return NextResponse.json({ success: false, message: "Error during fetch" }, { status: 500 });
     }
-    
 }

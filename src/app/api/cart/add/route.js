@@ -6,7 +6,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
     try {
-        // Authenticate user
         const response = await authMiddleware(req);
         if (response) return response;
 
@@ -15,42 +14,42 @@ export async function POST(req) {
 
         await connectDB();
 
-        // Find the user's office
         const user = await User.findById(userId);
         if (!user) {
             return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
         }
 
-        // Find office by user's office_id
         const office = await SmallOffice.findById(user.office_id);
         if (!office) {
             return NextResponse.json({ success: false, message: "Office not found" }, { status: 404 });
         }
 
-        const itemExists = office.additional_items.find((item) => item.item.toString() === itemId);
+        console.log("Before update:", office.additional_items);
 
-        if (itemExists) {
-            // Updating item if it  exists
-            itemExists.quantity += 1;           
-            itemExists.updatedBy = userId;
-        } else {
-            // Adding new item to the office's additional_items
-            office.additional_items.push({
-                item: itemId,
-                quantity: 1,
-                addedBy: userId,
-                updatedBy: userId,
-            });
+        // Ensure `additional_items` is an object before updating
+        if (Array.isArray(office.additional_items)) {
+            office.additional_items = {};
         }
 
-        await office.save();
+        // Construct update query
+        const updateQuery = {
+            $inc: { [`additional_items.${userId}.${itemId}.quantity`]: 1 },
+            $set: { [`additional_items.${userId}.${itemId}.price`]: price }
+        };
 
-        // Return a success response with the updated office data
-        return NextResponse.json({ success: true, message: "Item added successfully", office });
+        // Update in MongoDB
+        const updatedOffice = await SmallOffice.findByIdAndUpdate(
+            office._id,
+            updateQuery,
+            { new: true, upsert: true }
+        );
+
+        console.log("After update:", updatedOffice.additional_items);
+
+        return NextResponse.json({ success: true, message: "Item added successfully", office: updatedOffice });
 
     } catch (err) {
         console.log(err);
-        // Return an error response in case of failure
-        return NextResponse.json({ success: false, message: "Error while adding to items" }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Error while adding item" }, { status: 500 });
     }
 }
