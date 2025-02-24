@@ -17,8 +17,8 @@ export async function PUT(req, { params }) {
 
         // Get office details from JWT
         const { _id: officeAdminId, role } = req.user;
-        const { isActive, isVeg, name, email, phone } = await req.json();
-
+        const { isActive, isVeg, name, email, phone, excludeMeal } = await req.json();
+ 
         // Check if user is office admin
         if (role !== "office_admin") {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
@@ -37,7 +37,7 @@ export async function PUT(req, { params }) {
         // Update the selected
         const updatedOfficeStaff = await User.findByIdAndUpdate(
             staffId,
-            { name, email, phone, isVeg, isActive, updatedBy: officeAdminId },
+            { name, email, phone, isVeg, isActive, excludeMeal, updatedBy: officeAdminId },
             { new: true }
         );
 

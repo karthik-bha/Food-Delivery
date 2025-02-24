@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const OfficeStaffAdditionalMenu = () => {
+const OfficeStaffAdditionalMenu = ({type}) => {
     const [additionalMenu, setAdditionalMenu] = useState([]);
     const [splMenu, setSplMenu] = useState(false);
     const [additionalQuant, setAdditionalQuant] = useState({});
@@ -82,7 +82,7 @@ const OfficeStaffAdditionalMenu = () => {
             </div>
 
             {splMenu && (
-                <div className="absolute inset-0 flex flex-col z-50 items-center justify-center bg-black bg-opacity-35 shadow-lg">
+                <div className={`${type==="officeAdmin"? "":"absolute inset-0 bg-black bg-opacity-35"} flex flex-col z-50 items-center justify-center  shadow-lg`}>
                     <div className="bg-white p-4 rounded-lg w-[90%] max-w-3xl">
                         <div className="flex justify-between items-center my-4">
                             <h2 className="text-sub-heading">Additional Menu</h2>

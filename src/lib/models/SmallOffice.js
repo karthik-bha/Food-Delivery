@@ -11,22 +11,39 @@ const smallOfficeSchema = new mongoose.Schema({
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
 
-     // Stores additional items in an object structure: { userId: { itemId: { quantity, price } } }
-     additional_items: {
+    // Stores additional items in an object structure: { userId: { itemId: { quantity, price } } }
+    additional_items: {
         type: Object,
         default: {}
-    }
+    },
+    guest_items:[
+        {
+            addedBy:{
+                type:mongoose.Schema.Types.ObjectId,
+                ref:"User",
+                required:true
+            },
+            item:{
+                type:mongoose.Schema.Types.ObjectId,
+                ref:"AdditionalMenu",
+                required:true,
+            },
+            quantity:{
+                type:Number,
+                required:true,
+            },
+            price:{
+                type:Number,
+                required:true,
+            }
+
+        }
+    ]
 
 
 }, { timestamps: true });
 
-// Validate that all keys in additional_items are valid ObjectIds (userId) & each itemId is valid
-smallOfficeSchema.path('additional_items').validate(function (value) {
-    return Object.keys(value).every(userId => 
-        mongoose.Types.ObjectId.isValid(userId) &&
-        Object.keys(value[userId]).every(itemId => mongoose.Types.ObjectId.isValid(itemId))
-    );
-}, 'User ID and Item ID in additional_items must be valid ObjectIds');
+
 
 const SmallOffice = mongoose.models.SmallOffice || mongoose.model('SmallOffice', smallOfficeSchema);
 export default SmallOffice;
@@ -45,4 +62,4 @@ export default SmallOffice;
 //       }
 //     }
 //   }
-  
+

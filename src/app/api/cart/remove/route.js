@@ -12,7 +12,7 @@ export async function POST(req) {
 
         // Extract user details and request data
         const { _id: userId } = req.user;
-        const { itemId } = await req.json();
+        const { itemId, isGuest = false } = await req.json();
 
         await connectDB();
 
@@ -20,42 +20,70 @@ export async function POST(req) {
         const { office_id } = await User.findById(userId);
         const office = await SmallOffice.findById(office_id);
 
-        if (!office || !office.additional_items[userId]) {
-            return NextResponse.json({ success: false, message: "Item not found in cart" }, { status: 404 });
+        if (!office) {
+            return NextResponse.json({ success: false, message: "Office not found" }, { status: 404 });
         }
 
-        // Check if the item exists
-        if (!office.additional_items[userId][itemId]) {
-            return NextResponse.json({ success: false, message: "Item not found in cart" }, { status: 404 });
-        }
+        if (isGuest) {
+            // Handle removing guest items
+            const guestItemIndex = office.guest_items.findIndex(
+                (item) => item.item.toString() === itemId
+            );
 
-        // Prepare the update query
-        let updateQuery = {};
-        const itemCount = Object.keys(office.additional_items[userId]).length;
+            if (guestItemIndex === -1) {
+                return NextResponse.json({ success: false, message: "Guest item not found in cart" }, { status: 404 });
+            }
 
-        if (itemCount === 1) {
-            // Remove the entire user entry if it's their last item
-            updateQuery = { $unset: { [`additional_items.${userId}`]: "" } };
+            if (office.guest_items[guestItemIndex].quantity > 1) {
+                // Reduce quantity if more than 1
+                await SmallOffice.updateOne(
+                    { _id: office._id },
+                    { $inc: { [`guest_items.${guestItemIndex}.quantity`]: -1 } }
+                );
+            } else {
+                // Remove the item if quantity is 1
+                await SmallOffice.updateOne(
+                    { _id: office._id },
+                    { $pull: { guest_items: { item: itemId } } }
+                );
+            }
+
         } else {
-            // Reduce quantity if more than one
-            if (office.additional_items[userId][itemId].quantity > 1) {
-                updateQuery = { 
-                    $inc: { [`additional_items.${userId}.${itemId}.quantity`]: -1 }
-                };
+            if (!office.additional_items[userId] || !office.additional_items[userId][itemId]) {
+                return NextResponse.json({ success: false, message: "Item not found in cart" }, { status: 404 });
+            }
+
+            const itemQuantity = office.additional_items[userId][itemId].quantity;
+
+            if (itemQuantity > 1) {
+                // Reduce quantity if more than 1
+                await SmallOffice.updateOne(
+                    { _id: office._id },
+                    { $inc: { [`additional_items.${userId}.${itemId}.quantity`]: -1 } }
+                );
             } else {
                 // Remove only the specific item if quantity is 1
-                updateQuery = { 
-                    $unset: { [`additional_items.${userId}.${itemId}`]: "" }
-                };
+                await SmallOffice.updateOne(
+                    { _id: office._id },
+                    { $unset: { [`additional_items.${userId}.${itemId}`]: "" } }
+                );
+
+                // Fetch the updated office to check if user has any items left
+                const updatedOffice = await SmallOffice.findById(office._id);
+                const remainingItems = Object.keys(updatedOffice.additional_items[userId] || {}).length;
+
+                if (remainingItems === 0) {
+                    // Remove the user entry from additional_items if no items remain
+                    await SmallOffice.updateOne(
+                        { _id: office._id },
+                        { $unset: { [`additional_items.${userId}`]: "" } }
+                    );
+                }
             }
         }
 
-        // Perform the update
-        const updatedOffice = await SmallOffice.findByIdAndUpdate(
-            office._id,
-            updateQuery,
-            { new: true }
-        );
+        // Fetch the latest office state after all updates
+        const updatedOffice = await SmallOffice.findById(office._id);
 
         return NextResponse.json({
             success: true,

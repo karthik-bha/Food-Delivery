@@ -23,3 +23,7 @@ body {
 .btn-edit{
   @apply bg-yellow-500 hover:bg-yellow-400 px-2 py-1 rounded-md;
 }
+
+/* .btn-close{
+  @apply bg-primary hover:bg-primary-hover text-white  w-6 h-6 rounded-full;
+} */

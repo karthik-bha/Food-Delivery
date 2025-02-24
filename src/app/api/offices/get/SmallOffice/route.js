@@ -19,7 +19,7 @@ export async function GET(req) {
         }
 
         await connectDB();
-        
+
 
         // Return all smalloffices for superadmin
         if (role === "super_admin") {
@@ -51,13 +51,33 @@ export async function GET(req) {
         }
 
         // Fetch all staff members related to the office
-        const staffDetails = await User.find({ office_id, role: "office_staff" });
+        const staffDetails = await User.find({ office_id, role: { $in: ["office_staff", "office_admin"] } });
 
         // Calculate staff statistics
         const totalStaff = staffDetails.length;
-        const vegCount = staffDetails.filter(staff => staff.isVeg && staff.isActive).length;
-        const activeCount = staffDetails.filter(staff => staff.isActive).length;
-        const nonVegCount = activeCount - vegCount;
+        const vegCount = staffDetails.filter(staff => staff.isVeg).length;
+        const nonVegCount = totalStaff - vegCount;
+
+        // Auto calculate regular meals (only active staff and not excluded from regular meals) 
+        const totalMeals = staffDetails.filter(staff => staff.isActive && staff.excludeMeal === false).length;
+        const vegMeals = staffDetails.filter(staff => staff.isVeg && staff.isActive && staff.excludeMeal === false).length;
+        const nonVegMeals = totalMeals - vegMeals;
+
+        // Calculate additional items and price
+        const additionalItems = officeData.additional_items;
+        let totalAdditionalItems = 0;
+        let totalAdditionalItemsPrice = 0;
+
+        for (let userId in additionalItems) {
+            for (let itemId in additionalItems[userId]) {
+                let quantityOfCurrentItem = additionalItems[userId][itemId].quantity;
+                let priceOfCurrentItem = additionalItems[userId][itemId].price
+                totalAdditionalItems += quantityOfCurrentItem
+                totalAdditionalItemsPrice += priceOfCurrentItem * quantityOfCurrentItem;
+            }
+
+        }
+
 
         return NextResponse.json({
             success: true,
@@ -67,7 +87,11 @@ export async function GET(req) {
                 totalStaff,
                 vegCount,
                 nonVegCount,
-                activeCount
+                totalMeals,
+                vegMeals,
+                nonVegMeals,
+                totalAdditionalItems,
+                totalAdditionalItemsPrice
             }
         }, { status: 200 });
 

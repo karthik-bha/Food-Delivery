@@ -45,7 +45,7 @@ const OfficeStaffDash = () => {
     const handleConfirm = async () => {
         setUpdating(true);
         try {
-            const response = await axios.put(`/api/users/update/officeStaff`, { isActive, isVeg, excludeMeal });
+            const response = await axios.put(`/api/users/update`, { isActive, isVeg, excludeMeal });
 
             if (response.data.success) {
                 setIsActive(response.data.updatedOfficeStaff.isActive);
