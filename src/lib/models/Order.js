@@ -21,38 +21,56 @@ const orderSchema = new mongoose.Schema({
     },
     AdditionalOrder: [
         {
-            item: {
+            orderedBy: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'AdditionalMenu',
+                ref: 'User',
+                required: true
             },
-            quantity: {
-                type: Number,
-                required: true,
-                default: 1,
-            },
-            totalPrice: {
-                type: Number,
-                required: true,
-                default: 0, // Calculated server-side
-            }
+            items: [
+                {
+                    item: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'AdditionalMenu',
+                    },
+                    quantity: {
+                        type: Number,
+                        required: true,
+                        default: 1,
+                    },
+                    totalPrice: {
+                        type: Number,
+                        required: true,
+                        default: 0,
+                    }
+                }
+            ]
         }
     ],
     GuestOrder: [
         {
-            item: {
+            orderedBy: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'AdditionalMenu',
+                ref: 'User',
+                required: true
             },
-            quantity: {
-                type: Number,
-                required: true,
-                default: 1,
-            },
-            totalPrice: {
-                type: Number,
-                required: true,
-                default: 0,
-            }
+            items: [
+                {
+                    item: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'AdditionalMenu',
+                    },
+                    quantity: {
+                        type: Number,
+                        required: true,
+                        default: 1,
+                    },
+                    totalPrice: {
+                        type: Number,
+                        required: true,
+                        default: 0,
+                    }
+                }
+            ]
         }
     ],
     TotalAmount: {
@@ -60,7 +78,7 @@ const orderSchema = new mongoose.Schema({
         required: true,
         default: 0
     }
-});
+}, { timestamps: true });
 
 const Order = mongoose.models.Order || mongoose.model("Order", orderSchema);
 

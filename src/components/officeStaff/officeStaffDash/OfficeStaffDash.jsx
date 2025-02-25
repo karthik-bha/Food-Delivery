@@ -67,8 +67,8 @@ const OfficeStaffDash = () => {
     async function fetchMenu() {
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         let currDate = new Date().getDay();
-        let currDay = daysOfWeek[1];
-        setCurrDayState(daysOfWeek[1]);
+        let currDay = daysOfWeek[currDate];
+        setCurrDayState(daysOfWeek[currDate]);
         console.log(currDay);
         try {
             const response = await axios.get("/api/menu/get");

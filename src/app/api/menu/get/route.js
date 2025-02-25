@@ -15,9 +15,9 @@ export async function GET(req) {
 
         const { _id: userId, role } = req.user;
 
-        if (role !== "restaurant_owner" && role !== "office_staff" && role !== "office_admin") {
-            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
-        }
+        // if (role !== "restaurant_owner" && role !== "office_staff" && role !== "office_admin") {
+        //     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+        // }
 
         // Extract office_id irrespective of role (doesnt matter if it is office_staff/office_admin/restaurant_owner)
         const { office_id } = await User.findById(userId);

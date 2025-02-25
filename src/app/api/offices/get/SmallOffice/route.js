@@ -78,6 +78,16 @@ export async function GET(req) {
 
         }
 
+        // Calculate total guest items and price
+        const guestItems = officeData.guest_items;
+        let totalGuestItems = 0;
+        let totalGuestItemsPrice = 0;
+        for (let guestItem of guestItems) {
+            totalGuestItems += guestItem.quantity;
+            totalGuestItemsPrice += guestItem.price * guestItem.quantity;
+        }
+
+
 
         return NextResponse.json({
             success: true,
@@ -88,10 +98,14 @@ export async function GET(req) {
                 vegCount,
                 nonVegCount,
                 totalMeals,
+                // This is will be used for ordering
+                // When you click order, latest data will be fetched and shown.
                 vegMeals,
                 nonVegMeals,
                 totalAdditionalItems,
-                totalAdditionalItemsPrice
+                totalAdditionalItemsPrice,
+                totalGuestItems,
+                totalGuestItemsPrice 
             }
         }, { status: 200 });
 
