@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { processOrder } from "@/actions/officeAdmin/processOrder";
 import { toast } from "react-toastify";
 
-const Order = ({ setOrder, staffData, officeData }) => {
+const Order = ({ setOrder, staffData }) => {
     const { vegMeals, nonVegMeals } = staffData;
     const vegMealPrice = 100;
     const nonVegMealPrice = 150;
@@ -48,24 +48,41 @@ const Order = ({ setOrder, staffData, officeData }) => {
         guestTotalPrice;
 
 
-    const onSubmit = async (data) => {
-        console.log(orderData);
-        try {
-            const processedData = await processOrder({
-                vegMeals: data.vegMeals,
-                nonVegMeals: data.nonVegMeals,        
-                orderData
-            });
-            console.log(processedData);
-            const response = await axios.post("/api/order/placeOrder", processedData);  
-            console.log(response);
-            toast.success(response.data.message);
-            // setOrder(false);
+        const onSubmit = async (data) => {
+            try {
+             
+                const processedData = await processOrder({
+                    vegMeals: data.vegMeals,
+                    nonVegMeals: data.nonVegMeals,
+                    orderData
+                });
+        
+                // console.log("Processed Data:", processedData); 
+        
+                // Send request
+                const response = await axios.post("/api/order/placeOrder", processedData);          
+        
+                if (response.data?.success) {
+                    toast.success(response.data.message);
+                } else {
+                    toast.error(response.data?.message || "Order placement failed");
+                }
 
-        } catch (error) {
-            console.error("Order submission failed", error);
-        }
-    };
+            } catch (error) {
+                // console.error("Order submission failed:", error);
+        
+                if (error.response) {
+                    const { data, status } = error.response;                    
+                         
+                    if (data?.message) {
+                        toast.error(data.message); // Show the exact rejection message
+                    } else {
+                        toast.error(`Request failed with status ${status}`);
+                    }
+                } 
+            }
+        };
+        
 
 
     if (loading) {

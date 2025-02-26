@@ -13,12 +13,12 @@ const RestOwnerSide = () => {
                 <Link href="/dashboard/restaurantOwner/menus" className="hover:text-white">
                     <li>MENUS</li>
                 </Link>
-                 <Link href="/dashboard/restaurantOwner/offices" className="hover:text-white">
+                 {/* <Link href="/dashboard/restaurantOwner/offices" className="hover:text-white">
                     <li>CLIENT OFFICES</li>
-                </Link>
-                <Link href="/dashboard/restaurantOwner/orders" className="hover:text-white">
+                </Link> */}
+                {/* <Link href="/dashboard/restaurantOwner/orders" className="hover:text-white">
                     <li>ORDERS</li>
-                </Link>
+                </Link> */}
             </ul>} 
 
             <div className=" hover:scale-110 ">

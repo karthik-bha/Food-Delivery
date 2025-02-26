@@ -3,8 +3,9 @@ import { verifyToken } from "../jwt";
 import { cookies } from "next/headers";
 
 export async function authMiddleware(req) {
+    // console.log(req);
     const cookie = await cookies();
-    const token = cookie.get("token");
+    const token = cookie.get("token") || req.headers.get("authorization") ;
     // console.log(token);
 
     if (!token) {
@@ -16,7 +17,7 @@ export async function authMiddleware(req) {
 
     // Verify token, await the promise returned by verifyToken
     const decoded = await verifyToken(token);
-
+ 
     if (!decoded) {
         return NextResponse.json(
             { success: false, message: "Invalid or expired token" },

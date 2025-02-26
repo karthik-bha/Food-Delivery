@@ -174,21 +174,33 @@ const OfficeAdmin = () => {
             <li>The total cost of Additional Items is <b> {staffData.totalAdditionalItemsPrice}</b>.</li>
             <li>The total cost of Guest Orders is <b>{staffData.totalGuestItemsPrice}</b>.</li>
           </ul>
-          <button className="btn-primary my-2"
-            onClick={() => { setOrder(true) }}>Order now</button>
-          {order &&
-            (
-              // Order form
-              <div>
-                <Order
 
-                  staffData={staffData}      
-                  officeData={officeData}           
-                  setOrder={setOrder}
-                />
-              </div>
-            )
+          {/* Allow orders only if office is active/opted for orders  */}
+          {/* Manual order  */}
+          {officeStatus ? (
+            <>
+              <button className="btn-primary my-2"
+                onClick={() => { setOrder(true) }}>Order now</button>
+              {order &&
+                (
+                  // Order form
+                  <div>
+                    <Order
+          
+                      staffData={staffData}
+                      officeData={officeData}
+                      setOrder={setOrder}
+                    />
+                  </div>
+                )
+              }
+            </>
+          ):
+          <div className="my-4">
+            <p>You have opted <b>out</b> of meals for today. No order will be placed. You can opt in again by updating your preferences.</p>
+            </div>
           }
+
 
 
 

@@ -1,6 +1,8 @@
 import Order from "@/lib/models/Order";
 import { NextResponse } from "next/server";
 import { authMiddleware } from "@/lib/middleware/auth";
+import SmallOffice from "@/lib/models/SmallOffice";
+import RestaurantOffice from "@/lib/models/RestaurantOffice";
 import OfficeAndRestaurantMapping from "@/lib/models/OfficeAndRestaurantMapping";
 import User from "@/lib/models/userSchema";
 import { connectDB } from "@/lib/db/connectDB";
@@ -31,7 +33,11 @@ export async function GET(req) {
             const { _id: mappingId } = await OfficeAndRestaurantMapping.findOne({ office_id: office_id });
 
             // Using the mapping id find the orders
-            orders = await Order.find({ OfficeAndRestaurantMappingId: mappingId });
+            orders = await Order.find({ OfficeAndRestaurantMappingId: mappingId })
+            .populate("AdditionalOrder.orderedBy","name")
+            .populate("AdditionalOrder.items.item","name")
+            .populate("GuestOrder.orderedBy","name")
+            .populate("GuestOrder.items.item","name");
 
         }
         else if (role === "restaurant_owner") {
@@ -48,9 +54,20 @@ export async function GET(req) {
                 const mappingIds = mappings.map(mapping => mapping._id);
 
                 // Use these mapping IDs to fetch all orders
-                orders = await Order.find({ OfficeAndRestaurantMappingId: { $in: mappingIds } });
+                orders = await Order.find({ OfficeAndRestaurantMappingId: { $in: mappingIds } })
+                .populate({
+                    path: "OfficeAndRestaurantMappingId",
+                    populate: [
+                        { path: "office_id", select: "name" }, 
+                        { path: "restaurant_id", select: "name" }
+                    ]
+                })
+                .populate("AdditionalOrder.orderedBy", "name")
+                .populate("AdditionalOrder.items.item", "name")
+                .populate("GuestOrder.orderedBy", "name")
+                .populate("GuestOrder.items.item", "name");
 
-                console.log("Orders for all mapping IDs: ", orders); 
+                // console.log("Orders for all mapping IDs: ", orders); 
             } else {
                 console.log('No mappings found for this restaurant.');
             }

@@ -6,6 +6,7 @@ import User from "@/lib/models/userSchema";
 import AdditionalMenu from "@/lib/models/AdditionalMenu";
 import { NextResponse } from "next/server";
 import SmallOffice from "@/lib/models/SmallOffice";
+import RestaurantOffice from "@/lib/models/RestaurantOffice";
 
 export async function POST(req) {
     try {
@@ -30,8 +31,31 @@ export async function POST(req) {
         const user = await User.findById(officeAdminId);
         if (!user) return NextResponse.json({ success: false, message: "User not found" }, { status: 400 });
 
+        // Checks to see if order is possible (smalloffice must be open, restuarantoffice must be open)
+        const smallOffice = await SmallOffice.findById(user.office_id);
+        if (!smallOffice.isActive) {
+            return NextResponse.json({
+                success: false,
+                message: "Cannot place order without opting in for meals!"
+            },
+                { status: 400 });
+        }
+
+        
+
         const mapping = await OfficeAndRestaurantMapping.findOne({ office_id: user.office_id });
         if (!mapping) return NextResponse.json({ success: false, message: "Invalid request" }, { status: 400 });
+
+        // Check if restaurant is active
+        const restaurantOffice = await RestaurantOffice.findById(mapping.restaurant_id);
+        if (!restaurantOffice.isActive) {
+            return NextResponse.json({
+                success: false,
+                message: "Cannot place order, Restaurant is closed!"
+            },
+                { status: 400 });
+        }
+        
 
         // Function to process orders
         const processOrders = async (orders) => {
@@ -83,7 +107,7 @@ export async function POST(req) {
         await order.save();
 
         // Clear additional items after order placement
-        // await SmallOffice.findByIdAndUpdate(user.office_id, { additional_items: {}, guest_items=[] });
+        await SmallOffice.findByIdAndUpdate(user.office_id, { additional_items: {}, guest_items: [] });
 
 
         return NextResponse.json({ success: true, message: "Order placed successfully", order }, { status: 200 });
