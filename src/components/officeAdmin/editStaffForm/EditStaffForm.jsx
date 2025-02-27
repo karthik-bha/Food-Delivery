@@ -21,12 +21,12 @@ const EditStaffForm = ({ setOpenForm, setStaffData, staff }) => {
     const onSubmit = async (data) => {
         setLoading(true);
         try {
-            const response = await axios.put(`/api/users/update/officeStaff/${staff._id}`, data);
+            const response = await axios.put(`/api/users/update/${staff._id}`, data);
 
             if (response.data.success) {
                 toast.success(response.data.message);
                 setStaffData(prevData =>
-                    prevData.map(s => (s._id === staff._id ? response.data.updatedOfficeStaff : s))
+                    prevData.map(s => (s._id === staff._id ? response.data.updatedUser : s))
                 );
                 setOpenForm(false);
             } else {

@@ -22,7 +22,7 @@ const fetchMenuData = async (token) => {
   return response.json();
 };
 
-// Function to fetch order requests (add API when available)
+// Function to fetch order requests 
 const fetchOrderRequests = async (token) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/order/get`, {
     headers: { Authorization: token },

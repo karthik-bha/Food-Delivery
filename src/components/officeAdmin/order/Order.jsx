@@ -57,7 +57,7 @@ const Order = ({ setOrder, staffData }) => {
                     orderData
                 });
         
-                // console.log("Processed Data:", processedData); 
+                console.log("Processed Data:", processedData); 
         
                 // Send request
                 const response = await axios.post("/api/order/placeOrder", processedData);          
@@ -75,7 +75,7 @@ const Order = ({ setOrder, staffData }) => {
                     const { data, status } = error.response;                    
                          
                     if (data?.message) {
-                        toast.error(data.message); // Show the exact rejection message
+                        toast.error(data.message); 
                     } else {
                         toast.error(`Request failed with status ${status}`);
                     }

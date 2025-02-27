@@ -26,7 +26,8 @@ const EditOfficeForm = ({ setOfficeForm, officeData, setOfficeData}) => {
             const response = await axios.put(`/api/offices/update/pvt/SmallOffice`, data);
             console.log(response);
             if (response.data.success) {
-                toast.success(response.data.message);                
+                toast.success(response.data.message+", Please refresh");  
+                setOfficeData(response.data.updatedOffice);                              
                 setOfficeForm(false);
             } else {
                 toast.error(response.data.message);

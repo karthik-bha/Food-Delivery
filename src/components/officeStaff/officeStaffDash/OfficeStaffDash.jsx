@@ -45,12 +45,12 @@ const OfficeStaffDash = () => {
     const handleConfirm = async () => {
         setUpdating(true);
         try {
-            const response = await axios.put(`/api/users/update`, { isActive, isVeg, excludeMeal });
-
+            const response = await axios.put(`/api/users/update/${userData._id}`, { isActive, isVeg, excludeMeal });
+            const fetchedData = response.data.updatedUser;
             if (response.data.success) {
-                setIsActive(response.data.updatedOfficeStaff.isActive);
-                setIsVeg(response.data.updatedOfficeStaff.isVeg);
-                setExcludeMeal(response.data.updatedOfficeStaff.excludeMeal);
+                setIsActive(fetchedData.isActive);
+                setIsVeg(fetchedData.isVeg);
+                setExcludeMeal(fetchedData.excludeMeal);
                 toast.success(response.data.message);
             } else {
                 toast.error(response.data.message);
@@ -94,7 +94,7 @@ const OfficeStaffDash = () => {
         <div className="m-4">
 
             <div className="text-1xl md:text-2xl my-12">
-                Hi {userData.name}, today is {menuData && currDayState ? menuData.Theme+" - "+currDayState : "Loading..."}. Your regular meal is {menuData ? (isVeg ? menuData.Veg : menuData.NonVeg) : "No Menu for Today."}.
+                Hi {userData? userData.name : "Loading..."}, today is {menuData && currDayState ? menuData.Theme+" - "+currDayState : "Loading..."}. Your regular meal is {menuData ? (isVeg ? menuData.Veg : menuData.NonVeg) : "No Menu for Today."}.
             </div>
 
             {/* Status & Menu Cards */}

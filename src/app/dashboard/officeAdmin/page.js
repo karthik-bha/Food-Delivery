@@ -7,6 +7,7 @@ import Loader from "@/components/Loader";
 import GuestAdditionalMenu from "@/components/GuestAdditionalMenu";
 import OfficeStaffAdditionalMenu from "@/components/officeStaff/officeStaffAdditionalMenu/OfficeStaffAdditionalMenu";
 import Order from "@/components/officeAdmin/order/Order";
+import { getRestTime } from "@/actions/officeAdmin/getRestTime";
 
 const OfficeAdmin = () => {
   // Office data and staff calculations 
@@ -21,13 +22,14 @@ const OfficeAdmin = () => {
   const [officeStatus, setOfficeStatus] = useState(null);
 
   // Menu related states
-  const [menuData, setMenuData] = useState(null);
+  const [menuData, setMenuData] = useState({});
   const [day, setDay] = useState(null);
 
-  // Office Admin states
+  // Office Admin states 
   const [isActive, setIsActive] = useState(false);
   const [isVeg, setIsVeg] = useState(false);
   const [excludeMeal, setExcludeMeal] = useState(false);
+  const [userData, setUserData] = useState({});
 
   // For editing office details 
   const [officeForm, setOfficeForm] = useState(false);
@@ -35,12 +37,43 @@ const OfficeAdmin = () => {
   // Order form related
   const [order, setOrder] = useState(false);
 
-  // Load office data on first load
+  // Timer
+  const [timeLeft, setTimeLeft] = useState(null);
+
+
+  // Initial data fetch
   useEffect(() => {
-    fetchOfficeData();
-    fetchMenuData();
-    fetchOfficeAdmin(); // Optimization possible: populate office_admins office_id;
+    const fetchData = async () => {
+      await fetchOfficeData();
+      await fetchMenuData();
+      await fetchOfficeAdmin();
+    };
+
+    fetchData();
   }, []);
+
+
+  // This useEffect fetches restaurant closing time
+  useEffect(() => {
+    if (!userData?.office_id) return;
+
+    const fetchRestaurantTime = async () => {
+      const getRestaurantTime = await getRestTime(userData.office_id);
+      console.log("REST TIME  " + getRestaurantTime);
+
+      // const targetTime = getTargetTime("16:40"); // Fixed time
+      const targetTime = getTargetTime(getRestaurantTime);
+      const updateTimer = () => setTimeLeft(calculateTimeLeft(targetTime));
+
+      updateTimer(); // Initial call
+      const interval = setInterval(updateTimer, 1000);
+
+      return () => clearInterval(interval);
+    };
+
+    fetchRestaurantTime();
+  }, [userData]);
+
 
   // Fetch Office data on initial load
   const fetchOfficeData = async () => {
@@ -111,6 +144,7 @@ const OfficeAdmin = () => {
         setIsActive(user.isActive);
         setIsVeg(user.isVeg);
         setExcludeMeal(user.excludeMeal);
+        // console.log(user.data);
         setUserData(user);
       }
     } catch (err) {
@@ -121,13 +155,14 @@ const OfficeAdmin = () => {
   // Updates state of office_admin
   const handleConfirm = async () => {
     setUpdating(true);
+    console.log(userData);
     try {
-      const response = await axios.put(`/api/users/update`, { isActive, isVeg, excludeMeal });
-
+      const response = await axios.put(`/api/users/update/${userData._id}`, { isActive, isVeg, excludeMeal, type: "officeUsers" });
+      const fetchedData = response.data.updatedUser;
       if (response.data.success) {
-        setIsActive(response.data.updatedOfficeStaff.isActive);
-        setIsVeg(response.data.updatedOfficeStaff.isVeg);
-        setExcludeMeal(response.data.updatedOfficeStaff.excludeMeal);
+        setIsActive(fetchedData.isActive);
+        setIsVeg(fetchedData.isVeg);
+        setExcludeMeal(fetchedData.excludeMeal);
         toast.success(response.data.message + ", Please refresh");
       } else {
         toast.error(response.data.message);
@@ -141,7 +176,32 @@ const OfficeAdmin = () => {
   };
 
 
-  if (loading || !menuData || !staffData || !officeData) {
+
+  // Converts "HH:MM" string into a Date object for today
+  const getTargetTime = (timeString) => {
+    const [hours, minutes] = timeString.split(":").map(Number);
+    const now = new Date();
+    const targetTime = new Date(now);
+    targetTime.setHours(hours, minutes, 0, 0); // Set to fixed HH:MM:00.000
+    return targetTime;
+  };
+
+  // Function to update the countdown timer
+  const calculateTimeLeft = (targetTime) => {
+    const currentTime = new Date();
+    const difference = targetTime - currentTime;
+
+    if (difference > 0) {
+      const minutes = Math.floor(difference / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+      return `${minutes}m ${seconds}s`;
+    } else {
+      return "Order has been placed.";
+    }
+  };
+
+
+  if (loading || !staffData || !officeData) {
     return <Loader />;
   }
 
@@ -162,18 +222,25 @@ const OfficeAdmin = () => {
             <p>Today is <b>{menuData && day ? (menuData.Theme + " - " + day) : "No Menu for Today."}</b></p>
           </div>
 
+          <button className="btn-primary my-4" onClick={() => setOfficeForm(true)}>Edit office details</button>
+
           {/* -------------------------------------------------------------- */}
           {/* Shows order details  */}
           <h3 className="text-sub-heading my-4"> Order overview </h3>
           <ul className="flex flex-col gap-2">
             <li>Your total number of meals for today is <b>{staffData.totalMeals}.</b> </li>
-            <li><b>{staffData.vegMeals} {menuData.Veg}</b>,
-              <b> {staffData.nonVegMeals} {menuData.NonVeg} </b>,
+            <li><b>{staffData.vegMeals} {menuData?.Veg}</b>,
+              <b> {staffData.nonVegMeals} {menuData?.NonVeg} </b>,
               <b> {staffData.totalAdditionalItems} additional items </b> and <b>{staffData.totalGuestItems} guest items</b> will be delivered today.</li>
 
             <li>The total cost of Additional Items is <b> {staffData.totalAdditionalItemsPrice}</b>.</li>
             <li>The total cost of Guest Orders is <b>{staffData.totalGuestItemsPrice}</b>.</li>
           </ul>
+
+          {/* Countdown Timer */}
+          <div className="text-red-500 font-bold my-2">
+            {timeLeft && <p>Automatic order will be placed in: {timeLeft}</p>}
+          </div>
 
           {/* Allow orders only if office is active/opted for orders  */}
           {/* Manual order  */}
@@ -186,7 +253,7 @@ const OfficeAdmin = () => {
                   // Order form
                   <div>
                     <Order
-          
+
                       staffData={staffData}
                       officeData={officeData}
                       setOrder={setOrder}
@@ -195,9 +262,9 @@ const OfficeAdmin = () => {
                 )
               }
             </>
-          ):
-          <div className="my-4">
-            <p>You have opted <b>out</b> of meals for today. No order will be placed. You can opt in again by updating your preferences.</p>
+          ) :
+            <div className="my-4">
+              <p>You have opted <b>out</b> of meals for today. No order will be placed. You can opt in again by updating your preferences.</p>
             </div>
           }
 

@@ -13,6 +13,9 @@ const RestOwnerSide = () => {
                 <Link href="/dashboard/restaurantOwner/menus" className="hover:text-white">
                     <li>MENUS</li>
                 </Link>
+                <Link href="/dashboard/restaurantOwner/office" className="hover:text-white">
+                    <li>OFFICE</li>
+                </Link>
                  {/* <Link href="/dashboard/restaurantOwner/offices" className="hover:text-white">
                     <li>CLIENT OFFICES</li>
                 </Link> */}

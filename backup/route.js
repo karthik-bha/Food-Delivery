@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { authMiddleware } from "@/lib/middleware/auth";
 import { connectDB } from "@/lib/db/connectDB";
 
-// This route is only for officeStaff
+// This route is only for office Admin 
 export async function PUT(req) {
     // Authenticate the user
     const response = await authMiddleware(req);
