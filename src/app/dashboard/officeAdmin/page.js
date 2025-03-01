@@ -8,6 +8,8 @@ import GuestAdditionalMenu from "@/components/GuestAdditionalMenu";
 import OfficeStaffAdditionalMenu from "@/components/officeStaff/officeStaffAdditionalMenu/OfficeStaffAdditionalMenu";
 import Order from "@/components/officeAdmin/order/Order";
 import { getRestTime } from "@/actions/officeAdmin/getRestTime";
+import OfficeUsersPreferences from "@/components/OfficeUsersPreferences";
+import TextOfficeUsersPreferences from "@/components/TextOfficeUsersPreferences";
 
 const OfficeAdmin = () => {
   // Office data and staff calculations 
@@ -26,9 +28,6 @@ const OfficeAdmin = () => {
   const [day, setDay] = useState(null);
 
   // Office Admin states 
-  const [isActive, setIsActive] = useState(false);
-  const [isVeg, setIsVeg] = useState(false);
-  const [excludeMeal, setExcludeMeal] = useState(false);
   const [userData, setUserData] = useState({});
 
   // For editing office details 
@@ -140,10 +139,7 @@ const OfficeAdmin = () => {
       const response = await axios.get("/api/users/pvtAccess");
       const user = response.data.userData;
       if (response.data.success) {
-        console.log(response.data.userData);
-        setIsActive(user.isActive);
-        setIsVeg(user.isVeg);
-        setExcludeMeal(user.excludeMeal);
+        console.log(response.data.userData);        
         // console.log(user.data);
         setUserData(user);
       }
@@ -151,30 +147,6 @@ const OfficeAdmin = () => {
       console.log(err);
     }
   }
-
-  // Updates state of office_admin
-  const handleConfirm = async () => {
-    setUpdating(true);
-    console.log(userData);
-    try {
-      const response = await axios.put(`/api/users/update/${userData._id}`, { isActive, isVeg, excludeMeal, type: "officeUsers" });
-      const fetchedData = response.data.updatedUser;
-      if (response.data.success) {
-        setIsActive(fetchedData.isActive);
-        setIsVeg(fetchedData.isVeg);
-        setExcludeMeal(fetchedData.excludeMeal);
-        toast.success(response.data.message + ", Please refresh");
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (err) {
-      console.error("API Error:", err.response ? err.response.data : err.message);
-      toast.error(err.response?.data?.message || "Update failed. Please try again.");
-    } finally {
-      setUpdating(false);
-    }
-  };
-
 
 
   // Converts "HH:MM" string into a Date object for today
@@ -190,12 +162,17 @@ const OfficeAdmin = () => {
   const calculateTimeLeft = (targetTime) => {
     const currentTime = new Date();
     const difference = targetTime - currentTime;
+    // console.log(difference);
 
     if (difference > 0) {
       const minutes = Math.floor(difference / (1000 * 60));
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+      if (minutes > 20) {
+        return "More than 20 min left until order.";
+      }
       return `${minutes}m ${seconds}s`;
-    } else {
+    }
+    else {
       return "Order has been placed.";
     }
   };
@@ -311,105 +288,13 @@ const OfficeAdmin = () => {
             {/* Update office admin preferences  */}
 
             <h3 className="my-6 text-sub-heading">Your preferences</h3>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-              {/* Status Card */}
-              <div className="col-span-2 shadow-md rounded-md">
-                <div className="p-2 bg-primary text-secondary rounded-t-md">
-                  <h4 className="text-center text-sub-heading">Current Status</h4>
-                </div>
-                <div className="flex justify-center p-4">
-                  <p className={`text-sub-heading ${isActive ? "text-green-500" : "text-red-500"}`}>
-                    {isActive ? "Active" : "Inactive"}
-                  </p>
-                </div>
-              </div>
 
-              {/* Meal Preference Card */}
-              <div className="col-span-2 shadow-md rounded-md">
-                <div className="p-2 bg-primary text-secondary rounded-t-md">
-                  <h2 className="text-center text-sub-heading">Your Meal Preference</h2>
-                </div>
-                <div className="flex justify-center items-center p-4">
-                  <p className={`text-sub-heading ${isVeg ? "text-green-500" : "text-red-500"}`}>
-                    {isVeg ? "Veg" : "Non-Veg"}
-                  </p>
-                </div>
-              </div>
+            {/* Card Style  */}
+            {/* <OfficeUsersPreferences typeOfUser={"office_admin"} /> */}
 
-              {/* Shows if user has opted out of Regular meals */}
-              <div className="col-span-2 shadow-md rounded-md">
-                <div className="p-2 bg-primary text-secondary rounded-t-md">
-                  <h2 className="text-center text-sub-heading">Opt out of Regular Meals?</h2>
-                </div>
-                <div className="flex justify-center items-center p-4">
-                  <p className={`text-sub-heading ${excludeMeal ? "text-green-500" : "text-red-500"}`}>
-                    {excludeMeal ? "Yes" : "No"}
-                  </p>
-                </div>
-              </div>
+            {/* Document style  */}
+            <TextOfficeUsersPreferences typeOfUser={"office_admin"} />
 
-            </div>
-
-            {/* -------------------------------------------------------------- */}
-
-            {/* Status update options  */}
-
-            <div className="grid md:grid-cols-2">
-              {/* Change Status */}
-              <div className="mt-4">
-                <p className="text-[1.2rem] mb-2">Change Your Attendance Status</p>
-                <select
-                  value={isActive.toString()}
-                  onChange={(e) => setIsActive(e.target.value === "true")}
-                  className="px-2 py-1 border border-black rounded-md"
-                >
-                  <option value="true">Active</option>
-                  <option value="false">Inactive</option>
-                </select>
-              </div>
-
-              {/* Change Meal Preference */}
-              <div className="mt-4">
-                <p className="text-[1.2rem] mb-2">Change Your Meal Preference</p>
-                <select
-                  value={isVeg.toString()}
-                  onChange={(e) => setIsVeg(e.target.value === "true")}
-                  className="px-2 py-1 border border-black rounded-md"
-                >
-                  <option value="true">Veg</option>
-                  <option value="false">Non-Veg</option>
-                </select>
-              </div>
-
-              {/* Opt out of Regular meal if you do not need */}
-              <div className="mt-4">
-                <p className="text-[1.2rem] mb-2">Do you want to exclude regular meals?</p>
-                <select
-                  value={excludeMeal.toString()}
-                  onChange={(e) => setExcludeMeal(e.target.value === "true")}
-                  className="px-2 py-1 border border-black rounded-md"
-                >
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </select>
-              </div>
-
-            </div>
-
-            {/* Confirm Button */}
-            <div className="mt-4">
-              <button
-                onClick={handleConfirm}
-                className="btn-primary"
-                disabled={updating}
-              >
-                {updating ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white"></div>
-                ) : (
-                  "Confirm"
-                )}
-              </button>
-            </div>
           </div>
 
           {/* -------------------------------------------------------------- */}

@@ -5,7 +5,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const AddMenu = ({ setFormOpen }) => {
     const { register, handleSubmit, reset, watch, control } = useForm({

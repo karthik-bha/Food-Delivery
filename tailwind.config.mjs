@@ -9,9 +9,12 @@ export default {
     extend: {
       colors:{
         "primary":"black",
+        // "primary":"#CF240A",
         "secondary":"white",
+        // "primary-hover":"#FF2D08",
         "primary-hover":"#48484a",
         "nav-content":"#787777",
+        // "nav-content":"#FEC200",
       },
       fontSize:{
         "login-heading":"2.2rem",        

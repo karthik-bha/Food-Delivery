@@ -40,6 +40,7 @@ const fetchOrderRequests = async (token) => {
   return {todayOrders, previousOrders}
 };
 
+// Main function
 const OfficeAdmin = async () => {
   const token = await getAuthToken();
 
@@ -51,7 +52,7 @@ const OfficeAdmin = async () => {
     const menuData = await fetchMenuData(token);
     const { todayOrders, previousOrders } = await fetchOrderRequests(token);
 
-    // console.log("Menu Data:", menuData);
+    console.log("Menu Data:", menuData);
     // console.log("Order Data:", todayOrders, previousOrders );
 
     // Get today's menu
@@ -70,7 +71,7 @@ const OfficeAdmin = async () => {
         </div>
 
         <div>
-          <RenderOrders todayOrders={todayOrders} previousOrders={previousOrders} />
+          <RenderOrders todayOrders={todayOrders} allDaysMenu={menuData} todaysMenu={todaysMenu} previousOrders={previousOrders} />
         </div>
       </div>
     );
