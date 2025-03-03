@@ -42,6 +42,7 @@ const TextOfficeUsersPreferences = ({ typeOfUser }) => {
         setUpdating(true);
         try {
             let response;
+            console.log(isActive, isVeg, excludeMeal);
             if (typeOfUser === "office_staff") {
                 response = await axios.put(`/api/users/update/${userData._id}`, { isActive, isVeg, excludeMeal });
             } else {
@@ -53,6 +54,7 @@ const TextOfficeUsersPreferences = ({ typeOfUser }) => {
                 setIsVeg(fetchedData.isVeg);
                 setExcludeMeal(fetchedData.excludeMeal);
                 toast.success(response.data.message);
+                fetchUserData();
             } else {
                 toast.error(response.data.message);
             }
@@ -72,79 +74,102 @@ const TextOfficeUsersPreferences = ({ typeOfUser }) => {
     }
 
     return (
-        <div className="m-4">
+        <div className="mx-2 md:mx-auto">
 
 
             {/* Status update options  */}
-                {/* Change Status */}
-                <div className="mt-4 flex flex-col gap-2">
-                    <div className="flex gap-2 items-center">
-                        <p className="text-[1.2rem] mb-2">Change Your Attendance Status</p>
+            {/* Change Status */}
 
-                        <select
-                            value={isActive.toString()}
-                            onChange={(e) => setIsActive(e.target.value === "true")}
-                            className="px-2 py-1 border border-black rounded-md"
-                        >
-                            <option value="true">Active</option>
-                            <option value="false">Inactive</option>
-                        </select>
-                    </div>
-                    <div className="flex gap-2 items-center">
-                        <p>Selected status:</p>
-                        <p className={` ${isActive ? "text-green-500" : "text-red-500"}`}>
-                            {isActive ? "Active" : "Inactive"}
-                        </p>
-                    </div>
+            <div className="mt-4 flex gap-2 items-center md:flex-row flex-col">
+                <p className="text-[1.2rem] ">I am absent today, no food for me?</p>
+                <div className="flex gap-4 items-center ">
+                    <label className="flex items-center gap-1">
+                        <input
+                            type="radio"
+                            name="attendance"
+                            value="true"
+                            checked={isActive}
+                            onChange={() => setIsActive(true)}
+                        />
+                        Present
+                    </label>
+                    <label className="flex items-center gap-1">
+                        <input
+                            type="radio"
+                            name="attendance"
+                            value="false"
+                            checked={!isActive}
+                            onChange={() => setIsActive(false)}
+                        />
+                        Absent
+                    </label>
                 </div>
+                {/* <p className={` ${isActive ? "text-green-500" : "text-red-500"}`}>
+                    {isActive ? "Active" : "Inactive"}
+                </p> */}
+            </div>
 
-                {/* Change Meal Preference */}
-                <div className="mt-4 flex flex-col gap-2">
-                    <div className="flex gap-2 items-center">
-                        <p className="text-[1.2rem] mb-2">Change Your Meal Preference</p>
-
-                        <select
-                            value={isVeg.toString()}
-                            onChange={(e) => setIsVeg(e.target.value === "true")}
-                            className="px-2 py-1 border border-black rounded-md"
-                        >
-                            <option value="true">Veg</option>
-                            <option value="false">Non-Veg</option>
-                        </select>
-                    </div>
-                    <div className="flex gap-2 items-center">
-                        <p>Selected status:</p>
-                        <p className={` ${isVeg ? "text-green-500" : "text-red-500"}`}>
-                            {isVeg ? "Veg" : "Non-Veg"}
-                        </p>
-                    </div>
+            {/* Change Meal Preference */}
+            <div className="mt-4 flex gap-2 items-center md:flex-row flex-col">
+                <p className="text-[1.2rem] ">Your preference for a regular meal is</p>
+                <div className="flex gap-4">
+                    <label className="flex items-center gap-1">
+                        <input
+                            type="radio"
+                            name="mealPreference"
+                            value="true"
+                            checked={isVeg}
+                            onChange={() => setIsVeg(true)}
+                        />
+                        Veg
+                    </label>
+                    <label className="flex items-center gap-1">
+                        <input
+                            type="radio"
+                            name="mealPreference"
+                            value="false"
+                            checked={!isVeg}
+                            onChange={() => setIsVeg(false)}
+                        />
+                        Non-Veg
+                    </label>
                 </div>
+                {/* <p className={` ${isVeg ? "text-green-500" : "text-red-500"}`}>
+                    {isVeg ? "Veg" : "Non-Veg"}
+                </p> */}
+            </div>
 
-                {/* Opt out of Regular meal if you do not need */}
-                <div className="mt-4 flex flex-col gap-2">
-                    <div className="flex gap-2 items-center">
-                        <p className="text-[1.2rem] mb-2">Do you want to exclude regular meals?</p>
-                        <div className="flex">
-                            <select
-                                value={excludeMeal.toString()}
-                                onChange={(e) => setExcludeMeal(e.target.value === "true")}
-                                className="px-2 py-1 border border-black rounded-md"
-                            >
-                                <option value="true">Yes</option>
-                                <option value="false">No</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="flex gap-2">
-                        <p>Selected status:</p>
-                        <p className={` ${excludeMeal ? "text-green-500" : "text-red-500"}`}>
-                            {excludeMeal ? "Yes" : "No"}
-                        </p>
-                    </div>
-
+            {/* Opt out of Regular Meal */}
+            <div className="mt-4 flex gap-2 items-center md:flex-row flex-col">
+                <p className="text-[1.2rem]">Would you like to cancel the regular meal?</p>
+                <div className="flex gap-4">
+                    <label className="flex items-center gap-1">
+                        <input
+                            type="radio"
+                            name="excludeMeal"
+                            value="true"
+                            checked={excludeMeal}
+                            onChange={() => setExcludeMeal(true)}
+                        />
+                        Yes
+                    </label>
+                    <label className="flex items-center gap-1">
+                        <input
+                            type="radio"
+                            name="excludeMeal"
+                            value="false"
+                            checked={!excludeMeal}
+                            onChange={() => setExcludeMeal(false)}
+                        />
+                        No
+                    </label>
                 </div>
+                {/* <p className={` ${excludeMeal ? "text-green-500" : "text-red-500"}`}>
+                    {excludeMeal ? "Yes" : "No"}
+                </p> */}
+            </div>
 
-            
+
 
             {/* Confirm Button */}
             <div className="mt-4">

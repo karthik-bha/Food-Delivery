@@ -8,27 +8,53 @@ import { toast } from "react-toastify";
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const AddMenu = ({ setFormOpen }) => {
-    const { register, handleSubmit, reset, watch, control } = useForm({
+    // Separate forms
+    const regularMenuForm = useForm({
         defaultValues: {
             day: "Monday",
             Theme: "",
             Veg: "",
             NonVeg: "",
+        },
+    });
+
+    const additionalMenuForm = useForm({
+        defaultValues: {
             additionalMenu: [],
         },
     });
 
     const { fields, append, remove } = useFieldArray({
-        control,
+        control: additionalMenuForm.control,
         name: "additionalMenu",
     });
 
-    const selectedDay = watch("day");
+    const selectedDay = regularMenuForm.watch("day");
     const [loading, setLoading] = useState(false);
 
-    const onSubmit = async (data) => {
+    // Handle Regular Menu Submission
+    const onSubmitRegularMenu = async (data) => {
         setLoading(true);
+        try {
+            const payload = {
+                regularItem: {
+                    [data.day]: { Theme: data.Theme, Veg: data.Veg, NonVeg: data.NonVeg },
+                },
+            };
+            const response = await axios.post("/api/menu/register", payload);
+            toast.success(response.data.message);
+            setFormOpen(false);
+            regularMenuForm.reset();
+        } catch (err) {
+            toast.error(err.response?.data?.message || "An error occurred");
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    // Handle Additional Menu Submission
+    const onSubmitAdditionalMenu = async (data) => {
+        setLoading(true);
         try {
             const filteredAdditionalMenu = data.additionalMenu.filter(
                 (item) => item.name.trim() && item.price
@@ -38,17 +64,10 @@ const AddMenu = ({ setFormOpen }) => {
                 additionalMenu: filteredAdditionalMenu.length > 0 ? filteredAdditionalMenu : [],
             };
 
-            if (data.Veg.trim() || data.NonVeg.trim()) {
-                payload.regularItem = {
-                    [data.day]: { Theme: data.Theme, Veg: data.Veg, NonVeg: data.NonVeg },
-                };
-            }
-
             const response = await axios.post("/api/menu/register", payload);
-
             toast.success(response.data.message);
             setFormOpen(false);
-            reset({ day: "Monday", Theme: "", Veg: "", NonVeg: "", additionalMenu: [] });
+            additionalMenuForm.reset();
         } catch (err) {
             toast.error(err.response?.data?.message || "An error occurred");
         } finally {
@@ -66,21 +85,21 @@ const AddMenu = ({ setFormOpen }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 {/* Regular Menu Form */}
-                <form onSubmit={handleSubmit(onSubmit)} className="bg-gray-100 p-4 rounded-md shadow w-full max-w-sm mx-auto">
+                <form onSubmit={regularMenuForm.handleSubmit(onSubmitRegularMenu)} className="bg-gray-100 p-4 rounded-md shadow w-full max-w-sm mx-auto">
                     <h3 className="text-lg font-medium mb-2">{selectedDay} Menu</h3>
-                    
+                     
                     <div className="flex gap-4 items-center mb-4">
                         <label className="font-medium">Select Day</label>
-                        <select {...register("day")} className="border p-2 rounded w-full">
+                        <select {...regularMenuForm.register("day")} className="border p-2 rounded w-full">
                             {days.map((day) => (
                                 <option key={day} value={day}>{day}</option>
                             ))}
                         </select>
                     </div>
 
-                    <input type="text" placeholder="Theme of the Day" {...register("Theme")} className="border p-2 rounded w-full" />
-                    <input type="text" placeholder="Veg dish" {...register("Veg")} className="border p-2 rounded w-full mt-2" />
-                    <input type="text" placeholder="Non-Veg dish" {...register("NonVeg")} className="border p-2 rounded w-full mt-2" />
+                    <input type="text" placeholder="Theme of the Day" {...regularMenuForm.register("Theme",{required:true})} className="border p-2 rounded w-full" />
+                    <input type="text" placeholder="Veg dish" {...regularMenuForm.register("Veg",{required:true})} className="border p-2 rounded w-full mt-2" />
+                    <input type="text" placeholder="Non-Veg dish" {...regularMenuForm.register("NonVeg",{required:true})} className="border p-2 rounded w-full mt-2" />
 
                     <button type="submit" className="btn-primary mt-4 w-full" disabled={loading}>
                         {loading ? "Adding..." : "Add Regular Menu"}
@@ -88,20 +107,20 @@ const AddMenu = ({ setFormOpen }) => {
                 </form>
 
                 {/* Additional Menu Form */}
-                <form onSubmit={handleSubmit(onSubmit)} className="bg-gray-100 p-4 rounded-md shadow w-full max-w-sm mx-auto">
+                <form onSubmit={additionalMenuForm.handleSubmit(onSubmitAdditionalMenu)} className="bg-gray-100 p-4 rounded-md shadow w-full max-w-sm mx-auto">
                     <h3 className="text-lg font-medium mb-2">Additional Menu</h3>
 
                     {fields.map((item, index) => (
                         <div key={item.id} className="border p-3 rounded mt-2 flex flex-col">
-                            <input type="text" placeholder="Name" {...register(`additionalMenu.${index}.name`, { required: true })} className="border p-2 rounded " />
-                            <input type="number" placeholder="Price" {...register(`additionalMenu.${index}.price`, { required: true })} className="border p-2 rounded mt-2" />
-                            <input type="text" placeholder="Image URL (optional)" {...register(`additionalMenu.${index}.imageUrl`)} className="border p-2 rounded mt-2" />
-                            <textarea placeholder="Description (optional)" {...register(`additionalMenu.${index}.description`)} className="border p-2 rounded mt-2"></textarea>
+                            <input type="text" placeholder="Name" {...additionalMenuForm.register(`additionalMenu.${index}.name`, { required: true })} className="border p-2 rounded " />
+                            <input type="number" placeholder="Price" {...additionalMenuForm.register(`additionalMenu.${index}.price`, { required: true })} className="border p-2 rounded mt-2" />
+                            <input type="text" placeholder="Image URL (optional)" {...additionalMenuForm.register(`additionalMenu.${index}.image_url`)} className="border p-2 rounded mt-2" />
+                            <textarea placeholder="Description (optional)" {...additionalMenuForm.register(`additionalMenu.${index}.description`)} className="border p-2 rounded mt-2"></textarea>
                             <button type="button" onClick={() => remove(index)} className="text-red-500 mt-2">Remove</button>
                         </div>
                     ))}
 
-                    <button type="button" onClick={() => append({ name: "", price: "", imageUrl: "", description: "" })} className="text-primary mt-2">
+                    <button type="button" onClick={() => append({ name: "", price: "", image_url: "", description: "" })} className=" mt-2">
                         + Add Item
                     </button>
 

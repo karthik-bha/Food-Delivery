@@ -105,7 +105,7 @@ const RestDetailsDash = () => {
                 <p><b>Status: </b><span className={restaurantData?.isActive ? "text-green-600 font-semibold" : "text-red-600 font-semibold"}>{restaurantData?.isActive ? "Active" : "Inactive"}</span></p>
                 <p><b>Close time: </b><span>{restaurantData?.timeLimit}</span></p>
                 <div className="flex mx-auto">
-                    <button className="bg-primary hover:bg-primary-hover rounded-lg text-white px-4 py-2" onClick={() => setOpenEditForm(true)}>Edit details</button>
+                    <button className="btn-primary" onClick={() => setOpenEditForm(true)}>Edit details</button>
                 </div>
             </div>
         </div>

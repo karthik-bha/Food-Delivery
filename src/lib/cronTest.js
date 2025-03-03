@@ -1,25 +1,3 @@
-// import cron from "node-cron";
-
-
-// const API_URL = "http://localhost:3000/api/auto-order";
-// const runCronJob = async () => {
-//     console.log("Running order job...");
-    
-//     try {
-//         const response = await fetch(API_URL, { method: "POST" });
-//         const data = await response.json();
-//         console.log("API Response:", data);
-//     } catch (error) {
-//         console.error("Error calling auto-order API:", error);
-//     }
-// };
-
-// // Run the cron job at a specific time
-// cron.schedule("*/1 * * * *", () => { // Runs every 1 min for testing
-//     runCronJob();
-// });
-
-// console.log("Cron job scheduled!");
 import cron from "node-cron";
 import RestaurantOffice from "./models/RestaurantOffice.js";
 import { connectDB } from "./db/connectDB.js";

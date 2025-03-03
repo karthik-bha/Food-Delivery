@@ -10,9 +10,12 @@ const OfficeAdminSide = () => {
                 <Link href="/dashboard/officeAdmin" className="hover:text-white">
                     <li>DASHBOARD</li>
                 </Link>                
-                 <Link href="/dashboard/officeAdmin/myoffice" className="hover:text-white">
+                 <Link href="/dashboard/officeAdmin/staff" className="hover:text-white">
+                    <li>STAFF</li>
+                </Link>
+                <Link href="/dashboard/officeAdmin/office" className="hover:text-white">
                     <li>OFFICE</li>
-                </Link>             
+                </Link>                  
                 <Link href="/dashboard/officeAdmin/orders" className="hover:text-white">
                     <li>ORDERS</li>
                 </Link>

@@ -73,8 +73,8 @@ const OfficeStaffAdditionalMenu = ({ type }) => {
     }
 
     return (
-        <div className="mx-2">
-            <p className="my-4">Add extra items to your meal, click below to start.</p>
+        <div className="mx-2 md:mx-auto">
+            {/* <p className="my-4">Add extra items to your meal, click below to start.</p> */}
             <div className="flex">
                 <button className="btn-primary" onClick={() => setSplMenu(!splMenu)}>
                     {splMenu ? "Close Additional Menu" : "Open Additional Menu"}
@@ -82,7 +82,7 @@ const OfficeStaffAdditionalMenu = ({ type }) => {
             </div>
 
             {splMenu && (
-                <div className={`${type === "officeAdmin" ? "" : "absolute inset-0 bg-black bg-opacity-35"} flex flex-col z-50 items-center justify-center `}>
+                <div className={`${type === "officeAdmin" ? "" : ""} flex flex-col z-50 items-center justify-center `}>
                     <div className="bg-white p-4 rounded-lg w-[90%] max-w-3xl">
                         <div className="flex justify-between items-center my-4">
                             <h2 className="text-sub-heading">Additional Menu</h2>

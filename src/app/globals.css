@@ -9,7 +9,7 @@ body {
 }
 
 .btn-primary {
-  @apply bg-primary hover:bg-primary-hover text-white font-semibold py-2 px-4 rounded-lg;
+  @apply bg-black hover:bg-primary-hover text-white font-semibold py-2 px-4 rounded-lg;
 }
 
 .btn-delete {

@@ -6,8 +6,8 @@ const OfficeStaff = async () => {
     
       <OfficeStaffDash />
       <div className="my-12">
-        <h2 className="my-6 mx-2 text-sub-heading">Would you like to add an item from the additional menu?</h2>
-        <OfficeStaffAdditionalMenu />
+        {/* <h2 className="my-6 mx-2 text-sub-heading">Would you like to add an item from the additional menu?</h2>
+        <OfficeStaffAdditionalMenu /> */}
       </div>
 
     </div>

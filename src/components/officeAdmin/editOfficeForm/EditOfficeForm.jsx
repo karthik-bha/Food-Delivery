@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
-const EditOfficeForm = ({ setOfficeForm, officeData, setOfficeData}) => {
+const EditOfficeForm = ({ officeData, setOfficeData}) => {
     const office=officeData;
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -28,7 +28,7 @@ const EditOfficeForm = ({ setOfficeForm, officeData, setOfficeData}) => {
             if (response.data.success) {
                 toast.success(response.data.message+", Please refresh");  
                 setOfficeData(response.data.updatedOffice);                              
-                setOfficeForm(false);
+                // setOfficeForm(false);
             } else {
                 toast.error(response.data.message);
             }
@@ -125,7 +125,7 @@ const EditOfficeForm = ({ setOfficeForm, officeData, setOfficeData}) => {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    className="bg-primary text-secondary p-2 rounded hover:bg-primary-hover transition"
+                    className="btn-primary transition"
                     disabled={loading}
                 >
                     {loading ? "Updating..." : "Update"}

@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import Loader from "@/components/Loader";
 import OfficeUsersPreferences from "@/components/OfficeUsersPreferences";
 import TextOfficeUsersPreferences from "@/components/TextOfficeUsersPreferences";
+import OfficeStaffAdditionalMenu from "../officeStaffAdditionalMenu/OfficeStaffAdditionalMenu";
 
 const OfficeStaffDash = () => {    
     const [isVeg, setIsVeg] = useState(false);
@@ -69,8 +70,10 @@ const OfficeStaffDash = () => {
         <div className="m-4">
 
             <div className="text-1xl md:text-2xl my-12">
-                Hi {userData? userData.name : "Loading..."}, today is {menuData && currDayState ? menuData.Theme+" - "+currDayState : "Loading..."}. Your regular meal is {menuData ? (isVeg ? menuData.Veg : menuData.NonVeg) : "No Menu for Today."}.
+             <p>   Hi {userData? userData.name : "Loading..."}, today is <b>{menuData && currDayState ? menuData.Theme+" - "+currDayState : "Loading..."}</b> so <b>{menuData ? (isVeg ? menuData.Veg : menuData.NonVeg) : "No Menu for Today."} </b>is coming for you.</p>
             </div>
+            <p className="text-sub-heading my-6">Would you like to add an additional menu? </p>
+            <OfficeStaffAdditionalMenu />
             {/* Card style  */}
             {/* <OfficeUsersPreferences type={"office_staff"}/> */}
 

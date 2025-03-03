@@ -104,10 +104,10 @@ export async function POST(req) {
             TotalAmount: totalAmount,
         });
 
-        // await order.save();
+        await order.save();
 
         // Clear additional items after order placement
-        // await SmallOffice.findByIdAndUpdate(user.office_id, { additional_items: {}, guest_items: [] });
+        await SmallOffice.findByIdAndUpdate(user.office_id, { additional_items: {}, guest_items: [] });
 
 
         return NextResponse.json({ success: true, message: "Order placed successfully", order }, { status: 200 });

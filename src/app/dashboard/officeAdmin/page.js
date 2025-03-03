@@ -30,9 +30,6 @@ const OfficeAdmin = () => {
   // Office Admin states 
   const [userData, setUserData] = useState({});
 
-  // For editing office details 
-  const [officeForm, setOfficeForm] = useState(false);
-
   // Order form related
   const [order, setOrder] = useState(false);
 
@@ -139,7 +136,7 @@ const OfficeAdmin = () => {
       const response = await axios.get("/api/users/pvtAccess");
       const user = response.data.userData;
       if (response.data.success) {
-        console.log(response.data.userData);        
+        console.log(response.data.userData);
         // console.log(user.data);
         setUserData(user);
       }
@@ -168,12 +165,13 @@ const OfficeAdmin = () => {
       const minutes = Math.floor(difference / (1000 * 60));
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
       if (minutes > 20) {
-        return "More than 20 min left until order.";
+        return `${targetTime.getHours()}:${targetTime.getMinutes()}.`;
       }
       return `${minutes}m ${seconds}s`;
     }
     else {
-      return "Order has been placed.";
+      // console.log(targetTime.split());
+      return `${targetTime.getHours()}:${targetTime.getMinutes()} tomorrow`;
     }
   };
 
@@ -185,127 +183,116 @@ const OfficeAdmin = () => {
   return (
 
     <div className="py-12 relative mx-2">
-      {officeForm ?
+
+      {/* -------------------------------------------------------------- */}
+      {/* Initial text  */}
+      <h2 className="text-center md:text-left text-section-heading my-6">Welcome to {officeData.name}</h2>
+      <div className="flex flex-col gap-2">
+        <p>Your office has a total of <b>{staffData.vegCount}</b> Veg Staff and<b> {staffData.nonVegCount} </b>Non-Veg Staff including you.</p>
+        <p>Today is <b>{menuData && day ? (menuData.Theme + " - " + day) : "No Menu for Today."}</b></p>
+      </div>     
+
+      {/* -------------------------------------------------------------- */}
+      {/* Shows order details  */}
+      <h3 className="text-sub-heading my-4"> Order overview </h3>
+      <ul className="flex flex-col gap-2">
+        <li>Your total number of staff is <b>{staffData.totalMeals}.</b> </li>
+        <li><b>{staffData.vegMeals} {menuData?.Veg}</b>,
+          <b> {staffData.nonVegMeals} {menuData?.NonVeg} </b>,
+          <b> {staffData.totalAdditionalItems} additional items </b>  will be delivered today.</li>
+        {/* and <b>{staffData.totalGuestItems} guest items</b> */}
+        <li>Additional Menu worth Rupees <b> {staffData.totalAdditionalItemsPrice}</b>.</li>
+        {/* <li>The total cost of Guest Orders is <b>{staffData.totalGuestItemsPrice}</b>.</li> */}
+      </ul>
+
+      {/* Countdown Timer */}
+      <div className="text-red-500 font-bold my-2">
+        {timeLeft && <p>Please make any changes required before {timeLeft}</p>}
+      </div>
+
+      {/* Allow orders only if office is active/opted for orders  */}
+      {/* Manual order  */}
+      {officeStatus ? (
         <>
-          <EditOfficeForm setOfficeForm={setOfficeForm} officeData={officeData} setOfficeData={setOfficeData} />
-        </>
-        :
-        <>
-          {/* -------------------------------------------------------------- */}
-          {/* Initial text  */}
-          <h2 className="text-center md:text-left text-section-heading my-6">Welcome to {officeData.name}</h2>
-          <div className="flex flex-col gap-2">
-            <p>Your office has a total of <b>{staffData.vegCount}</b> Veg Staff and<b> {staffData.nonVegCount} </b>Non-Veg Staff including you.</p>
-            <p>Today is <b>{menuData && day ? (menuData.Theme + " - " + day) : "No Menu for Today."}</b></p>
-          </div>
+          <button className="btn-primary my-2"
+            onClick={() => { setOrder(true) }}>Order now</button>
+          {order &&
+            (
+              // Order form
+              <div>
+                <Order
 
-          <button className="btn-primary my-4" onClick={() => setOfficeForm(true)}>Edit office details</button>
-
-          {/* -------------------------------------------------------------- */}
-          {/* Shows order details  */}
-          <h3 className="text-sub-heading my-4"> Order overview </h3>
-          <ul className="flex flex-col gap-2">
-            <li>Your total number of meals for today is <b>{staffData.totalMeals}.</b> </li>
-            <li><b>{staffData.vegMeals} {menuData?.Veg}</b>,
-              <b> {staffData.nonVegMeals} {menuData?.NonVeg} </b>,
-              <b> {staffData.totalAdditionalItems} additional items </b> and <b>{staffData.totalGuestItems} guest items</b> will be delivered today.</li>
-
-            <li>The total cost of Additional Items is <b> {staffData.totalAdditionalItemsPrice}</b>.</li>
-            <li>The total cost of Guest Orders is <b>{staffData.totalGuestItemsPrice}</b>.</li>
-          </ul>
-
-          {/* Countdown Timer */}
-          <div className="text-red-500 font-bold my-2">
-            {timeLeft && <p>Automatic order will be placed in: {timeLeft}</p>}
-          </div>
-
-          {/* Allow orders only if office is active/opted for orders  */}
-          {/* Manual order  */}
-          {officeStatus ? (
-            <>
-              <button className="btn-primary my-2"
-                onClick={() => { setOrder(true) }}>Order now</button>
-              {order &&
-                (
-                  // Order form
-                  <div>
-                    <Order
-
-                      staffData={staffData}
-                      officeData={officeData}
-                      setOrder={setOrder}
-                    />
-                  </div>
-                )
-              }
-            </>
-          ) :
-            <div className="my-4">
-              <p>You have opted <b>out</b> of meals for today. No order will be placed. You can opt in again by updating your preferences.</p>
-            </div>
+                  staffData={staffData}
+                  officeData={officeData}
+                  setOrder={setOrder}
+                />
+              </div>
+            )
           }
-
-
-
-
-          {/* -------------------------------------------------------------- */}
-
-          {/* Add additional items for Guests  */}
-          <div className="my-6">
-            <h3 className="text-sub-heading">Any guests coming to your office?</h3>
-            <div >
-              <GuestAdditionalMenu />
-            </div>
-          </div>
-
-          {/* -------------------------------------------------------------- */}
-
-          {/* Update office preferences  */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <p className="font-semibold">   Recieve meals from restaurant? (for office) </p>
-              <select
-                className="border border-black rounded-md px-2 py-1 my-2"
-                value={officeStatus.toString()}
-                onChange={(e) => setOfficeStatus(e.target.value === "true")}
-              >
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-              </select>
-              <button
-                className="px-4 py-1 rounded-md bg-primary hover:bg-primary-hover text-white"
-                onClick={handleStatusUpdate}
-                disabled={updating}
-              >
-                {updating ? "Updating..." : "Confirm"}
-              </button>
-            </div>
-            <p className={`${officeStatus ? "text-green-400" : "text-red-500"}`}><span className="text-black font-semibold">Selected status:</span> {officeStatus ? "Yes" : "No"}</p>
-          </div>
-          <div>
-
-            {/* -------------------------------------------------------------- */}
-            {/* Update office admin preferences  */}
-
-            <h3 className="my-6 text-sub-heading">Your preferences</h3>
-
-            {/* Card Style  */}
-            {/* <OfficeUsersPreferences typeOfUser={"office_admin"} /> */}
-
-            {/* Document style  */}
-            <TextOfficeUsersPreferences typeOfUser={"office_admin"} />
-
-          </div>
-
-          {/* -------------------------------------------------------------- */}
-          {/* Additional menu for office admin  */}
-          <div className="my-6">
-            <h3 className="text-sub-heading"> Would you like to have Additional Menu items?</h3>
-            <OfficeStaffAdditionalMenu type={"officeAdmin"} />
-          </div>
-
         </>
+      ) :
+        <div className="my-4">
+          <p>You have opted <b>out</b> of meals for today. No order will be placed. You can opt in again by updating your preferences.</p>
+        </div>
       }
+
+
+      {/* -------------------------------------------------------------- */}
+
+      {/* Add additional items for Guests  */}
+      <div className="my-6">
+        <h3 className="text-sub-heading my-4">Any guests coming to your office?</h3>
+        <div >
+          <GuestAdditionalMenu />
+
+        </div>
+        <p className="my-4">Guest Menu worth Rupees <b>{staffData.totalGuestItemsPrice}</b>.</p>
+      </div>
+
+      {/* -------------------------------------------------------------- */}
+
+      {/* Update office preferences  */}
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col md:flex-row items-center gap-2">
+          <p className="font-semibold">Request Restaurant for No food day </p>
+          <select
+            className="border border-black rounded-md px-2 py-1 my-2"
+            value={officeStatus.toString()}
+            onChange={(e) => setOfficeStatus(e.target.value === "true")}
+          >
+            {/* Clicking this makes office active - you will recieve food */}
+            <option value="true">No</option>
+            {/* Clicking this makes office inActive - you will NOT recieve food */}
+            <option value="false">Yes</option>
+          </select>
+          <button
+            className="px-4 py-1 rounded-md bg-black hover:bg-primary-hover text-white"
+            onClick={handleStatusUpdate}
+            disabled={updating}
+          >
+            {updating ? "Updating..." : "Confirm"}
+          </button>
+        </div>        
+      </div>
+
+
+      {/* -------------------------------------------------------------- */}
+      {/* Update office admin preferences  */}
+
+      {/* Card Style  */}
+      {/* <OfficeUsersPreferences typeOfUser={"office_admin"} /> */}
+
+      {/* Document style  */}
+      <TextOfficeUsersPreferences typeOfUser={"office_admin"} />
+
+
+
+      {/* -------------------------------------------------------------- */}
+      {/* Additional menu for office admin  */}
+      <div className="my-6">
+        <h3 className="text-sub-heading my-4">Are you craving for any additional food item? </h3>
+        <OfficeStaffAdditionalMenu type={"officeAdmin"} />
+      </div>
 
     </div>
   );
