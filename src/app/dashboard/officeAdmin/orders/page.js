@@ -54,7 +54,7 @@ const Page = () => {
                 <option value="false">Previous Orders</option>
             </select>
 
-            <div className="grid md:grid-cols-4 p-2 text-center bg-primary rounded-t-md text-white">
+            <div className="grid md:grid-cols-4 p-2 text-center bg-primary rounded-t-md font-table-heading text-table-heading">
                 <p>Veg Meals</p>
                 <p>Non Veg Meals</p>
                 <p>Additional Meals Count</p>
@@ -64,11 +64,11 @@ const Page = () => {
             {loading && <Loader />}
             {ordersToDisplay && Object.keys(ordersToDisplay).length === 0 && <p>No orders found</p>}
 
-            <div className="border-r border-l border-black">
+            <div className=" shadow-default-shadow">
                 {Object.values(ordersToDisplay).map((order) => {
                     const orderId = order.orderId;
                     return (
-                        <div key={orderId} className="border-b text-center border-black grid md:grid-cols-4 gap-4 p-2">
+                        <div key={orderId} className="text-center border-b border-r border-l grid md:grid-cols-4 gap-4 p-2">
                             <p>{order.NumberOfVeg}</p>
                             <p>{order.NumberOfNonVeg}</p>
 

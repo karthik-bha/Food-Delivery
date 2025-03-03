@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const OfficeStaffAdditionalMenu = ({type}) => {
+const OfficeStaffAdditionalMenu = ({ type }) => {
     const [additionalMenu, setAdditionalMenu] = useState([]);
     const [splMenu, setSplMenu] = useState(false);
     const [additionalQuant, setAdditionalQuant] = useState({});
@@ -82,44 +82,45 @@ const OfficeStaffAdditionalMenu = ({type}) => {
             </div>
 
             {splMenu && (
-                <div className={`${type==="officeAdmin"? "":"absolute inset-0 bg-black bg-opacity-35"} flex flex-col z-50 items-center justify-center  shadow-lg`}>
+                <div className={`${type === "officeAdmin" ? "" : "absolute inset-0 bg-black bg-opacity-35"} flex flex-col z-50 items-center justify-center `}>
                     <div className="bg-white p-4 rounded-lg w-[90%] max-w-3xl">
                         <div className="flex justify-between items-center my-4">
                             <h2 className="text-sub-heading">Additional Menu</h2>
                             <button className="btn-primary mx-2" onClick={() => setSplMenu(false)}>x</button>
                         </div>
 
-                        <div className="grid w-full md:grid-cols-5 text-center bg-primary text-secondary rounded-t-md p-2">
+                        <div className="grid w-full md:grid-cols-5 text-center bg-primary text-table-heading font-table-heading rounded-t-md p-2">
                             <p>Item name</p>
                             <p>Price</p>
                             <p>Add Item</p>
                             <p>Remove Item</p>
                             <p>Quantity in your cart</p>
                         </div>
-
-                        {loading ? (
-                            <p className="text-center py-4">Loading...</p>
-                        ) : additionalMenu.length > 0 ? (
-                            additionalMenu.map((item) => {
-                                const quantity = additionalQuant[item._id]?.quantity || 0;
-                                return (
-                                    <div key={item._id} className="grid md:grid-cols-5 border-l border-r 
-                                    border-b border-black text-center items-center py-2 w-full gap-2">
-                                        <p><b>{item.name}</b></p>
-                                        <p>Rs.{item.price}</p>
-                                        <button className="btn-add mx-auto" onClick={() => addToCart(item._id, item.price)}>
-                                            Add
-                                        </button>
-                                        <button className="btn-delete mx-auto" onClick={() => removeFromCart(item._id)}>
-                                            Remove
-                                        </button>
-                                        <p>{quantity}</p>
-                                    </div>
-                                );
-                            })
-                        ) : (
-                            <p className="text-center py-4">No additional items available.</p>
-                        )}
+                        <div className="shadow-default-shadow">
+                            {loading ? (
+                                <p className="text-center py-4">Loading...</p>
+                            ) : additionalMenu.length > 0 ? (
+                                additionalMenu.map((item) => {
+                                    const quantity = additionalQuant[item._id]?.quantity || 0;
+                                    return (
+                                        <div key={item._id} className="grid md:grid-cols-5 border-l border-r 
+                                    border-b text-center items-center py-2 w-full gap-2">
+                                            <p><b>{item.name}</b></p>
+                                            <p>Rs.{item.price}</p>
+                                            <button className="btn-add mx-auto" onClick={() => addToCart(item._id, item.price)}>
+                                                Add
+                                            </button>
+                                            <button className="btn-delete mx-auto" onClick={() => removeFromCart(item._id)}>
+                                                Remove
+                                            </button>
+                                            <p>{quantity}</p>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <p className="text-center py-4">No additional items available.</p>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

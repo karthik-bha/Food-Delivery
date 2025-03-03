@@ -84,16 +84,16 @@ const Page = () => {
                     </div>
 
                     <p className="my-6 text-section-heading">Staff</p>
-                    <div className="p-2 text-white md:grid bg-primary rounded-t-md grid-cols-5">
+                    <div className="p-2 text-table-heading md:grid bg-primary font-table-heading rounded-t-md grid-cols-5">
                         <p>Name</p>
                         <p>Email</p>
                         <p>Phone</p>
                         <p>Attendance</p>
                         <p>Actions</p>
                     </div>
-
+                    <div className="shadow-default-shadow">
                     {staffData.map((staff) => (
-                        <div key={staff._id} className="md:grid gap-4 grid-cols-5 border-b border-r border-l border-black p-2">
+                        <div key={staff._id} className="md:grid gap-4 grid-cols-5 border-b border-r border-l p-2">
                             <p>{staff.name}</p>
                             <p>{staff.email}</p>
                             <p>{staff.phone}</p>
@@ -125,6 +125,7 @@ const Page = () => {
                             </div>
                         </div>
                     ))}
+                    </div>
                 </>
             )}
         </div>
