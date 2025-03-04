@@ -99,6 +99,11 @@ export async function POST(req) {
             // Calculating Total Amount
             const totalAmount = numberOfVeg * 100 + numberOfNonVeg * 150 + totalAdditionalCost + totalGuestCost;
 
+
+            if (totalAmount===0) {
+                return NextResponse.json({success:false, message:"No orders to place"}, {status:400});
+            }
+            
             // Create and Save the Order
             const order = new Order({
                 OfficeAndRestaurantMappingId: mapping._id,

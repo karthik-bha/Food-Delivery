@@ -11,11 +11,12 @@ const EditForm = ({ data, onClose, onUpdate }) => {
     const onSubmit = async (formData) => {
         try {
             console.log(formData);
-            await axios.put("/api/offices/update/pvt/RestaurantOffice", formData);
-            onUpdate(formData);
+            await axios.put("/api/offices/update/pvt/RestaurantOffice", formData);   
+            onUpdate(formData);            
             toast.success("Updated successfully, Refresh page");
             onClose();
-        } catch {
+        } catch(err) {
+            console.log(err);
             toast.error("Update failed");            
         }
     };

@@ -25,13 +25,19 @@ export async function POST(req) {
     }
 
     // Extract details from request body
-    const { name, email, phone, state, district, street_address } = await req.json();
+    const { name, email, phone, state, district, street_address, timeLimit } = await req.json();
 
     // Check for missing fields
-    if (!name || !email || !phone || !state || !district || !street_address) {
-        return NextResponse.json({ success: false, message: "Name, Email, Phone, State, District and Street address are required" }, { status: 400 });
+    if (!name || !email || !phone || !state || !district || !street_address || timeLimit) {
+        return NextResponse.json({ success: false, message: "Name, Email, Phone, State, District , Street address and timeLimit are required" }, { status: 400 });
     }
 
+    // Validate timeLimit format (HH:MM, 24-hour format)
+    if (timeLimit && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(timeLimit)) {
+        return NextResponse.json({ success: false, message: "Invalid timeLimit format. Use HH:MM (24-hour format)." }, 
+            { status: 400 });
+    }
+    
     try {
         await connectDB();
         try {

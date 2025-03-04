@@ -93,6 +93,7 @@ const Menus = () => {
                                 <img src={item.image_url ||"https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"} alt={item.name} className="w-24 h-24 object-cover mx-auto mb-2" />
                                 <h4 className="font-bold">{item.name}</h4>
                                 {item.price && <p>Price: ₹{item.price}</p>}
+                                <p>{item.description? item.description : "No description provided."}</p>
                                 <div className="flex gap-1 text-white my-2">
                                     <button className="btn-delete"
                                         onClick={() => handleDelete(item._id)}>Delete</button>

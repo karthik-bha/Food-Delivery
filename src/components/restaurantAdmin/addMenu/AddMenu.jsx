@@ -32,6 +32,47 @@ const AddMenu = ({ setFormOpen }) => {
     const selectedDay = regularMenuForm.watch("day");
     const [loading, setLoading] = useState(false);
 
+    // Image upload states
+    const [file, setFile] = useState(null);
+    const [preview, setPreview] = useState(null);
+    const [imageUrl, setImageUrl] = useState("");
+
+    const handleFileChange = (e, index) => {
+        const selectedFile = e.target.files[0];
+        setFile(selectedFile);
+        setPreview(URL.createObjectURL(selectedFile));
+
+        // Disable image URL field
+        additionalMenuForm.setValue(`additionalMenu.${index}.image_url`, "");
+    };
+
+    const handleImageUrlChange = (e, index) => {
+        const url = e.target.value;
+        setImageUrl(url);
+
+        // Disable file upload field
+        setFile(null);
+        setPreview(null);
+    };
+
+    const handleUpload = async (index) => {
+        if (!file) return alert("Please select a file");
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+            const response = await axios.post("/api/upload", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            additionalMenuForm.setValue(`additionalMenu.${index}.image_url`, response.data.imageUrl);
+            toast.success("Image uploaded successfully");
+        } catch (error) {
+            toast.error("Upload failed");
+        }
+    };
+
+
     // Handle Regular Menu Submission
     const onSubmitRegularMenu = async (data) => {
         setLoading(true);
@@ -83,11 +124,11 @@ const AddMenu = ({ setFormOpen }) => {
 
             {/* Grid Layout for Two Forms */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
+
                 {/* Regular Menu Form */}
                 <form onSubmit={regularMenuForm.handleSubmit(onSubmitRegularMenu)} className="bg-gray-100 p-4 rounded-md shadow w-full max-w-sm mx-auto">
                     <h3 className="text-lg font-medium mb-2">{selectedDay} Menu</h3>
-                     
+
                     <div className="flex gap-4 items-center mb-4">
                         <label className="font-medium">Select Day</label>
                         <select {...regularMenuForm.register("day")} className="border p-2 rounded w-full">
@@ -97,9 +138,9 @@ const AddMenu = ({ setFormOpen }) => {
                         </select>
                     </div>
 
-                    <input type="text" placeholder="Theme of the Day" {...regularMenuForm.register("Theme",{required:true})} className="border p-2 rounded w-full" />
-                    <input type="text" placeholder="Veg dish" {...regularMenuForm.register("Veg",{required:true})} className="border p-2 rounded w-full mt-2" />
-                    <input type="text" placeholder="Non-Veg dish" {...regularMenuForm.register("NonVeg",{required:true})} className="border p-2 rounded w-full mt-2" />
+                    <input type="text" placeholder="Theme of the Day" {...regularMenuForm.register("Theme", { required: true })} className="border p-2 rounded w-full" />
+                    <input type="text" placeholder="Veg dish" {...regularMenuForm.register("Veg", { required: true })} className="border p-2 rounded w-full mt-2" />
+                    <input type="text" placeholder="Non-Veg dish" {...regularMenuForm.register("NonVeg", { required: true })} className="border p-2 rounded w-full mt-2" />
 
                     <button type="submit" className="btn-primary mt-4 w-full" disabled={loading}>
                         {loading ? "Adding..." : "Add Regular Menu"}
@@ -114,7 +155,13 @@ const AddMenu = ({ setFormOpen }) => {
                         <div key={item.id} className="border p-3 rounded mt-2 flex flex-col">
                             <input type="text" placeholder="Name" {...additionalMenuForm.register(`additionalMenu.${index}.name`, { required: true })} className="border p-2 rounded " />
                             <input type="number" placeholder="Price" {...additionalMenuForm.register(`additionalMenu.${index}.price`, { required: true })} className="border p-2 rounded mt-2" />
-                            <input type="text" placeholder="Image URL (optional)" {...additionalMenuForm.register(`additionalMenu.${index}.image_url`)} className="border p-2 rounded mt-2" />
+                            {/* <input type="text" placeholder="Image URL (optional)" {...additionalMenuForm.register(`additionalMenu.${index}.image_url`)} className="border p-2 rounded mt-2" /> */}
+                            <input type="text" placeholder="Image URL (optional)" onChange={(e) => handleImageUrlChange(e, index)} {...additionalMenuForm.register(`additionalMenu.${index}.image_url`)} className="border p-2 rounded mt-2" disabled={file} />
+
+                            <input type="file" onChange={(e) => handleFileChange(e, index)} disabled={imageUrl} className="mt-2" />
+                            <button type="button" onClick={() => handleUpload(index)} className="mt-2 btn-primary">Upload</button>
+
+                            {preview && <img src={preview} alt="Preview" className="mt-2 max-w-xs" />}
                             <textarea placeholder="Description (optional)" {...additionalMenuForm.register(`additionalMenu.${index}.description`)} className="border p-2 rounded mt-2"></textarea>
                             <button type="button" onClick={() => remove(index)} className="text-red-500 mt-2">Remove</button>
                         </div>

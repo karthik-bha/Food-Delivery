@@ -24,6 +24,12 @@ export async function PUT(req) {
         if (!user || !user.office_id) {
             return NextResponse.json({ success: false, message: "Restaurant office not found" }, { status: 404 });
         }
+
+        // Validate timeLimit format (HH:MM, 24-hour format)
+        if (timeLimit && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(timeLimit)) {
+            return NextResponse.json({ success: false, message: "Invalid timeLimit format. Use HH:MM (24-hour format)." }, 
+                { status: 400 });
+        }
         
         // Update restaurant office details
         const updatedOffice = await RestaurantOffice.findByIdAndUpdate(
