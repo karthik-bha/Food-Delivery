@@ -72,12 +72,12 @@ const watchForChanges = async () => {
         
         if (change.operationType === "delete") {
             if (activeJobs.has(restaurantId)) {
-                activeJobs.get(restaurantId).stop();
-                activeJobs.get(restaurantId).destroy();
-                activeJobs.delete(restaurantId);
+                const job = activeJobs.get(restaurantId);
+                job.stop(); // Stop the job
+                activeJobs.delete(restaurantId); // Remove from activeJobs
                 console.log(`Stopped and removed job for deleted restaurant ${restaurantId}`);
             }
-        }
+        }        
     });
 };
 

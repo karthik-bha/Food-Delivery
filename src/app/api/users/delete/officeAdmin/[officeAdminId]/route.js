@@ -13,7 +13,7 @@ export async function DELETE(req, { params }) {
     if(role!=="admin" && role!=="super_admin"){
         return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
     }
-
+ 
     try {
         
         const { officeAdminId } = await params;
@@ -28,7 +28,7 @@ export async function DELETE(req, { params }) {
 
         let deletedUser;
         
-        // Incase we user doesnt have office
+        // Incase we dont have office
         if (office_id === null) {
             deletedUser = await User.findByIdAndDelete(officeAdminId);
         }

@@ -41,13 +41,7 @@ const EditOfficeForm = ({ officeData, setOfficeData}) => {
     };
 
     return (
-        <div className="relative shadow-[0px_0px_15px_10px_rgba(0,0,0,0.1)] my-12 p-6 bg-white rounded-lg max-w-[80vw] w-80">
-            <button
-                className="absolute top-2 right-2 text-[0.9rem] text-button-bg hover:text-button-hover-bg"
-                onClick={() => setOfficeForm(false)}
-            >
-                X
-            </button>
+        <div className="relative shadow-[0px_0px_15px_10px_rgba(0,0,0,0.1)] my-12 p-6 bg-white rounded-lg max-w-[80vw] w-80">           
             <h2 className="text-nav-heading font-semibold text-center mb-4">Edit Office Details</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
                 {/* Name input */}

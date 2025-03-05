@@ -10,11 +10,28 @@ const Page = () => {
     const [restOfficeData, setRestOfficeData] = useState([]);
     const [selectedRestaurants, setSelectedRestaurants] = useState({});
     const [loading, setLoading] = useState(true);
+    const [fetchedMappings, setFetchedMappings] = useState([]);
+
     // We will get all restaurants and offices of same district and state
     useEffect(() => {
         fetchSmallOffices();
         fetchRestaurantOffices();
+        fetchMappings();
     }, [])
+
+    // This is used to pre fill mappings if it is present.
+    useEffect(() => {
+        if (fetchedMappings.length > 0) {
+            // Pre-fill selected restaurants based on mappings
+            const preSelected = {};
+            fetchedMappings.forEach(mapping => {
+                if (mapping.office_id && mapping.restaurant_id) {
+                    preSelected[mapping.office_id._id] = mapping.restaurant_id._id;
+                }
+            });
+            setSelectedRestaurants(preSelected);
+        }
+    }, [fetchedMappings]);
 
     // Fetch small office data
     const fetchSmallOffices = async () => {
@@ -52,7 +69,23 @@ const Page = () => {
         }
     };
 
-
+    async function fetchMappings() {
+        try {
+            const response = await axios.get("/api/mapping/smallOfficeAndRestaurant");
+            console.log(response.data.filteredMappings);
+            const fetchedData = response.data;
+            if (fetchedData.success) {
+                setFetchedMappings(fetchedData.filteredMappings);
+            } else {
+                toast.error(fetchedData.message);
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error("Failed to fetch data");
+        } finally {
+            setLoading(false);
+        }
+    }
 
     // Whenever we select a restaurant, state is updated. example:-
     //  {office1: rest1, office2: rest2, office3: rest3}
@@ -66,21 +99,29 @@ const Page = () => {
 
     // Updates or creates new mapping of small office and restaurant
     async function handleMapping(officeId) {
-        const selectedRestaurantId = selectedRestaurants[officeId];
-        if (!selectedRestaurantId) {
-            toast.error("Please select a restaurant before confirming.");
-            return;
-        }
-        const response = await axios.post("/api/mapping/smallOfficeAndRestaurant", {
-            smallOfficeId: officeId,
-            restaurantOfficeId: selectedRestaurantId
-        });
-        console.log(response);
-        if (response.data.success) {
-            toast.success(response.data.message);
+        setLoading(true);
+        try {
+            const selectedRestaurantId = selectedRestaurants[officeId];
+            if (!selectedRestaurantId) {
+                toast.error("Please select a restaurant before confirming.");
+                return;
+            }
+            const response = await axios.post("/api/mapping/smallOfficeAndRestaurant", {
+                smallOfficeId: officeId,
+                restaurantOfficeId: selectedRestaurantId
+            });
+            console.log(response);
+            if (response.data.success) {
+                toast.success(response.data.message);
 
-        } else {
-            toast.error(response.data.message);
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error("Failed to create mapping. Please try again.");
+        } finally {
+            setLoading(false);
         }
 
     };
@@ -100,15 +141,49 @@ const Page = () => {
             </div>
 
             {/* This displays all related small offices and related restaurants */}
+            <div className="shadow-default-shadow">
+                {/* First we'll list all smallOffices  */}
+                {officeData.map((office) => (
+                    <div key={office._id} className="md:grid grid-cols-3 p-2 flex flex-col gap-4  border-r border-l border-b items-center">
+                        <p className="text-center p-2  font-bold">{office.name}</p>
 
-            {/* First we'll list all smallOffices  */}
-            {officeData.map((office) => (
-                <div key={office._id} className="md:grid grid-cols-3 p-2 flex flex-col gap-4  border-r border-l  border-black border-b items-center">
-                    <p className="text-center p-2 ">{office.name}</p>
+                        {/* Then we will embedd all the restaurants of same district and state of small office */}
+                        <div className="flex items-center mx-auto">
+                            <select
+                                className="border hover:cursor-pointer rounded-md p-1 text-center"
+                                value={selectedRestaurants[office._id] || ""} // Prefilled if mapping exists
+                                onChange={(e) => handleSelectChange(office._id, e.target.value)}
+                            >
+                                <option value="">Select</option>
+                                {restOfficeData
+                                    .filter(restOffice =>
+                                        restOffice.district === office.district &&
+                                        restOffice.state === office.state
+                                    )
+                                    .map((restOffice) => (
+                                        <option key={restOffice._id} value={restOffice._id}>
+                                            {restOffice.name}
+                                        </option>
+                                    ))}
+                            </select>
 
-                    {/* Then we will embedd all the restaurants of same district and state of small office */}
-                    <div className="flex items-center mx-auto">
-                        <select className=" border border-black hover:cursor-pointer 
+                        </div>
+
+                        {/* Confirm the mapping  */}
+                        <div className="flex items-center mx-auto">
+                            <button className="btn-smaller-primary"
+                                onClick={() => { handleMapping(office._id) }}>Confirm Mapping</button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+}
+
+export default Page
+
+{/* <select className=" border border-black hover:cursor-pointer 
                     rounded-md  p-1 text-center"
                             value={selectedRestaurants[office._id] || ""}
                             onChange={(e) => handleSelectChange(office._id, e.target.value)}
@@ -121,18 +196,4 @@ const Page = () => {
                                     {restOffice.name}
                                 </option>
                             ))}
-                        </select>
-                    </div>
-
-                    {/* Confirm the mapping  */}
-                    <div className="flex items-center mx-auto">
-                        <button className="btn-primary"
-                            onClick={() => { handleMapping(office._id) }}>Confirm Mapping</button>
-                    </div>
-                </div>
-            ))}
-        </div>
-    )
-}
-
-export default Page
+                        </select> */}

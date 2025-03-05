@@ -10,7 +10,7 @@ export default function Layout({ children }) {
            <RestOwnerNav/>
             <div className="flex">
                <RestOwnerSide/>
-                <div className="mx-2 md:mx-auto">
+                <div className="ml-2 md:mx-auto">
                     {children} 
                 </div>
             </div>

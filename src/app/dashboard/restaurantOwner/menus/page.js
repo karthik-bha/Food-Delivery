@@ -51,7 +51,7 @@ const Menus = () => {
     }
 
     if (loading) {
-        return <Loader/>;
+        return <Loader />;
     }
 
     return (
@@ -63,44 +63,55 @@ const Menus = () => {
 
                 <>
                     <button className="btn-primary"
-                    onClick={() => setOpenMenuAdd(true)}>
+                        onClick={() => setOpenMenuAdd(true)}>
                         Add/Edit a menu
                     </button>
 
-                    {/* Display Regular Menu */}
-                    <h3 className="text-sub-heading my-6">Regular Menus by Day</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 md:max-w-[60vw] md:mx-auto mx-4 gap-4">
-                        {Object.entries(menuData.regularItem).map(([day, items]) => (
-                            <div key={day} className="p-4 border rounded-lg shadow-md">
-                                <h4 className="font-bold text-lg">{day}</h4>
-                                <p><strong>Veg:</strong> {items.Veg}</p>
-                                <p><strong>Non-Veg:</strong> {items.NonVeg}</p>
-                                <div className="flex gap-1 text-white my-2">
-                                    <button className="btn-edit"
-                                     onClick={() => setOpenMenuAdd(true)}>Edit</button>
-                                    <button className="btn-delete"
-                                        onClick={() => handleDelete(items._id)}>Delete</button>
+                    <div className="max-w-[90vw] md:max-w-[60vw] overflow-x-auto">
+                        <div className="flex gap-6 w-max">
+                            {/* Display Regular Menu */}
+                            <div className="min-w-[60vw]">
+                                <h3 className="text-sub-heading my-6">Regular Menus by Day</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    {Object.entries(menuData.regularItem).map(([day, items]) => (
+                                        <div key={day} className="p-4 border rounded-lg shadow-md">
+                                            <h4 className="font-bold text-lg">{day}</h4>
+                                            <p><strong>Veg:</strong> {items.Veg}</p>
+                                            <p><strong>Non-Veg:</strong> {items.NonVeg}</p>
+                                            <div className="flex gap-1 text-white my-2">
+                                                <button className="btn-edit"
+                                                    onClick={() => setOpenMenuAdd(true)}>Edit</button>
+                                                <button className="btn-delete"
+                                                    onClick={() => handleDelete(items._id)}>Delete</button>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
-                        ))}
+
+                            {/* Display Additional Menu */}
+                            <div className="min-w-[60vw]">
+                                <h3 className="text-sub-heading my-6">Additional Menu for All Days</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    {menuData.additionalMenu.map((item) => (
+                                        <div key={item._id} className="p-4 border rounded-lg shadow-md">
+                                            <img src={item.image_url || "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"}
+                                                alt={item.name}
+                                                className="w-24 h-24 object-cover mx-auto mb-2" />
+                                            <h4 className="font-bold">{item.name}</h4>
+                                            {item.price && <p>Price: ₹{item.price}</p>}
+                                            <p>{item.description ? item.description : "No description provided."}</p>
+                                            <div className="flex gap-1 text-white my-2">
+                                                <button className="btn-delete"
+                                                    onClick={() => handleDelete(item._id)}>Delete</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Display Additional Menu */}
-                    <h3 className="text-sub-heading my-6">Additional Menu for All Days</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-4 md:max-w-[60vw] md:mx-auto mx-4 gap-4">
-                        {menuData.additionalMenu.map((item) => (
-                            <div key={item._id} className="p-4 border rounded-lg shadow-md">
-                                <img src={item.image_url ||"https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"} alt={item.name} className="w-24 h-24 object-cover mx-auto mb-2" />
-                                <h4 className="font-bold">{item.name}</h4>
-                                {item.price && <p>Price: ₹{item.price}</p>}
-                                <p>{item.description? item.description : "No description provided."}</p>
-                                <div className="flex gap-1 text-white my-2">
-                                    <button className="btn-delete"
-                                        onClick={() => handleDelete(item._id)}>Delete</button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
                 </>}
 
 

@@ -83,8 +83,7 @@ const GuestAdditionalMenu = () => {
 
     return (
         <div>
-            <div className="mx-2 ">
-                <p className="my-4">Add items for guests, click below to start.</p>
+            <div className="mx-2 ">               
                 <div className="flex">
                     <button className="btn-primary" onClick={() => setSplMenu(!splMenu)}>
                         {splMenu ? "Close Guest Additional Menu" : "Open Guest Additional Menu"}

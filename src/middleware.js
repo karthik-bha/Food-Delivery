@@ -25,15 +25,18 @@ export async function middleware(req) {
             return NextResponse.redirect(new URL("/unauthorized", req.url));
         }
 
-        if (path.startsWith("/dashboard/admin") && !["super_admin", "admin"].includes(decoded.role)) {
+        if (path.startsWith("/dashboard/admin") && !["admin"].includes(decoded.role)) {
             return NextResponse.redirect(new URL("/unauthorized", req.url));
         }
 
-        if (path.startsWith("/dashboard/officeAdmin") && !["super_admin", "admin", "office_admin"].includes(decoded.role)) {
+        if (path.startsWith("/dashboard/officeAdmin") && !["office_admin"].includes(decoded.role)) {
             return NextResponse.redirect(new URL("/unauthorized", req.url));
         }
 
         if (path.startsWith("/dashboard/officeStaff") && !["office_staff"].includes(decoded.role)) {
+            return NextResponse.redirect(new URL("/unauthorized", req.url));
+        }
+        if(path.startsWith("/dashboard/restaurantOwner") && !["restaurant_owner"].includes(decoded.role)){
             return NextResponse.redirect(new URL("/unauthorized", req.url));
         }
 
@@ -47,10 +50,11 @@ export async function middleware(req) {
 // Apply middleware only to protected routes
 export const config = {
     matcher: [
-        "/random"
-        // "/dashboard/superAdmin/:path*",
-        // "/dashboard/admin/:path*",
-        // "/dashboard/officeAdmin/:path*",
-        // "/dashboard/officeStaff/:path*",
+        // "/random"
+        "/dashboard/superAdmin/:path*",
+        "/dashboard/admin/:path*",
+        "/dashboard/officeAdmin/:path*",
+        "/dashboard/officeStaff/:path*",
+        "/dashboard/restaurantOwner/:path*",
     ],
 };

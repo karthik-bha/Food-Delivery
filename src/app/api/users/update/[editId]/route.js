@@ -16,7 +16,7 @@ export async function PUT(req, { params }) {
     const { _id: userId, role } = req.user;
     
     const { isActive, isVeg, name, email, phone, excludeMeal, type } = await req.json();
-
+  
     // Reject empty requests
     if (!name && !email && !phone && isVeg === undefined && isActive === undefined) {
         return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
@@ -26,17 +26,19 @@ export async function PUT(req, { params }) {
     if (!editId) {
         return NextResponse.json({ success: false, message: "ID is required" }, { status: 400 });
     }
+
+    const userToBeEdited = await User.findById(editId);
   
     try {
         await connectDB();
         
         let updatedUser;
 
-        // Edit full details of office admin and staff
-        if (role === "office_admin" || role === "admin" ) {
+        // Edit full details of office admin, staff and restaurant owner
+        if (role === "office_admin" || role === "admin" || role ==="restaurant_owner") {
            
             // Update the selected
-            if(type ==="officeUsers"){
+            if(type ==="officeUsers" ){
                 updatedUser = await User.findByIdAndUpdate(
                     userId,
                     { isVeg, isActive, excludeMeal, updatedBy: userId },
@@ -45,12 +47,10 @@ export async function PUT(req, { params }) {
             }else{
                 updatedUser = await User.findByIdAndUpdate(
                     editId,
-                    { name, email, phone, isVeg, isActive, excludeMeal, updatedBy: userId },
+                    { name, email, phone, updatedBy: userId },
                     { new: true }
                 );
-            }
-         
-
+            }         
         }
 
         // Edit partial details of staff (lower privileges)
