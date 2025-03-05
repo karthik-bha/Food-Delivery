@@ -7,6 +7,7 @@
   - Restaurant Owner: restowner@gmail.com, pass:test123
 
 ## How to run?
+## How to run?
 
 ```bash
    npm run dev
