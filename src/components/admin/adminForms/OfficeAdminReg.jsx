@@ -30,9 +30,10 @@ const OfficeAdminReg = ({ setFormOpen, setSmallOfficeAdmins, officeAdmins, selec
   }, [selectedAdmin, setValue]);
 
   const onSubmit = async (data) => {
+    let isUpdate = Boolean(selectedAdmin);  // Check if it's an update
     try {
       let response;
-      let isUpdate = Boolean(selectedAdmin);  // Check if it's an update
+     
 
       if (isUpdate) {
         // Update existing admin
@@ -71,18 +72,18 @@ const OfficeAdminReg = ({ setFormOpen, setSmallOfficeAdmins, officeAdmins, selec
       }
     
     } catch (err) {
-      console.log(err);
-      toast.error(isUpdate ? "Error during update" : "Error during registration");
+      console.log(err.response.data.message);
+      toast.error(err.response.data.message);
     }
 };
 
 
   return (
     <div className="">
-      <form onSubmit={handleSubmit(onSubmit)} className="relative p-6 shadow-default-shadow flex flex-col gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="rounded-lg relative p-6 shadow-default-shadow flex flex-col gap-4">
   
         {/* Close Button */}        
-        <h2 className="text-sub-heading text-center my-6 ">
+        <h2 className="text-sub-heading text-center my-6  font-sub-heading">
           {selectedAdmin ? "Edit Office Admin" : "Register a New Office Admin"}
         </h2>
        

@@ -40,7 +40,7 @@ const Page = () => {
             const office = officeAdmin.office_id;
             let response;
             // temp fix
-            
+            setLoading(true);
             if(!office){
                 const offficeAdminId = officeAdmin._id;
                 response = await axios.delete(`/api/users/delete/officeAdmin/${offficeAdminId}`);
@@ -58,6 +58,8 @@ const Page = () => {
         } catch (err) {
             console.log(err);
             toast.error("Error during deletion");
+        }finally{
+            setLoading(false);
         }
     }
 

@@ -37,17 +37,22 @@ export async function POST(req) {
               Object.entries(regularItem).map(([day, items]) => [day, { ...items }])
           )
         : {}; 
-    
-        // Handle additional menu items (create & get IDs)
-        const additionalMenuItems = await AdditionalMenu.insertMany(
-            additionalMenu.map(item => ({
-                ...item,
-                createdBy: restOwnerId,
-                updatedBy: restOwnerId,
-            }))
-        );
-        
-        const additionalMenuIds = additionalMenuItems.map(item => item._id);
+
+        // Edge case, additional item is empty
+        let additionalMenuIds = [];
+        if (Array.isArray(additionalMenu) && additionalMenu.length > 0) {
+             // Handle additional menu items (create & get IDs)
+            const additionalMenuItems = await AdditionalMenu.insertMany(
+                additionalMenu.map(item => ({
+                    ...item,
+                    createdBy: restOwnerId,
+                    updatedBy: restOwnerId,
+                }))
+            );
+            additionalMenuIds = additionalMenuItems.map(item => item._id);
+        }
+      
+        // const additionalMenuIds = additionalMenuItems.map(item => item._id);
 
         if (existingMenu) {
             // Convert Map to Object, Merge, Convert back to Map

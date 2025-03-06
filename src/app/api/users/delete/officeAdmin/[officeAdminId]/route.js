@@ -22,17 +22,11 @@ export async function DELETE(req, { params }) {
             return NextResponse.json({ success: false, message: "No user given" }, { status: 400 });
         }
 
-        // Find user's office if it exists
-
-        const { office_id } = await User.findById(officeAdminId);
-
         let deletedUser;
-        
-        // Incase we dont have office
-        if (office_id === null) {
-            deletedUser = await User.findByIdAndDelete(officeAdminId);
-        }
+        deletedUser = await User.findByIdAndDelete(officeAdminId);
 
+        // Direct deletion as if office is present, another API handles it.
+        
 
         return NextResponse.json({ success: true, message: "Office admin deleted", deletedUser }, { status: 200 });
 

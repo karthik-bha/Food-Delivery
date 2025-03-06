@@ -47,7 +47,7 @@ export async function PUT(req, { params }) {
             }else{
                 updatedUser = await User.findByIdAndUpdate(
                     editId,
-                    { name, email, phone, updatedBy: userId },
+                    { name, email, phone, isVeg, isActive, excludeMeal, updatedBy: userId },
                     { new: true }
                 );
             }         

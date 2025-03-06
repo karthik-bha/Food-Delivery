@@ -45,16 +45,18 @@ export async function POST(req) {
             }
         } else {
             // MongoDB update query using $set and $inc
-            const updateQuery = {
-                $inc: {
-                    [`additional_items.${userId}.${itemId}.quantity`]: 1
+            const updatedOffice = await SmallOffice.findOneAndUpdate(
+                { _id: office._id },
+                {
+                    $inc: { [`additional_items.${userId}.${itemId}.quantity`]: 1 },
+                    $set: { [`additional_items.${userId}.${itemId}.price`]: price }
                 },
-                $set: {
-                    [`additional_items.${userId}.${itemId}.price`]: price
-                }
-            };
-
-            await SmallOffice.updateOne({ _id: office._id }, updateQuery);
+                { new: true }
+            );
+            
+            console.log("After update:", updatedOffice.additional_items, updatedOffice.guest_items);
+            
+            return NextResponse.json({ success: true, message: "Item added successfully", office: updatedOffice });                      
         }
 
 

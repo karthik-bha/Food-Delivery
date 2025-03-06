@@ -53,20 +53,18 @@ const Menus = () => {
     if (loading) {
         return <Loader />;
     }
-
     return (
         <div>
             <h2 className="my-12 text-section-heading">Menu details</h2>
             {openMenuAdd ? <>
                 <AddMenu setFormOpen={setOpenMenuAdd} setMenuData={setMenuData} />
-            </> :
+            </> : <>
 
-                <>
-                    <button className="btn-primary"
-                        onClick={() => setOpenMenuAdd(true)}>
-                        Add/Edit a menu
-                    </button>
-
+                <button className="btn-primary"
+                    onClick={() => setOpenMenuAdd(true)}>
+                    Add/Edit a menu
+                </button>
+                {menuData ?
                     <div className="max-w-[90vw] md:max-w-[60vw] overflow-x-auto">
                         <div className="flex gap-6 w-max">
                             {/* Display Regular Menu */}
@@ -111,8 +109,12 @@ const Menus = () => {
                             </div>
                         </div>
                     </div>
+                    : <div>
+                        No Menu found.
+                    </div>}
 
-                </>}
+
+            </>}
 
 
         </div>
