@@ -7,10 +7,11 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.resolve(__dirname, "../.env.local") });
+// const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// dotenv.config({ path: path.resolve(__dirname, "../.env.local") });
+dotenv.config();
 
-const API_URL = "http://localhost:3000/api/auto-order";
+const API_URL = `${process.env.NEXT_PUBLIC_URL}/api/auto-order`;
 const activeJobs = new Map(); // Stores currently running jobs
 
 
