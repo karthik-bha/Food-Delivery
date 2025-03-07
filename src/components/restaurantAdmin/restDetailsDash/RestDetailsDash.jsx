@@ -11,13 +11,13 @@ const EditForm = ({ data, onClose, onUpdate }) => {
     const onSubmit = async (formData) => {
         try {
             console.log(formData);
-            await axios.put("/api/offices/update/pvt/RestaurantOffice", formData);   
+            const response = await axios.put("/api/offices/update/pvt/RestaurantOffice", formData);   
             onUpdate(formData);            
             toast.success("Updated successfully, Refresh page");
             onClose();
         } catch(err) {
             console.log(err);
-            toast.error("Update failed");            
+            toast.error(err.response.data.message);            
         }
     };
 
@@ -46,8 +46,8 @@ const EditForm = ({ data, onClose, onUpdate }) => {
             <input {...register("state", { required: "State is required" })} placeholder="State" className="border p-2 rounded w-full mb-2" />
             {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>}
 
-            <input {...register("timeLimit")} placeholder="Close Time, Format (HH:MM), 24 hour format" className="border p-2 rounded w-full mb-2" />
-
+            <input {...register("timeLimit")} placeholder="e.g., 09:45 AM (12-hour format)" className="border p-2 rounded w-full mb-2" />
+            
             {/* Status Dropdown */}
             <select {...register("isActive", { required: "Status is required" })} className="border p-2 rounded w-full mb-4">
                 <option value="true">Active</option>

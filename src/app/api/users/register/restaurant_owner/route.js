@@ -5,15 +5,24 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { connectDB } from "@/lib/db/connectDB";
 import RestaurantOffice from "@/lib/models/RestaurantOffice";
+import { authMiddleware } from "@/lib/middleware/auth";
+export async function POST(req) {
+    
+    const response = await authMiddleware(req);
+    if(response) return response;
 
-export async function POST(request) {
+    const {_id:adminId, role} = req.user;
+
+    if(role!=="admin"){
+        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+    }
+
     try {
-        await connectDB(); // Connect to DB first before any operations
-
-        const { name, phone, email, password } = await request.json();
+        await connectDB(); 
+        const { name, phone, email, password, office_id} = await req.json();
 
         // Validate input fields
-        if (!email || !password || !name || !phone) {
+        if (!email || !password || !name || !phone || !office_id) {
             return NextResponse.json(
                 { success: false, message: "Email, Name, Phone, and Password are required" },
                 { status: 400 }
@@ -52,11 +61,12 @@ export async function POST(request) {
         const newRestaurantOwner = new User({
             name,
             email,
+            office_id,
             password: hashedPassword,
             phone,
-            role: "restaurant_owner",
-            office_id: null,
+            role: "restaurant_owner",    
             office_type: 2,
+            createdBy: adminId,
         });
 
         await newRestaurantOwner.save();
@@ -64,7 +74,7 @@ export async function POST(request) {
         return NextResponse.json({
             success: true,
             message: "User registered successfully",
-            newRestaurantOwner
+            newUser: newRestaurantOwner
         }, { status: 201 });
 
     } catch (err) {

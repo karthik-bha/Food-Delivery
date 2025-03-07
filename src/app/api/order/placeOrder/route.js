@@ -7,6 +7,7 @@ import AdditionalMenu from "@/lib/models/AdditionalMenu";
 import { NextResponse } from "next/server";
 import SmallOffice from "@/lib/models/SmallOffice";
 import RestaurantOffice from "@/lib/models/RestaurantOffice";
+import Menu from "@/lib/models/Menu";
 
 export async function POST(req) {
     try {
@@ -41,7 +42,7 @@ export async function POST(req) {
                 { status: 400 });
         }
 
-        
+
 
         const mapping = await OfficeAndRestaurantMapping.findOne({ office_id: user.office_id });
         if (!mapping) return NextResponse.json({ success: false, message: "Invalid request" }, { status: 400 });
@@ -56,6 +57,15 @@ export async function POST(req) {
                 { status: 400 });
         }
         
+        const hardcodedOrderTime = new Date(); 
+        const daysOfWeek =["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        // Additional check : Check if menu has today's regular item
+        const menu = await Menu.findOne({ restaurant_id: mapping.restuaurant_id });
+        console.log(menu);
+        console.log(menu.regularItem.get(daysOfWeek[hardcodedOrderTime.getDay()]));
+        if (!menu || menu.regularItem.size === 0 || menu.regularItem.get(daysOfWeek[hardcodedOrderTime.getDay()]) === undefined) {
+            return NextResponse.json({ success: false, message: "No Menu Present for today, cannot place order" }, { status: 400 });
+        }
 
         // Function to process orders
         const processOrders = async (orders) => {

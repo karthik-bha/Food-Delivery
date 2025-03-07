@@ -32,30 +32,40 @@ export async function POST(req, { params }) {
     }
 
     // Extract details from request body
-    const { name, email, phone, street_address, timeLimit } = await req.json();
+    let { name, email, phone, street_address, timeLimit } = await req.json();
 
     // Check for missing fields
     if (!name || !email || !phone || !street_address || !timeLimit) {
         return NextResponse.json(
-            { success: false, message: "Name, Email, Phone, Street address, and timeLimit are required" }, 
+            { success: false, message: "Name, Email, Phone, Street address, and timeLimit are required" },
             { status: 400 }
         );
     }
 
-    // Validate timeLimit format (HH:MM, 24-hour format)
-    if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(timeLimit)) {
-        return NextResponse.json(
-            { success: false, message: "Invalid timeLimit format. Use HH:MM (24-hour format)." },
-            { status: 400 }
-        );
+    // Checking if given timeLimit is valid or not
+    if (timeLimit) {
+        if (!/^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/.test(timeLimit)) {
+            return NextResponse.json({ success: false, message: "Invalid timeLimit format. Use this format (HH:MM AM/PM) eg: 07:00 AM." },
+                { status: 400 });
+        }
+        // Converting user time to 24-hour format
+        const [time, period] = timeLimit.split(" "); // Separate time and AM/PM
+        let [hours, minutes] = time.split(":").map(Number);
+
+        if (period === "PM" && hours !== 12) hours += 12;
+        if (period === "AM" && hours === 12) hours = 0; // Handle midnight
+        
+        timeLimit = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+
+        console.log(timeLimit);
     }
 
     try {
         // Check if the email already exists in any schema
         const existingUser = await User.findOne({ email }) ||
-                            await AdminOffice.findOne({ email }) ||
-                            await RestaurantOffice.findOne({ email }) ||
-                            await SmallOffice.findOne({ email });
+            await AdminOffice.findOne({ email }) ||
+            await RestaurantOffice.findOne({ email }) ||
+            await SmallOffice.findOne({ email });
 
         if (existingUser) {
             return NextResponse.json(

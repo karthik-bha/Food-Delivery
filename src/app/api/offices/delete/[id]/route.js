@@ -15,24 +15,24 @@ export async function DELETE(req, { params }) {
 
         await connectDB();
 
-        const users = await User.find({ office_id: id });
+        // const users = await User.find({ office_id: id });
 
-        await User.deleteMany({ office_id: id });
-
-
+        // await User.deleteMany({ office_id: id });
+        let deletedOffice = null;
+        // Delete the restaurant or smalloffice and their corresponding mappings
         if (type === "Restaurant") {
             // Handles removal of mapping for restaurant 
             await OfficeAndRestaurantMapping.deleteMany({ restaurant_id: id });
-            await RestaurantOffice.findByIdAndDelete(id);
+            deletedOffice = await RestaurantOffice.findByIdAndDelete(id);
 
         } else {
             // Handles removal of mapping for small office
             await OfficeAndRestaurantMapping.deleteMany({ office_id: id });
-            await SmallOffice.findByIdAndDelete(id);
+            deletedOffice = await SmallOffice.findByIdAndDelete(id);
         }
 
         
-        return NextResponse.json({ success: true, message: "Office and its users and mapping deleted successfully" }, {status:200});
+        return NextResponse.json({ success: true, message: "Office and mapping deleted successfully" , deletedOffice }, {status:200});
 
     } catch (err) {
         console.log(err);

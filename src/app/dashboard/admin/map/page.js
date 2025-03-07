@@ -183,17 +183,3 @@ const Page = () => {
 
 export default Page
 
-{/* <select className=" border border-black hover:cursor-pointer 
-                    rounded-md  p-1 text-center"
-                            value={selectedRestaurants[office._id] || ""}
-                            onChange={(e) => handleSelectChange(office._id, e.target.value)}
-                        >
-                            <option
-                                value=""
-                            >Select</option>
-                            {restOfficeData.map((restOffice) => (
-                                <option key={restOffice._id} value={restOffice._id}>
-                                    {restOffice.name}
-                                </option>
-                            ))}
-                        </select> */}

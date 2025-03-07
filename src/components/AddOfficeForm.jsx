@@ -5,8 +5,10 @@ import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const AddOfficeForm = ({ linkedUserId, linkedUserName, setAddOfficeForm, officeType }) => {
- 
+const AddOfficeForm = ({ setAddOfficeForm, officeType, setOffices  }) => {
+
+    const [loading, setLoading] = useState(false);
+
     const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
         defaultValues: {
             name: "",
@@ -22,17 +24,21 @@ const AddOfficeForm = ({ linkedUserId, linkedUserName, setAddOfficeForm, officeT
 
 
     const onSubmit = async (data) => {
+        setLoading(true);
         let endpoint = "";
         console.log(data);
         console.log(officeType);
-        if (officeType === "AdminOffice") endpoint = `/api/offices/register/adminOffice/${linkedUserId}`;
-        else if (officeType === "SmallOffice") endpoint = `/api/offices/register/smallOffice/${linkedUserId}`;
-        else if (officeType === "RestaurantOffice") endpoint = `/api/offices/register/restaurantOffice/${linkedUserId}`;
-        
+        if (officeType === "AdminOffice") endpoint = `/api/offices/register/adminOffice`;
+        else if (officeType === "SmallOffice") endpoint = `/api/offices/register/smallOffice`;
+        else if (officeType === "RestaurantOffice") endpoint = `/api/offices/register/restaurantOffice`;
+
         try {
             const response = await axios.post(endpoint, data);
+            console.log(response.data);
             if (response.data.success) {
                 toast.success("Office added successfully!");
+                setOffices(prevOffices => [...prevOffices, response.data.newOffice]);
+                
             } else {
                 console.log(response);
                 toast.error(response.data.message);
@@ -40,18 +46,21 @@ const AddOfficeForm = ({ linkedUserId, linkedUserName, setAddOfficeForm, officeT
         } catch (error) {
             toast.error(error.response.data.message);
             console.log(error.response.data);
+        } finally {
+            setLoading(false);
+            setAddOfficeForm(false);
         }
     };
 
     return (
-        <div className="p-4 bg-white shadow-md rounded-md max-w-md mx-auto">
+        <div className="p-4 bg-white shadow-md rounded-md max-w-md mx-auto my-4">
             <div className="flex justify-between my-4">
                 <h2 className="text-sub-heading font-sub-heading">Create Office</h2>
                 <button className="btn-primary cursor-pointer" onClick={() => setAddOfficeForm(false)}
                 >x</button>
             </div>
 
-            <h3 className="text-center text-[1.3rem] p-4 ">Add a<b> {officeType} </b>to <b>{linkedUserName}</b></h3>
+            <h3 className="text-center text-[1.3rem] p-4 ">Add a<b> {officeType}</b></h3>
 
             <form onSubmit={handleSubmit(onSubmit)}>
                 {/* Common Fields */}
@@ -69,21 +78,21 @@ const AddOfficeForm = ({ linkedUserId, linkedUserName, setAddOfficeForm, officeT
                     {...register("email", { required: "Email is required" })}
                 />
                 {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-                
-            {officeType !== "SmallOffice" && officeType!=="RestaurantOffice" &&
-            <>
-            <input className="w-full border p-2 rounded-md mb-2" type="text" placeholder="State"
-                    {...register("state", { required: "State is required" })}
-                />
-                {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>}
 
-                <input className="w-full border p-2 rounded-md mb-2" type="text" placeholder="District"
-                    {...register("district", { required: "District is required" })}
-                />
-                {errors.district && <p className="text-red-500 text-sm">{errors.district.message}</p>}
-            </>
-            }
-                
+                {officeType !== "SmallOffice" && officeType !== "RestaurantOffice" &&
+                    <>
+                        <input className="w-full border p-2 rounded-md mb-2" type="text" placeholder="State"
+                            {...register("state", { required: "State is required" })}
+                        />
+                        {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>}
+
+                        <input className="w-full border p-2 rounded-md mb-2" type="text" placeholder="District"
+                            {...register("district", { required: "District is required" })}
+                        />
+                        {errors.district && <p className="text-red-500 text-sm">{errors.district.message}</p>}
+                    </>
+                }
+
 
                 <input className="w-full border p-2 rounded-md mb-2" type="text" placeholder="Street Address" {...register("street_address", { required: "Street Address is required" })} />
                 {errors.street_address && <p className="text-red-500 text-sm">{errors.street_address.message}</p>}
@@ -91,13 +100,13 @@ const AddOfficeForm = ({ linkedUserId, linkedUserName, setAddOfficeForm, officeT
                 {/* timeLimit Field (Only for RestaurantOffice) */}
                 {officeType === "RestaurantOffice" && (
                     <>
-                        <input className="w-full border p-2 rounded-md mb-2" type="text"
-                            placeholder="Time Limit" {...register("timeLimit")} />
+                        <input {...register("timeLimit")}
+                            placeholder="e.g., 09:45 AM (12-hour format)" className="border p-2 rounded w-full mb-2" />
                     </>
                 )}
 
                 {/* Submit Button */}
-                <button type="submit" className="btn-primary w-full">
+                <button type="submit" className={`btn-primary w-full ${loading ? "disabled:cursor-not-allowed" : ""}`}>
                     Submit
                 </button>
             </form>
@@ -106,16 +115,3 @@ const AddOfficeForm = ({ linkedUserId, linkedUserName, setAddOfficeForm, officeT
 };
 
 export default AddOfficeForm;
-
-// const [officeType, setOfficeType] = useState("AdminOffice"); // Default selection
-{/* Office Type Selection */ }
-{/* <label className="block mb-2 font-semibold">Select Office Type:</label>
-            <select
-                className="w-full border p-2 rounded-md mb-4"
-                onChange={(e) => setOfficeType(e.target.value)}
-                value={officeType}
-            >
-                <option value="AdminOffice">Admin Office</option>
-                <option value="SmallOffice">Small Office</option>
-                <option value="RestaurantOffice">Restaurant Office</option>
-            </select> */}

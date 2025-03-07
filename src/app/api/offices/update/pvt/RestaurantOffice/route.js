@@ -16,8 +16,8 @@ export async function PUT(req) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
         }
 
-       
-        const { name, email, phone, street_address, district, state, isActive, timeLimit } = await req.json();
+
+        let { name, email, phone, street_address, district, state, isActive, timeLimit } = await req.json();
 
         // Get associated office_id from restOwnerId
         const user = await User.findById(restOwnerId);
@@ -25,17 +25,29 @@ export async function PUT(req) {
             return NextResponse.json({ success: false, message: "Restaurant office not found" }, { status: 404 });
         }
 
-        // Validate timeLimit format (HH:MM, 24-hour format)
-        if (timeLimit && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(timeLimit)) {
-            return NextResponse.json({ success: false, message: "Invalid timeLimit format. Use HH:MM (24-hour format)." }, 
-                { status: 400 });
+        // Checking if given timeLimit is valid or not
+        if (timeLimit) {
+            if (!/^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/.test(timeLimit)) {
+                return NextResponse.json({ success: false, message: "Invalid timeLimit format. Use this format (HH:MM AM/PM) eg: 07:00 AM." },
+                    { status: 400 });
+            }
+            // Converting user time to 24-hour format
+            const [time, period] = timeLimit.split(" "); // Separate time and AM/PM
+            let [hours, minutes] = time.split(":").map(Number);
+
+            if (period === "PM" && hours !== 12) hours += 12;
+            if (period === "AM" && hours === 12) hours = 0; // Handle midnight
+            
+            timeLimit = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+
+            console.log(timeLimit);
         }
-        
+
         // Update restaurant office details
         const updatedOffice = await RestaurantOffice.findByIdAndUpdate(
             user.office_id,
             { name, phone, email, street_address, district, state, isActive, timeLimit, updatedBy: restOwnerId },
-            { new: true } 
+            { new: true }
         );
 
         if (!updatedOffice) {

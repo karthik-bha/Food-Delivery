@@ -5,6 +5,7 @@ import SmallOffice from "@/lib/models/SmallOffice";
 import User from "@/lib/models/userSchema";
 import { NextResponse } from "next/server";
 import RestaurantOffice from "@/lib/models/RestaurantOffice";
+import Menu from "@/lib/models/Menu";
 
 export async function POST(req) {
     try {
@@ -15,7 +16,8 @@ export async function POST(req) {
         }
 
         const hardcodedOrderTime = new Date(); 
-
+        console.log(hardcodedOrderTime.getDay());
+        const daysOfWeek =["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         // Fetch office-restaurant mappings for this restaurant only
         const mappings = await OfficeAndRestaurantMapping.find({ restaurant_id: restaurantId });
 
@@ -35,6 +37,15 @@ export async function POST(req) {
                 console.log(`Skipping restaurant ${mapping.restaurant_id} (Inactive)`);
                 continue;
             }
+
+            // Additional check : Check if menu has today's regular item
+            const menu = await Menu.findOne({ restaurant_id: mapping.restuaurant_id });  
+            console.log(menu);
+            console.log(menu.regularItem.get(daysOfWeek[hardcodedOrderTime.getDay()]));
+            if (!menu || menu.regularItem.size === 0 || menu.regularItem.get(daysOfWeek[hardcodedOrderTime.getDay()]) === undefined) {
+                return NextResponse.json({success:false, message:"No Menu Present for today, cannot place order"}, {status:400});
+            }
+            
 
             // Processing Users for Meal Counts
             const users = await User.find({ office_id: mapping.office_id, isActive: true });

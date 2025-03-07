@@ -48,9 +48,17 @@ export async function GET(req) {
 
         // Restaurant Owner: Fetch their own restaurant office
         else if (role === "restaurant_owner") {
-            officeDetails = await RestaurantOffice.findById(user.office_id);
+            officeDetails = await RestaurantOffice.findById(user.office_id);    
             if (!officeDetails) {
                 return NextResponse.json({ success: false, message: "Restaurant not found" }, { status: 404 });
+            }        
+            // Convert timeLimit (24-hour format) to 12-hour format
+            if (officeDetails.timeLimit) {
+                let [hours, minutes] = officeDetails.timeLimit.split(":").map(Number);
+                const period = hours >= 12 ? "PM" : "AM";
+                hours = hours % 12 || 12; // Convert 0 to 12 (midnight case) and 12 stays 12
+        
+                officeDetails.timeLimit = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")} ${period}`;
             }
         }
 

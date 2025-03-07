@@ -33,11 +33,11 @@ export async function POST(req) {
             );
         }
 
-        const { name, phone, email, password } = await req.json();
+        const { name, phone, email, password, office_id } = await req.json();
 
-        if (!email || !password || !name || !phone) {
+        if (!email || !password || !name || !phone || !office_id) {
             return NextResponse.json(
-                { success: false, message: "Email, Name, Phone, and Password are required" }, 
+                { success: false, message: "Email, Name, Phone, Password and Office are required" }, 
                 { status: 400 }
             );
         }
@@ -61,6 +61,7 @@ export async function POST(req) {
         const officeAdminUser = new User({
             name,
             email,
+            office_id,
             password: hashedPassword,
             phone,
             role: "office_admin",
@@ -71,7 +72,7 @@ export async function POST(req) {
         await officeAdminUser.save();
 
         return NextResponse.json({
-            message: "Office Admin Registered Successfully, Please Register Your Office and Staff",
+            message: "Office Admin Registered Successfully",
             newUser: officeAdminUser,
             success:true,
         }, { status: 201 });

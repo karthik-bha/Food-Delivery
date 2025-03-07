@@ -13,17 +13,23 @@ const AdminSideNav = () => {
                 <Link href="/dashboard/admin/map" className="hover:text-white">
                     <li>MAP OFFICE TO RESTAURANT</li>
                 </Link>
+                <Link href="/dashboard/admin/small_offices" className="hover:text-white">
+                    <li>SMALL OFFICES</li>
+                </Link>
+                <Link href="/dashboard/admin/restaurant_offices" className="hover:text-white">
+                    <li>RESTAURANTS</li>
+                </Link>
                 <Link href="/dashboard/admin/office_admins" className="hover:text-white">
                     <li>SMALL OFFICE ADMINS</li>
                 </Link>
                 <Link href="/dashboard/admin/restaurant_owners" className="hover:text-white">
                     <li>RESTAURANT OWNERS</li>
                 </Link>
-               
+
                 <Link href="/dashboard/admin/orders" className="hover:text-white">
                     <li>ALL ORDERS</li>
                 </Link>
-            </ul>} 
+            </ul>}
 
             <div className=" hover:scale-110 ">
                 {expandBar ?

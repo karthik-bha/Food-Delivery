@@ -26,6 +26,12 @@ body {
   @apply bg-yellow-500 hover:bg-yellow-400 text-white px-2 py-1 rounded-md;
 }
 
+.table-head{
+  @apply md:grid grid-cols-5 bg-primary text-secondary text-center p-2 font-semibold rounded-t-md border-b
+}
+.table-content{
+  @apply text-center md:grid gap-4 grid-cols-5 border-b border-r border-l p-2
+}
 /* .btn-close{
   @apply bg-primary hover:bg-primary-hover text-white  w-6 h-6 rounded-full;
 } */
