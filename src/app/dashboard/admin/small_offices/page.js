@@ -44,7 +44,9 @@ const Page = () => {
         : <div className="my-6 mx-2 md:mx-auto">
           <h2 className="text-section-heading">Small Offices</h2>
           <button className="btn-primary my-6" onClick={() => setOpenForm(true)}>Add a small offfice</button>
-          <DisplayOffice officeData={smallOffices} officeType={"SmallOffice"} setOffices={setSmallOffices} />
+          <DisplayOffice officeData={smallOffices}
+            officeType={"SmallOffice"}
+            setOffices={setSmallOffices} />
         </div>
       }
 

@@ -45,7 +45,7 @@ const Admin = () => {
 
         {/* Small Admins */}
         <div className="flex flex-col items-center shadow-md ">
-          <div className="p-2 bg-primary rounded-t-md text-sub-heading w-full text-center text-secondary">
+          <div className="p-2 bg-primary rounded-t-md text-sub-heading w-full text-center text-black">
             <h2>Small Office Admins</h2>
           </div>
           <p className="text-2xl p-2">
@@ -55,7 +55,7 @@ const Admin = () => {
 
         {/* Restaurant Owners */}
         <div className="flex flex-col items-center shadow-md">
-          <div className="p-2 bg-primary rounded-t-md w-full text-center text-sub-heading text-secondary">
+          <div className="p-2 bg-primary rounded-t-md w-full text-center text-sub-heading text-black">
             <h2>Restaurant Owners</h2>
           </div>
           <p className="text-2xl p-2">

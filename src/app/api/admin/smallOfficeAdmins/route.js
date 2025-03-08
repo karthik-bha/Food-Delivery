@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/db/connectDB";
 import { authMiddleware } from "@/lib/middleware/auth";
 import AdminOffice from "@/lib/models/AdminOffice";
 import OfficeAndRestaurantMapping from "@/lib/models/OfficeAndRestaurantMapping";
+import SmallOffice from "@/lib/models/SmallOffice";
 import User from "@/lib/models/userSchema";
 import { NextResponse } from "next/server";
 

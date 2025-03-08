@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import Loader from "@/components/Loader";
 
-const AddEditUserForm = ({ setFormOpen, setUsers, role, userData }) => {
+const AddUsersForm = ({ setFormOpen, setUsers, role, userData }) => {
     const isEditMode = !!userData;
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
     const [offices, setOffices] = useState([]);
@@ -161,4 +161,4 @@ const AddEditUserForm = ({ setFormOpen, setUsers, role, userData }) => {
     );
 };
 
-export default AddEditUserForm;
+export default AddUsersForm;

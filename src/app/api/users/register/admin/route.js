@@ -30,9 +30,9 @@ export async function POST(req) {
     }
 
     // Extract email and password from request body
-    const { email, password, name, phone } = await req.json();
-    if (!email || !password || !name || !phone) {
-        return NextResponse.json({ success: false, message: "Email, Name, Phone and Password are required" }, { status: 400 });
+    const { email, password, name, phone, office_id } = await req.json();
+    if (!email || !password || !name || !phone || !office_id) {
+        return NextResponse.json({ success: false, message: "Email, Name, Phone, Password and office are required" }, { status: 400 });
     }
 
     try {
@@ -74,6 +74,7 @@ export async function POST(req) {
         const adminUser = new User({
 
             name,
+            office_id,
             phone,
             email,
             password: hashedPassword,

@@ -18,7 +18,10 @@ export const metadata = {
   description: "Food delivery application",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {  
+  // Check if Admin office and SuperAdmin exist on first load 
+  await fetch(`${process.env.NEXT_PUBLIC_URL}/api/init-db`, { method: "POST" });
+
   return (
     <html lang="en">
       <body

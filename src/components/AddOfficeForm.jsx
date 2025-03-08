@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "./Loader";
 
 const AddOfficeForm = ({ setAddOfficeForm, officeType, setOffices  }) => {
 
@@ -51,6 +52,7 @@ const AddOfficeForm = ({ setAddOfficeForm, officeType, setOffices  }) => {
             setAddOfficeForm(false);
         }
     };
+    if(loading) return <Loader/>
 
     return (
         <div className="p-4 bg-white shadow-md rounded-md max-w-md mx-auto my-4">
