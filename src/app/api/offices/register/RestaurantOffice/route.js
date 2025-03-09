@@ -10,9 +10,10 @@ export async function POST(req, { params }) {
     // Apply the authentication middleware
     const response = await authMiddleware(req);
     if (response) return response; // Stop execution if unauthenticated
-
+   
  
     console.log(req.user);
+    
 
     const { _id: adminId, role } = req.user; // ID of admin registering the office   
     

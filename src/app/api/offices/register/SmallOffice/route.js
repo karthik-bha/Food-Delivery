@@ -9,7 +9,7 @@ import RestaurantOffice from "@/lib/models/RestaurantOffice";
 
 // Creates small office only
 export async function POST(req, {params}) {
-
+ 
     // Apply the authentication middleware
     const response = await authMiddleware(req);
 

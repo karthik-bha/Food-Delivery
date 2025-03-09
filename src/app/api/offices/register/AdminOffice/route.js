@@ -8,7 +8,7 @@ import SmallOffice from "@/lib/models/SmallOffice";
 
 // This api creates a  new office and assigns the office_id to office_admin
 // It also assigns the office_id to the admin using the JWT token for authentication
-
+ 
 export async function POST(req) {
 
     // Apply the authentication middleware
