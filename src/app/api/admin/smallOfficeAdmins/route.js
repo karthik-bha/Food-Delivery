@@ -12,28 +12,40 @@ export async function GET(req) {
     const { _id: adminId, role } = req.user;
 
     try {
-
-        // We need to get all officeAdmins related to all offices under this admin
-        // We will first get office_ids through mapping
         await connectDB();
 
         if (role !== "admin") {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
         }
 
-        // Get admin office_id
-        const { office_id } = await User.findById(adminId);
+        // Get admin details
+        const admin = await User.findById(adminId);
+        if (!admin || !admin.office_id) {
+            return NextResponse.json({ success: false, message: "Admin or office not found" }, { status: 404 });
+        }
 
-        // Get details like district and state from admin office
-        const { district, state } = await AdminOffice.findById(office_id);
+        // Get admin office details
+        const adminOffice = await AdminOffice.findById(admin.office_id);
+        if (!adminOffice) {
+            return NextResponse.json({ success: false, message: "Admin office not found" }, { status: 404 });
+        }
 
-        // Get all users who have office in this district and state
-        const smallOfficeAdmins = await User.find({ role: "office_admin" }).populate({ path: "office_id", match: { district: district, state: state } });
+        // Get all office admins
+        const officeAdmins = await User.find({
+            role: "office_admin",
+        }).populate({
+            path: "office_id",
+        });
 
-        return NextResponse.json({ success: true, message: "Successful fetch", smallOfficeAdmins });
+        // Filter office admins whose office matches the admin's district and state
+        const filteredAdmins = officeAdmins.filter(
+            (admin) => admin.office_id?.district === adminOffice.district && admin.office_id?.state === adminOffice.state
+        );
+
+        return NextResponse.json({ success: true, message: "Successful fetch", smallOfficeAdmins: filteredAdmins });
 
     } catch (err) {
-        console.log(err);
+        console.error(err);
         return NextResponse.json({ success: false, message: "Error during fetch" }, { status: 500 });
     }
 }

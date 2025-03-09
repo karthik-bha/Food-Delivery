@@ -37,15 +37,7 @@ const Page = () => {
                 <>
                     <h2 className="mt-12 text-section-heading">Admin Offices</h2>
                     <button className="btn-primary my-6"
-                    onClick={() => setAddOfficeForm(true)}>Add admin office</button>
-                    {/* <div className="table-head">
-                        <p></p>
-                        <p></p>
-                        <p></p>
-                        <p></p>
-                        <p></p>
-
-                    </div> */}
+                    onClick={() => setAddOfficeForm(true)}>Add admin office</button>             
                     <div>
                         <DisplayOffice officeData={officeData} officeType="AdminOffice" setOffices={setOfficeData} />
                     </div>

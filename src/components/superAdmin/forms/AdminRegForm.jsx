@@ -17,13 +17,19 @@ const AdminRegForm = ({ setFormOpen, setAdminData, editUser }) => {
     const [offices, setOffices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedOffice, setSelectedOffice] = useState(""); // Tracks selected office
+    const [showPassword, setShowPassword] = useState(false);
+    const [changePassword, setChangePassword] = useState(false);
 
     useEffect(() => {
         fetchAdminOffices();
 
         if (editUser) {
-            // Pre-fill form fields
-            Object.keys(editUser).forEach((key) => setValue(key, editUser[key]));
+            // Pre-fill form fields except for password
+            Object.keys(editUser).forEach((key) => {
+                if (key !== "password") {
+                    setValue(key, editUser[key]);
+                }
+            });
 
             // Set default office if admin has one assigned
             if (editUser.office_id) {
@@ -32,6 +38,7 @@ const AdminRegForm = ({ setFormOpen, setAdminData, editUser }) => {
             }
         }
     }, [editUser, setValue]);
+
 
     async function fetchAdminOffices() {
         try {
@@ -69,16 +76,16 @@ const AdminRegForm = ({ setFormOpen, setAdminData, editUser }) => {
             setFormOpen(false);
         } catch (err) {
             console.error(err);
-            toast.error("Error during operation");
-        }finally{
+            toast.error(err.response.data.message); 
+        } finally {
             setLoading(false);
         }
     }
 
-    if(loading) return <Loader/>
+    if (loading) return <Loader />
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="p-4 shadow-md rounded-lg bg-white">
+        <form onSubmit={handleSubmit(onSubmit)} className=" min-w-[20vw] my-6 p-4 shadow-md rounded-lg bg-white">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold">{editUser ? "Edit Admin" : "Admin Registration"}</h2>
                 <p className="cursor-pointer text-gray-600 hover:text-gray-800 text-lg font-bold" onClick={() => setFormOpen(false)}>X</p>
@@ -99,21 +106,55 @@ const AdminRegForm = ({ setFormOpen, setAdminData, editUser }) => {
                 </div>
             ))}
 
-            {/* Password (Only for New Admin Registration) */}
-            {!editUser && (
-                <div className="mb-4">
-                    <input
-                        type="password"
-                        {...register("password", {
-                            required: "Password is required",
-                            minLength: { value: 6, message: "Must be at least 6 characters" }
-                        })}
-                        className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-                        placeholder="Password"
-                    />
-                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
-                </div>
+
+            {editUser ? (
+                <>
+                    <p onClick={() => setChangePassword(!changePassword)} className="cursor-pointer font-semibold">
+                        Change password?
+                    </p>
+                    {changePassword && (
+                        <>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="New Password"
+                                    className="rounded-md p-2 w-full my-4"
+                                    {...register("password", {
+                                        minLength: { value: 6, message: "Password must be at least 6 characters" }
+                                    })}
+                                />
+                                <span
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-sm text-gray-600"
+                                >
+                                    {showPassword ? "Hide" : "Show"}
+                                </span>
+
+                            </div>
+                            {errors.password && <span className="text-red-500 text-[0.7rem]">{errors.password.message}</span>}
+                        </>
+                    )}
+                </>
+            ) : (
+                <>
+                    <div className="relative">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            className="rounded-md p-2 w-full my-4"
+                            {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must be at least 6 characters" } })}
+                        />
+                        <span
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-sm text-gray-600"
+                        >
+                            {showPassword ? "Hide" : "Show"}
+                        </span>
+                    </div>
+                    {errors.password && <span className="text-red-500 text-[0.7rem]">{errors.password.message}</span>}
+                </>
             )}
+
 
             {/* Office Dropdown */}
             <div className="mb-4">

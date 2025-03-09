@@ -57,7 +57,7 @@ const AddUsersForm = ({ setFormOpen, setUsers, role, userData }) => {
             } else {
                 response = await axios.post(`/api/users/register/${role}`, data);
             }
-
+            console.log(response.data);
             if (response.data.success) {
                 toast.success(response.data.message);
                 setUsers((prevUsers) => {
@@ -125,7 +125,7 @@ const AddUsersForm = ({ setFormOpen, setUsers, role, userData }) => {
                     {errors.email && <span className="text-red-500">{errors.email.message}</span>}
                 </div>
 
-                {/* Password (Only in Register Mode) */}
+              
                 {isEditMode ? (
                     <>
                         <p onClick={() => setChangePassword(!changePassword)} className="cursor-pointer font-semibold">

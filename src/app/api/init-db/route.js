@@ -12,9 +12,9 @@ export async function POST() {
         const superAdminExists = await User.findOne();
         let superAdmin;
         if (!superAdminExists) {
-            const hashedPassword = await bcrypt.hash("superadmin123", 10);
+            const hashedPassword = await bcrypt.hash(process.env.DEFAULT_SUPER_ADMIN_PASSWORD, 10);
             superAdmin = await User.create({
-                email: "superadmin@gmail.com",
+                email: process.env.DEFAULT_SUPER_ADMIN_EMAIL,
                 name: "super admin",
                 phone: "7338283882",
                 password: hashedPassword,

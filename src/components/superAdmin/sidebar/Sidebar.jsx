@@ -18,6 +18,9 @@ const Sidebar = () => {
                 <Link href="/dashboard/superAdmin/offices"className="hover:text-white">
                     <li>OFFICES</li>
                 </Link>
+                <Link href="/dashboard/superAdmin/profile"className="hover:text-white">
+                    <li>PROFILE</li>
+                </Link>
                 {/* <Link href="/dashboard/superAdmin/orders" className="hover:text-white">
                     <li>ORDERS</li>
                 </Link> */}

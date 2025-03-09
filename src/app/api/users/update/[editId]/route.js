@@ -4,107 +4,67 @@ import { authMiddleware } from "@/lib/middleware/auth";
 import { connectDB } from "@/lib/db/connectDB";
 import bcrypt from "bcrypt";
 
-
 export async function PUT(req, { params }) {
-
     const { editId } = await params;
-
-    // Authenticate the user
     const response = await authMiddleware(req);
-
     if (response) return response; // If auth fails, return response
 
     const { _id: userId, role } = req.user;
-
     const { office_id, isActive, isVeg, name, email, phone, excludeMeal, type, password } = await req.json();
-    console.log(password);
 
-    // Reject empty requests
     if (!name && !email && !phone && isVeg === undefined && isActive === undefined) {
         return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
     }
 
-    // Check if id was given
     if (!editId) {
         return NextResponse.json({ success: false, message: "ID is required" }, { status: 400 });
     }
 
-    const userToBeEdited = await User.findById(editId);
-
     try {
         await connectDB();
+        const userToBeEdited = await User.findById(editId);
+        if (!userToBeEdited) {
+            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+        }
 
-        let updatedUser;
+        // If email is provided, check if provided email matches current user's email, if yes continue
+        if (email && email !== userToBeEdited.email) {
+
+            // If email is different, check if any other user has same email
+            const existingUser = await User.findOne({ email });
+            if (existingUser) {
+                return NextResponse.json({ success: false, message: "Email already in use" }, { status: 400 });
+            }
+        }
+
+        let updateData = { name, email, phone, office_id, isVeg, isActive, excludeMeal, updatedBy: userId };
+
+        // If password is provided, hash and add it
+        if (password?.trim()) {
+            updateData.password = await bcrypt.hash(password, 10);
+        }
 
         if (role === "admin" || role === "super_admin") {
-
-            if (!email || !name || !phone || !office_id) {
-                return NextResponse.json({ success: false, message: "Email, Name, Phone and Office are required" },
-                    { status: 400 });
-            }
-
-            if (password && password.trim() !== "") {
-                const hashedPassword = await bcrypt.hash(password, 10);
-                // Include password in update if it's provided
-                updatedUser = await User.findByIdAndUpdate(
-                    editId,
-                    { name, email, phone, office_id, password: hashedPassword, updatedBy: userId },
-                    { new: true }
-                );
+            if (type === "superAdmin") {
+                if (!email || !name || !phone) {
+                    return NextResponse.json({ success: false, message: "Email, Name, and Phone are required" }, { status: 400 });
+                }
             } else {
-                // Updates partial details of office admins without password if field is empty
-                updatedUser = await User.findByIdAndUpdate(
-                    editId,
-                    { name, email, phone, office_id, updatedBy: userId },
-                    { new: true }
-                );
+                if (!email || !name || !phone || !office_id) {
+                    return NextResponse.json({ success: false, message: "Email, Name, Phone and Office are required" }, { status: 400 });
+                }
             }
-
-        }
-
-        // Edit full details of office admin, staff and restaurant owner
-        else if (role === "office_admin" || role === "restaurant_owner") {
-
-            // Update the selected
+        } else if (role === "office_admin" || role === "restaurant_owner") {
             if (type === "officeUsers") {
-                updatedUser = await User.findByIdAndUpdate(
-                    userId,
-                    { isVeg, isActive, excludeMeal, updatedBy: userId },
-                    { new: true }
-                );
-            } else {
-                // Reject empty requests
-                if (!name || !email || !phone || isVeg === undefined && isActive === undefined) {
-                    return NextResponse.json({ success: false, message: "Fields cannot be empty!" }, { status: 400 });
-                }
-
-                if (password && password.trim() !== "") {
-                    const hashedPassword = await bcrypt.hash(password, 10);
-                    // Include password in update if it's provided
-                    updatedUser = await User.findByIdAndUpdate(
-                        editId,
-                        { name, email, phone, office_id, isVeg, isActive, excludeMeal, password: hashedPassword, updatedBy: userId },
-                        { new: true }
-                    );
-                } else {
-                    // Update without password
-                    updatedUser = await User.findByIdAndUpdate(
-                        editId,
-                        { name, email, phone, office_id, isVeg, isActive, excludeMeal, updatedBy: userId },
-                        { new: true }
-                    );
-                }
+                updateData = { isVeg, isActive, excludeMeal, updatedBy: userId };
+            } else if (!name || !email || !phone) {
+                return NextResponse.json({ success: false, message: "Fields cannot be empty!" }, { status: 400 });
             }
+        } else if (role === "office_staff") {
+            updateData = { isVeg, isActive, excludeMeal, updatedBy: userId };
         }
 
-        // Edit partial details of staff (lower privileges)
-        else if (role === "office_staff") {
-            updatedUser = await User.findByIdAndUpdate(
-                userId,
-                { isVeg, isActive, excludeMeal, updatedBy: userId },
-                { new: true }
-            );
-        }
+        const updatedUser = await User.findByIdAndUpdate(editId, updateData, { new: true }).populate("office_id");
 
         if (!updatedUser) {
             return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
@@ -113,7 +73,7 @@ export async function PUT(req, { params }) {
         return NextResponse.json({ success: true, message: "User details updated successfully", updatedUser });
 
     } catch (err) {
-        console.log(err);
+        console.error(err);
         return NextResponse.json({ success: false, message: "Error" });
     }
 }

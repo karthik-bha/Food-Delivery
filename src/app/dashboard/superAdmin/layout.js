@@ -7,7 +7,7 @@ export default function Layout({ children }) {
             <Navbar />       
             <div className="flex">
             <Sidebar/>
-            <div className="mx-auto ">
+            <div className="mx-2 md:mx-auto ">
                 {children}
             </div>
             </div>

@@ -74,7 +74,7 @@ const OfficeEditForm = ({ selectedOfficeData, setOfficeData, officeType, setEdit
     if (loading) return <Loader />;
 
     return (
-        <div className="relative p-6 border rounded-md bg-white shadow-default-shadow">
+        <div className="min-w-[20vw] relative p-6 border rounded-md bg-white shadow-default-shadow">
             <h2 className="text-sub-heading font-sub-heading mb-4">Edit {officeType}</h2>
             <img
                 src="/svgs/cross.svg"
