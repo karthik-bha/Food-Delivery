@@ -29,10 +29,10 @@ const AddOfficeForm = ({ setAddOfficeForm, officeType, setOffices  }) => {
         let endpoint = "";
         console.log(data);
         console.log(officeType);
-        
-        if (officeType === "AdminOffice") endpoint = `/api/offices/register/adminOffice`;
-        else if (officeType === "SmallOffice") endpoint = `/api/offices/register/smallOffice`;
-        else if (officeType === "RestaurantOffice") endpoint = `/api/offices/register/restaurantOffice`;
+
+        if (officeType === "AdminOffice") endpoint = `/api/offices/register/AdminOffice`;
+        else if (officeType === "SmallOffice") endpoint = `/api/offices/register/SmallOffice`;
+        else if (officeType === "RestaurantOffice") endpoint = `/api/offices/register/RestaurantOffice`;
 
         try {
             const response = await axios.post(endpoint, data);
