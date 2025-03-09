@@ -12,18 +12,18 @@ const Sidebar = () => {
                 <Link href="/dashboard/superAdmin/admins" className="hover:text-white">
                     <li>ADMINS</li>
                 </Link>
-                <Link href="/dashboard/superAdmin/restaurants" className="hover:text-white">
+                {/* <Link href="/dashboard/superAdmin/restaurants" className="hover:text-white">
                     <li>RESTAURANTS</li>
-                </Link>
+                </Link> */}
                 <Link href="/dashboard/superAdmin/offices"className="hover:text-white">
                     <li>OFFICES</li>
                 </Link>
-                <Link href="/dashboard/superAdmin/orders" className="hover:text-white">
+                {/* <Link href="/dashboard/superAdmin/orders" className="hover:text-white">
                     <li>ORDERS</li>
-                </Link>
-                <Link href="/dashboard/superAdmin/revenue" className="hover:text-white">
+                </Link> */}
+                {/* <Link href="/dashboard/superAdmin/revenue" className="hover:text-white">
                     <li>REVENUE</li>
-                </Link>
+                </Link> */}
             </ul>
             }
 

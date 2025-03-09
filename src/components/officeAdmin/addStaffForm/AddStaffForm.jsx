@@ -31,7 +31,7 @@ const AddStaffForm = ({ setOpenForm, setStaffData, staffData }) => {
             }
         } catch (err) {
             console.error("Error:", err);
-            toast.error("Error during registering");
+            toast.error(err.response.data.message);
         } finally {
             setLoading(false);
         }

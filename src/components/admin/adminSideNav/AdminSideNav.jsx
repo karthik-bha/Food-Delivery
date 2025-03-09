@@ -10,9 +10,9 @@ const AdminSideNav = () => {
                 <Link href="/dashboard/admin" className="hover:text-white">
                     <li>DASHBOARD</li>
                 </Link>
-                <Link href="/dashboard/admin/map" className="hover:text-white">
+                {/* <Link href="/dashboard/admin/map" className="hover:text-white">
                     <li>MAP OFFICE TO RESTAURANT</li>
-                </Link>
+                </Link> */}
                 <Link href="/dashboard/admin/small_offices" className="hover:text-white">
                     <li>SMALL OFFICES</li>
                 </Link>
@@ -26,8 +26,8 @@ const AdminSideNav = () => {
                     <li>RESTAURANT OWNERS</li>
                 </Link>
 
-                <Link href="/dashboard/admin/orders" className="hover:text-white">
-                    <li>ALL ORDERS</li>
+                <Link href="/dashboard/admin/mapping" className="hover:text-white">
+                    <li>MAP RESTAURANT TO OFFICE</li>
                 </Link>
             </ul>}
 

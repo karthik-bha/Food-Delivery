@@ -14,19 +14,14 @@ export async function POST(req) {
     // If the middleware returns a response (i.e., unauthenticated), stop execution here
     if (response) {
         return response;
-    }
-    console.log(req.user);
-    // req.user should be set by the middleware if authentication is successful
-    if (!req.user) {
-        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    }
+    }  
 
     // Access the user data attached by the middleware
     const { _id: superAdminId, role } = req.user;
 
     // Check if the user has the right role (super_admin)
     if (role !== "super_admin") {
-        return NextResponse.json({ success: false, message: "Only super admins can add admin" }, { status: 403 });
+        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
     }
 
     // Extract email and password from request body
@@ -72,7 +67,6 @@ export async function POST(req) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const adminUser = new User({
-
             name,
             office_id,
             phone,

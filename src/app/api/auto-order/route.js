@@ -10,14 +10,14 @@ import Menu from "@/lib/models/Menu";
 export async function POST(req) {
     try {
         await connectDB();
-        const { restaurantId } = await req.json(); 
+        const { restaurantId } = await req.json();
         if (!restaurantId) {
             return NextResponse.json({ success: false, message: "Restaurant ID is required" }, { status: 400 });
         }
 
-        const hardcodedOrderTime = new Date(); 
+        const hardcodedOrderTime = new Date();
         console.log(hardcodedOrderTime.getDay());
-        const daysOfWeek =["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         // Fetch office-restaurant mappings for this restaurant only
         const mappings = await OfficeAndRestaurantMapping.find({ restaurant_id: restaurantId });
 
@@ -31,6 +31,14 @@ export async function POST(req) {
                 continue;
             }
 
+            // Check if mapping exists and if it is active
+            const activeMapping = await OfficeAndRestaurantMapping.findOne({ office_id: mapping.office_id, isActive: true });
+            if (!activeMapping) {
+                // return NextResponse.json({ success: false, message: "Active Mapping not found" }, { status: 400 })
+                console.log(`Skipping office ${mapping.office_id} (Mapping Inactive)`);
+                continue;
+            };
+
             // Check if the restaurant is active
             const restOffice = await RestaurantOffice.findById(mapping.restaurant_id);
             if (!restOffice || !restOffice.isActive) {
@@ -39,13 +47,15 @@ export async function POST(req) {
             }
 
             // Additional check : Check if menu has today's regular item
-            const menu = await Menu.findOne({ restaurant_id: mapping.restuaurant_id });  
-            console.log(menu);
-            console.log(menu.regularItem.get(daysOfWeek[hardcodedOrderTime.getDay()]));
+            const menu = await Menu.findOne({ office_id: mapping.restaurant_id });
+            // console.log(menu);
+            // console.log(menu.regularItem.get(daysOfWeek[hardcodedOrderTime.getDay()]));
             if (!menu || menu.regularItem.size === 0 || menu.regularItem.get(daysOfWeek[hardcodedOrderTime.getDay()]) === undefined) {
-                return NextResponse.json({success:false, message:"No Menu Present for today, cannot place order"}, {status:400});
+                console.log(`Skipping office ${mapping.office_id} (No menu for today)`);
+                continue;
+                // return NextResponse.json({ success: false, message: "No Menu Present for today, cannot place order" }, { status: 400 });               
             }
-            
+
 
             // Processing Users for Meal Counts
             const users = await User.find({ office_id: mapping.office_id, isActive: true });
@@ -54,7 +64,7 @@ export async function POST(req) {
             let numberOfNonVeg = 0;
 
             users.forEach(user => {
-                if (!user.excludeMeal) { 
+                if (!user.excludeMeal) {
                     if (user.isVeg) {
                         numberOfVeg++;
                     } else {
@@ -62,6 +72,11 @@ export async function POST(req) {
                     }
                 }
             });
+
+            // // Do not place order if no users are opt out of regular meals
+            // if(numberOfNonVeg===0 && numberOfVeg===0) {
+            //     return NextResponse.json({success:false, message:"No Users in office, cannot place order"}, {status:400});
+            // }
 
             // Processing Additional Orders
             let additionalOrders = [];
@@ -107,14 +122,14 @@ export async function POST(req) {
                 totalGuestCost += guest.price * guest.quantity;
             }
 
-            // Calculating Total Amount
+            // Calculating Total Amount (hardcoded meal price for now)
             const totalAmount = numberOfVeg * 100 + numberOfNonVeg * 150 + totalAdditionalCost + totalGuestCost;
 
 
-            if (totalAmount===0) {
-                return NextResponse.json({success:false, message:"No orders to place"}, {status:400});
+            if (totalAmount === 0) {
+                return NextResponse.json({ success: false, message: "No orders to place" }, { status: 400 });
             }
-            
+
             // Create and Save the Order
             const order = new Order({
                 OfficeAndRestaurantMappingId: mapping._id,

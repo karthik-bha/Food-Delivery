@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { authMiddleware } from "@/lib/middleware/auth";
 import SmallOffice from "@/lib/models/SmallOffice";
 import RestaurantOffice from "@/lib/models/RestaurantOffice";
+import AdditionalMenu from "@/lib/models/AdditionalMenu";
 import OfficeAndRestaurantMapping from "@/lib/models/OfficeAndRestaurantMapping";
 import User from "@/lib/models/userSchema";
 import { connectDB } from "@/lib/db/connectDB";

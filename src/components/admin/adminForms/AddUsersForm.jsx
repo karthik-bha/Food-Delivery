@@ -11,6 +11,8 @@ const AddUsersForm = ({ setFormOpen, setUsers, role, userData }) => {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
     const [offices, setOffices] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
+    const [changePassword, setChangePassword] = useState(false);
 
     useEffect(() => {
         const fetchOffices = async () => {
@@ -46,6 +48,7 @@ const AddUsersForm = ({ setFormOpen, setUsers, role, userData }) => {
     }, [isEditMode, userData, setValue]);
 
     const onSubmit = async (data) => {
+        console.log(data);
         setLoading(true);
         try {
             let response;
@@ -77,7 +80,7 @@ const AddUsersForm = ({ setFormOpen, setUsers, role, userData }) => {
     if (loading) return <Loader />;
 
     return (
-        <div className="relative p-6 shadow-default-shadow flex flex-col gap-4">
+        <div className="min-w-[20vw] rounded-md relative p-6 shadow-default-shadow flex flex-col gap-4">
             <h2 className="text-sub-heading text-center my-6 font-sub-heading">
                 {isEditMode ? "Edit" : "Register"} {role.replace("_", " ")}
             </h2>
@@ -123,17 +126,54 @@ const AddUsersForm = ({ setFormOpen, setUsers, role, userData }) => {
                 </div>
 
                 {/* Password (Only in Register Mode) */}
-                {!isEditMode && (
-                    <div>
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            className="rounded-md p-2 w-full my-4"
-                            {...register("password", { required: "Password is required" })}
-                        />
-                        {errors.password && <span className="text-red-500">{errors.password.message}</span>}
-                    </div>
+                {isEditMode ? (
+                    <>
+                        <p onClick={() => setChangePassword(!changePassword)} className="cursor-pointer font-semibold">
+                            Change password?
+                        </p>
+                        {changePassword && (
+                            <>
+                                <div className="relative">
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="New Password"
+                                        className="rounded-md p-2 w-full my-4"
+                                        {...register("password", {
+                                            minLength: { value: 6, message: "Password must be at least 6 characters" }
+                                        })}
+                                    />
+                                    <span
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-sm text-gray-600"
+                                    >
+                                        {showPassword ? "Hide" : "Show"}
+                                    </span>
+
+                                </div>
+                                {errors.password && <span className="text-red-500 text-[0.7rem]">{errors.password.message}</span>}
+                            </>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                className="rounded-md p-2 w-full my-4"
+                                {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must be at least 6 characters" } })}
+                            />
+                            <span
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-sm text-gray-600"
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </span>
+                        </div>
+                        {errors.password && <span className="text-red-500 text-[0.7rem]">{errors.password.message}</span>}
+                    </>
                 )}
+
 
                 {/* Office Selection Dropdown */}
                 <div>
@@ -141,7 +181,7 @@ const AddUsersForm = ({ setFormOpen, setUsers, role, userData }) => {
                         {...register("office_id", { required: "Office selection is required" })}
                         className="rounded-md p-2 w-full"
                         defaultValue={isEditMode ? userData.office_id?._id : ""}
-                        // disabled={isEditMode} 
+                    // disabled={isEditMode} 
                     >
                         <option value="">Select {role === "office_admin" ? "Small Office" : "Restaurant Office"}</option>
                         {offices.map((office) => (

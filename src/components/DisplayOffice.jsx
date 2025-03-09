@@ -52,11 +52,10 @@ const DisplayOffice = ({ officeData, officeType, setOffices }) => {
                         {officeData.map((office) => {
                             return (
                                 <div key={office._id} className="table-content">
-
                                     <p>{office.name}</p>
                                     <p>{office.email}</p>
                                     <p>{office.phone}</p>
-                                    <p>{office.street_address}</p>
+                                    <p>{office.street_address}, {office.district}, {office.state}</p>
                                     <div className="flex items-center gap-2 mx-auto justify-center">
                                         <button className="btn-edit"
                                             onClick={() => { 

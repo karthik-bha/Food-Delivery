@@ -43,9 +43,9 @@ export async function POST(req) {
         }
 
 
-
-        const mapping = await OfficeAndRestaurantMapping.findOne({ office_id: user.office_id });
-        if (!mapping) return NextResponse.json({ success: false, message: "Invalid request" }, { status: 400 });
+        // Check if mapping exists and if it is active
+        const mapping = await OfficeAndRestaurantMapping.findOne({ office_id: user.office_id, isActive: true });
+        if (!mapping) return NextResponse.json({ success: false, message: "Active Mapping not found" }, { status: 400 });
 
         // Check if restaurant is active
         const restaurantOffice = await RestaurantOffice.findById(mapping.restaurant_id);
@@ -56,13 +56,14 @@ export async function POST(req) {
             },
                 { status: 400 });
         }
-        
-        const hardcodedOrderTime = new Date(); 
-        const daysOfWeek =["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+        const hardcodedOrderTime = new Date();
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         // Additional check : Check if menu has today's regular item
-        const menu = await Menu.findOne({ restaurant_id: mapping.restuaurant_id });
-        console.log(menu);
-        console.log(menu.regularItem.get(daysOfWeek[hardcodedOrderTime.getDay()]));
+        const menu = await Menu.findOne({ office_id: mapping.restaurant_id });
+       
+        // console.log(menu);
+        // console.log(menu.regularItem.get(daysOfWeek[hardcodedOrderTime.getDay()]));
         if (!menu || menu.regularItem.size === 0 || menu.regularItem.get(daysOfWeek[hardcodedOrderTime.getDay()]) === undefined) {
             return NextResponse.json({ success: false, message: "No Menu Present for today, cannot place order" }, { status: 400 });
         }

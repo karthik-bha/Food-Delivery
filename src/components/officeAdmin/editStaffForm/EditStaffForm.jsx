@@ -10,6 +10,7 @@ const EditStaffForm = ({ setOpenForm, setStaffData, staff }) => {
             name: staff.name || "",
             email: staff.email || "",
             phone: staff.phone || "",
+            password: "",
             isVeg: staff.isVeg,
             isActive: staff.isActive,
             excludeMeal: staff.excludeMeal
@@ -17,8 +18,11 @@ const EditStaffForm = ({ setOpenForm, setStaffData, staff }) => {
     });
 
     const [loading, setLoading] = useState(false);
+    const [changePassword, setChangePassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const onSubmit = async (data) => {
+        // console.log(data);
         setLoading(true);
         try {
             const response = await axios.put(`/api/users/update/${staff._id}`, data);
@@ -72,6 +76,29 @@ const EditStaffForm = ({ setOpenForm, setStaffData, staff }) => {
                     className="w-full p-2 border rounded"
                     placeholder="Email"
                 />
+                <p onClick={() => setChangePassword(!changePassword)} className="cursor-pointer font-semibold">
+                    Change password?</p>
+                {changePassword &&
+                // change pass
+                <>
+                    <div className="relative">
+                   
+                        < input
+                            type={showPassword ? "text" : "password"}
+                            {...register("password", { minLength: { value: 6, message: "Password must be at least 6 characters" } })}
+                            className="w-full p-2 border rounded"
+                            placeholder="New Password"
+                        />
+                        <span
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-sm text-gray-600"
+                        >
+                            {showPassword ? "Hide" : "Show"}
+                        </span>
+                    </div>
+                    {errors.password && <span className="text-red-500 text-[0.7rem]">{errors.password.message}</span>}
+                    </>
+                }
 
                 {/* Meal Preference */}
                 <label className="text-sm font-medium">Meal Preference</label>

@@ -8,7 +8,7 @@ import Loader from "@/components/Loader";
 
 const OfficeEditForm = ({ selectedOfficeData, setOfficeData, officeType, setEditOffice }) => {
     
-    const[loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({
         defaultValues: selectedOfficeData
@@ -40,9 +40,12 @@ const OfficeEditForm = ({ selectedOfficeData, setOfficeData, officeType, setEdit
     async function onSubmit(updatedData) {
         setLoading(true);
         try {
-            const endpoint = officeType === "SmallOffice"
-                ? `/api/offices/update/pvt/SmallOffice`
-                : `/api/offices/update/pvt/RestaurantOffice`;
+            const endpoint =
+                officeType === "SmallOffice"
+                    ? `/api/offices/update/pvt/SmallOffice`
+                    : officeType === "AdminOffice"
+                    ? `/api/offices/update/pvt/AdminOffice`
+                    : `/api/offices/update/pvt/RestaurantOffice`;
 
             const response = await axios.put(endpoint, updatedData);
 
@@ -63,13 +66,13 @@ const OfficeEditForm = ({ selectedOfficeData, setOfficeData, officeType, setEdit
         } catch (error) {
             console.error(error);
             toast.error(error.response?.data?.message || "Something went wrong");
-        }finally{
+        } finally {
             setLoading(false);
         }
     }
-    
-    if (loading) return <Loader/>
-    
+
+    if (loading) return <Loader />;
+
     return (
         <div className="relative p-6 border rounded-md bg-white shadow-default-shadow">
             <h2 className="text-sub-heading font-sub-heading mb-4">Edit {officeType}</h2>
@@ -121,6 +124,31 @@ const OfficeEditForm = ({ selectedOfficeData, setOfficeData, officeType, setEdit
                     {errors.street_address && <p className="text-red-500">{errors.street_address.message}</p>}
                 </div>
 
+                {/* Additional fields for AdminOffice */}
+                {officeType === "AdminOffice" && (
+                    <>
+                        <div>
+                            <input
+                                type="text"
+                                {...register("state", { required: "State is required" })}
+                                className="input-field"
+                                placeholder="State"
+                            />
+                            {errors.state && <p className="text-red-500">{errors.state.message}</p>}
+                        </div>
+
+                        <div>
+                            <input
+                                type="text"
+                                {...register("district", { required: "District is required" })}
+                                className="input-field"
+                                placeholder="District"
+                            />
+                            {errors.district && <p className="text-red-500">{errors.district.message}</p>}
+                        </div>
+                    </>
+                )}
+
                 {/* Only show timeLimit field for Restaurants */}
                 {officeType === "Restaurant" && (
                     <div>
@@ -142,7 +170,6 @@ const OfficeEditForm = ({ selectedOfficeData, setOfficeData, officeType, setEdit
 
                 <div className="flex gap-4">
                     <button type="submit" className="btn-primary w-full">Save</button>
-                    {/* <button type="button" className="btn-cancel" onClick={() => setEditOffice(false)}>Cancel</button> */}
                 </div>
             </form>
         </div>

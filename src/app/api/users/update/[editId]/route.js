@@ -2,6 +2,7 @@ import User from "@/lib/models/userSchema";
 import { NextResponse } from "next/server";
 import { authMiddleware } from "@/lib/middleware/auth";
 import { connectDB } from "@/lib/db/connectDB";
+import bcrypt from "bcrypt";
 
 
 export async function PUT(req, { params }) {
@@ -15,7 +16,8 @@ export async function PUT(req, { params }) {
 
     const { _id: userId, role } = req.user;
 
-    const { office_id, isActive, isVeg, name, email, phone, excludeMeal, type } = await req.json();
+    const { office_id, isActive, isVeg, name, email, phone, excludeMeal, type, password } = await req.json();
+    console.log(password);
 
     // Reject empty requests
     if (!name && !email && !phone && isVeg === undefined && isActive === undefined) {
@@ -33,25 +35,36 @@ export async function PUT(req, { params }) {
         await connectDB();
 
         let updatedUser;
-        if (role === "admin") {
-            
+
+        if (role === "admin" || role === "super_admin") {
+
             if (!email || !name || !phone || !office_id) {
-                return NextResponse.json({ success: false, message: "Email, Name, Phone and Office are required" }, 
+                return NextResponse.json({ success: false, message: "Email, Name, Phone and Office are required" },
                     { status: 400 });
             }
-            
-            // Updates partial details of office admins
-            updatedUser = await User.findByIdAndUpdate(
-                editId,
-                { name, email, phone, office_id, updatedBy: userId },
-                { new: true }
-            );
-            
+
+            if (password && password.trim() !== "") {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                // Include password in update if it's provided
+                updatedUser = await User.findByIdAndUpdate(
+                    editId,
+                    { name, email, phone, office_id, password: hashedPassword, updatedBy: userId },
+                    { new: true }
+                );
+            } else {
+                // Updates partial details of office admins without password if field is empty
+                updatedUser = await User.findByIdAndUpdate(
+                    editId,
+                    { name, email, phone, office_id, updatedBy: userId },
+                    { new: true }
+                );
+            }
+
         }
 
         // Edit full details of office admin, staff and restaurant owner
         else if (role === "office_admin" || role === "restaurant_owner") {
-            
+
             // Update the selected
             if (type === "officeUsers") {
                 updatedUser = await User.findByIdAndUpdate(
@@ -65,12 +78,22 @@ export async function PUT(req, { params }) {
                     return NextResponse.json({ success: false, message: "Fields cannot be empty!" }, { status: 400 });
                 }
 
-                // Updates office staff full details
-                updatedUser = await User.findByIdAndUpdate(
-                    editId,
-                    { name, email, phone, office_id, isVeg, isActive, excludeMeal, updatedBy: userId },
-                    { new: true }
-                );
+                if (password && password.trim() !== "") {
+                    const hashedPassword = await bcrypt.hash(password, 10);
+                    // Include password in update if it's provided
+                    updatedUser = await User.findByIdAndUpdate(
+                        editId,
+                        { name, email, phone, office_id, isVeg, isActive, excludeMeal, password: hashedPassword, updatedBy: userId },
+                        { new: true }
+                    );
+                } else {
+                    // Update without password
+                    updatedUser = await User.findByIdAndUpdate(
+                        editId,
+                        { name, email, phone, office_id, isVeg, isActive, excludeMeal, updatedBy: userId },
+                        { new: true }
+                    );
+                }
             }
         }
 
