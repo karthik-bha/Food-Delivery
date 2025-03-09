@@ -19,7 +19,7 @@ const Page = () => {
 
   async function fetchSmallOfficeData() {
     try {
-      const response = await axios.get("/api/offices/get/SmallOffice");
+      const response = await axios.get(`/api/offices/get/SmallOffice`);
       console.log(response.data.offices);
       if (response.data.success) {
         setSmallOffices(response.data.offices);
